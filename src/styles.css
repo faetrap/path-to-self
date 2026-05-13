@@ -37,6 +37,15 @@ button {
   cursor: pointer;
 }
 
+button:focus {
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 1px solid rgba(17, 17, 15, 0.55);
+  outline-offset: 3px;
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: minmax(380px, 31vw) minmax(360px, 30vw) minmax(430px, 39vw);
@@ -330,12 +339,12 @@ button {
 
 .right-panel {
   position: relative;
-  padding-top: 32px;
+  padding-top: 30px;
 }
 
 .about-row {
   justify-content: flex-end;
-  margin-bottom: 40px;
+  margin-bottom: 36px;
 }
 
 .active-kicker {
@@ -343,7 +352,7 @@ button {
   letter-spacing: 0.12em;
   font-size: 12px;
   font-weight: 700;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .chakra-number {
@@ -357,8 +366,8 @@ button {
   margin: 0;
   font-family: Impact, "Arial Narrow", sans-serif;
   text-transform: uppercase;
-  letter-spacing: 0.11em;
-  font-size: clamp(50px, 4.6vw, 70px);
+  letter-spacing: 0.105em;
+  font-size: clamp(48px, 4.35vw, 66px);
   line-height: 0.95;
   transform: scaleX(0.74);
   transform-origin: left center;
@@ -366,10 +375,10 @@ button {
 }
 
 .subtitle {
-  margin: 20px 0 24px;
+  margin: 18px 0 24px;
   text-transform: uppercase;
   letter-spacing: 0.34em;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.4;
 }
 
@@ -377,7 +386,7 @@ button {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 22px;
-  margin: 26px 0 28px;
+  margin: 24px 0 24px;
 }
 
 .facts dt {
@@ -391,29 +400,37 @@ button {
   margin: 0;
   font-family: Georgia, serif;
   font-style: italic;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .summary {
   width: min(100%, 520px);
-  font-size: 13px;
-  line-height: 1.85;
-  font-weight: 700;
-  margin: 0 0 32px;
+  font-size: 14px;
+  line-height: 1.75;
+  font-weight: 650;
+  margin: 0 0 28px;
 }
 
 .accordion {
   border-top: 1px solid var(--line);
 }
 
+.accordion-item {
+  border-bottom: 1px solid var(--line);
+}
+
 .accordion-row {
   width: 100%;
-  min-height: 47px;
+  min-height: 50px;
   display: grid;
   grid-template-columns: 38px 1fr 24px;
   align-items: center;
-  border-bottom: 1px solid var(--line);
   text-align: left;
+  transition: background-color 0.18s ease;
+}
+
+.accordion-row:hover {
+  background: rgba(17, 17, 15, 0.025);
 }
 
 .accordion-row span {
@@ -424,11 +441,40 @@ button {
 .accordion-row strong {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .accordion-row svg {
   justify-self: end;
+  transition: transform 0.22s ease;
+}
+
+.accordion-item.open .accordion-row svg {
+  transform: rotate(45deg);
+}
+
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.24s ease;
+}
+
+.accordion-item.open .accordion-content {
+  grid-template-rows: 1fr;
+}
+
+.accordion-content p {
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0 44px 0 38px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.accordion-item.open .accordion-content p {
+  padding-bottom: 16px;
 }
 
 .coming-soon {

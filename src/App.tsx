@@ -194,6 +194,31 @@ const chakras: Chakra[] = [
   }
 ];
 
+const sectionDetails: Record<string, string> = {
+  'Psychological Themes':
+    'The beliefs, emotional patterns, and identity structures governed by this center. Use this section to trace how the chakra appears in daily behavior.',
+  'Developmental Stage':
+    'The life stage where this center is most strongly imprinted, including early needs, unmet experiences, and the capacities that mature through integration.',
+  'Shadow & Blockages':
+    'The compensations, defenses, and recurring symptoms that appear when this center is under-expressed, over-expressed, or disconnected from the body.',
+  'Somatic & Physiology':
+    'The body regions, organs, muscular patterns, and sensory cues commonly associated with this center.',
+  'Nervous System Links':
+    'How this center relates to regulation, threat response, social connection, shutdown, activation, and embodied safety.',
+  'Practices & Meditations':
+    'Grounded contemplative practices for working with this center through breath, attention, ritual, movement, and awareness.',
+  'Yoga Poses':
+    'Postures and movement patterns that help open, stabilize, or clarify the energy of this center.',
+  'Mantras & Sounds':
+    'Seed sounds, tonal practices, and vibrational cues used to tune attention toward this center.',
+  'Integration & Contemplation':
+    'Questions and reflections for turning insight into lived behavior, relationship, and embodied choice.'
+};
+
+function sectionCopy(title: string, chakra: Chakra) {
+  return sectionDetails[title] ?? `A focused lens for exploring ${chakra.name} through ${title.toLowerCase()}.`;
+}
+
 function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: boolean }) {
   const petalCount = [4, 6, 10, 12, 16, 2, 24][Number(chakra.id) - 1] ?? 12;
   const petals = Array.from({ length: petalCount }, (_, index) => (360 / petalCount) * index);
@@ -341,7 +366,13 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [openSection, setOpenSection] = useState<number | null>(0);
   const active = chakras[activeIndex];
+
+  function chooseChakra(index: number) {
+    setActiveIndex(index);
+    setOpenSection(0);
+  }
 
   return (
     <main className="app-shell">
@@ -372,7 +403,7 @@ export default function App() {
             <button
               key={chakra.id}
               className={index === activeIndex ? 'active' : ''}
-              onClick={() => setActiveIndex(index)}
+                onClick={() => chooseChakra(index)}
             >
               <span className="nav-id">{chakra.id}</span>
               <ChakraSigil chakra={chakra} active={index === activeIndex} />
@@ -391,7 +422,7 @@ export default function App() {
       </section>
 
       <section className="center-panel">
-        <BodyFigure activeIndex={activeIndex} onSelect={setActiveIndex} />
+        <BodyFigure activeIndex={activeIndex} onSelect={chooseChakra} />
       </section>
 
       <section className="right-panel">
@@ -429,11 +460,20 @@ export default function App() {
 
         <div className="accordion">
           {active.sections.map((section, index) => (
-            <button key={section} className="accordion-row">
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <strong>{section}</strong>
-              <Plus size={19} strokeWidth={1.5} />
-            </button>
+            <div key={section} className={`accordion-item${openSection === index ? ' open' : ''}`}>
+              <button
+                className="accordion-row"
+                aria-expanded={openSection === index}
+                onClick={() => setOpenSection(openSection === index ? null : index)}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{section}</strong>
+                <Plus size={19} strokeWidth={1.5} />
+              </button>
+              <div className="accordion-content">
+                <p>{sectionCopy(section, active)}</p>
+              </div>
+            </div>
           ))}
         </div>
 
