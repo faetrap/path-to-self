@@ -311,7 +311,7 @@ export default function App() {
         <h1>Path<br />to Self</h1>
         <div className="rule" />
         <p className="intro">
-          An interactive journey through the chakras the energy centers that shape our physiology,
+          An interactive journey through the chakras, the energy centers that shape our physiology,
           psychology and spiritual evolution.
         </p>
 
