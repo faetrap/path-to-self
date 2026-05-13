@@ -39,7 +39,7 @@ button {
 
 .app-shell {
   display: grid;
-  grid-template-columns: minmax(315px, 29vw) minmax(390px, 38vw) minmax(380px, 33vw);
+  grid-template-columns: minmax(380px, 31vw) minmax(430px, 37vw) minmax(390px, 32vw);
   min-height: 100vh;
   overflow: hidden;
 }
@@ -128,10 +128,10 @@ button {
 .chakra-list button {
   width: 100%;
   display: grid;
-  grid-template-columns: 28px 30px minmax(112px, 1fr) minmax(92px, 0.9fr);
+  grid-template-columns: 34px 42px minmax(138px, 1fr) minmax(128px, 0.9fr);
   align-items: center;
-  gap: 8px;
-  min-height: 47px;
+  gap: 10px;
+  min-height: 58px;
   border-bottom: 1px solid var(--line);
   text-align: left;
   position: relative;
@@ -162,18 +162,19 @@ button {
 
 .chakra-list strong {
   text-transform: uppercase;
-  letter-spacing: 0.075em;
-  font-family: Impact, "Arial Narrow", sans-serif;
-  font-size: 13px;
+  letter-spacing: 0.045em;
+  font-family: "Arial Black", "Arial Narrow", Impact, sans-serif;
+  font-size: 14px;
+  line-height: 1;
   white-space: nowrap;
 }
 
 .chakra-list em {
   justify-self: end;
   color: var(--muted);
-  font-size: 9px;
-  line-height: 1.4;
-  max-width: 112px;
+  font-size: 11px;
+  line-height: 1.45;
+  max-width: 150px;
 }
 
 .left-panel footer {
