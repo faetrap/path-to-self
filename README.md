@@ -1,11 +1,10 @@
 # Path to Self
 
-Interactive single-page chakra anatomy website.
+Interactive chakra anatomy map built with Vite, React, and TypeScript.
 
 ## Run locally
 
 ```sh
-python3 -m http.server 8000
+npm install
+npm run dev
 ```
-
-Then open `http://localhost:8000/`.
