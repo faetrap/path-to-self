@@ -194,15 +194,70 @@ const chakras: Chakra[] = [
   }
 ];
 
+const sectionDetails: Record<string, string> = {
+  'Psychological Themes':
+    'The beliefs, emotional patterns, and identity structures governed by this center. Use this section to trace how the chakra appears in daily behavior.',
+  'Developmental Stage':
+    'The life stage where this center is most strongly imprinted, including early needs, unmet experiences, and the capacities that mature through integration.',
+  'Shadow & Blockages':
+    'The compensations, defenses, and recurring symptoms that appear when this center is under-expressed, over-expressed, or disconnected from the body.',
+  'Somatic & Physiology':
+    'The body regions, organs, muscular patterns, and sensory cues commonly associated with this center.',
+  'Nervous System Links':
+    'How this center relates to regulation, threat response, social connection, shutdown, activation, and embodied safety.',
+  'Practices & Meditations':
+    'Grounded contemplative practices for working with this center through breath, attention, ritual, movement, and awareness.',
+  'Yoga Poses':
+    'Postures and movement patterns that help open, stabilize, or clarify the energy of this center.',
+  'Mantras & Sounds':
+    'Seed sounds, tonal practices, and vibrational cues used to tune attention toward this center.',
+  'Integration & Contemplation':
+    'Questions and reflections for turning insight into lived behavior, relationship, and embodied choice.'
+};
+
+function sectionCopy(title: string, chakra: Chakra) {
+  return sectionDetails[title] ?? `A focused lens for exploring ${chakra.name} through ${title.toLowerCase()}.`;
+}
+
 function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: boolean }) {
+  const petalCount = [4, 6, 10, 12, 16, 2, 24][Number(chakra.id) - 1] ?? 12;
+  const petals = Array.from({ length: petalCount }, (_, index) => (360 / petalCount) * index);
+  const symbol = (() => {
+    switch (chakra.id) {
+      case '01':
+        return <path d="M24 34 L13 15 H35 Z" />;
+      case '02':
+        return <path d="M16 19 C20 27 28 27 32 19 C31 31 17 31 16 19Z" />;
+      case '03':
+        return <path d="M24 13 L35 33 H13 Z" />;
+      case '04':
+        return <path d="M24 13 L35 33 H13 Z M24 35 L13 15 H35 Z" />;
+      case '05':
+        return <circle cx="24" cy="24" r="8" />;
+      case '06':
+        return <path d="M10 24 C17 14 31 14 38 24 C31 34 17 34 10 24Z M24 18 L29 27 H19 Z" />;
+      default:
+        return <path d="M24 9 V39 M9 24 H39 M14 14 L34 34 M34 14 L14 34" />;
+    }
+  })();
+
   return (
-    <span
+    <svg
       className={`sigil${active ? ' is-active' : ''}`}
       style={{ '--chakra': chakra.color } as React.CSSProperties}
       aria-hidden="true"
+      viewBox="0 0 48 48"
     >
-      <span />
-    </span>
+      <g className="sigil-petals">
+        {petals.map((rotation) => (
+          <ellipse key={rotation} cx="24" cy="7.7" rx="2.4" ry="7.2" transform={`rotate(${rotation} 24 24)`} />
+        ))}
+      </g>
+      <circle className="sigil-ring outer" cx="24" cy="24" r="17.5" />
+      <circle className="sigil-ring middle" cx="24" cy="24" r="11.5" />
+      <g className="sigil-symbol">{symbol}</g>
+      <circle className="sigil-core" cx="24" cy="24" r="5.2" />
+    </svg>
   );
 }
 
@@ -247,20 +302,32 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
         <g className="human" filter="url(#softInk)">
           <ellipse cx="180" cy="122" rx="30" ry="38" />
           <path d="M156 118 C160 96 170 82 180 82 C191 82 201 96 204 119" />
+          <path d="M162 106 C169 100 176 99 180 100 C184 99 191 100 198 106" />
+          <path d="M162 118 C167 115 172 115 176 118 M184 118 C188 115 193 115 198 118" />
+          <path d="M178 120 C176 128 177 132 181 133" />
           <path d="M166 135 C174 142 187 142 196 135" />
           <path d="M169 112 L191 112 M172 126 L188 126" />
+          <path d="M171 149 C176 153 184 153 190 149" />
           <path d="M166 158 C158 174 141 184 119 194 C108 199 100 212 98 226 C94 263 94 302 98 340" />
           <path d="M194 158 C202 174 219 184 241 194 C252 199 260 212 262 226 C266 263 266 302 262 340" />
+          <path d="M121 198 C144 214 160 221 180 222 C200 221 216 214 239 198" />
+          <path d="M136 218 C151 244 162 258 180 260 C198 258 209 244 224 218" />
           <path d="M128 204 C127 270 130 335 142 396 C149 430 151 494 143 586" />
           <path d="M232 204 C233 270 230 335 218 396 C211 430 209 494 217 586" />
           <path d="M142 396 C154 408 166 414 180 414 C194 414 206 408 218 396" />
           <path d="M144 216 C156 236 166 253 180 254 C194 253 204 236 216 216" />
           <path d="M143 250 C160 270 200 270 217 250" />
           <path d="M142 312 C164 326 196 326 218 312" />
+          <path d="M151 346 C166 353 194 353 209 346" />
+          <path d="M151 382 C165 392 195 392 209 382" />
           <path d="M119 194 C110 256 106 330 116 405 C121 440 127 493 125 552" />
           <path d="M241 194 C250 256 254 330 244 405 C239 440 233 493 235 552" />
           <path d="M116 405 C119 459 121 520 114 632" />
           <path d="M244 405 C241 459 239 520 246 632" />
+          <path d="M151 420 C157 469 156 533 148 621" />
+          <path d="M209 420 C203 469 204 533 212 621" />
+          <path d="M169 420 C166 476 164 548 159 650" />
+          <path d="M191 420 C194 476 196 548 201 650" />
           <path d="M143 586 C137 617 131 646 122 672" />
           <path d="M217 586 C223 617 229 646 238 672" />
           <path d="M114 632 C107 648 94 664 73 674 C92 680 113 678 128 668" />
@@ -268,6 +335,7 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
           <path d="M99 340 C87 368 83 408 82 443 C82 460 74 472 62 474 C55 468 55 451 64 440" />
           <path d="M261 340 C273 368 277 408 278 443 C278 460 286 472 298 474 C305 468 305 451 296 440" />
           <path d="M82 443 C72 458 67 477 62 498 M278 443 C288 458 293 477 298 498" />
+          <path d="M63 475 C60 484 60 493 62 502 M70 474 C68 488 68 497 70 506 M290 474 C292 488 292 497 290 506 M297 475 C300 484 300 493 298 502" />
           <path d="M151 170 C167 181 193 181 209 170" />
           <path d="M150 694 C166 704 194 704 210 694" />
         </g>
@@ -298,7 +366,13 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
 
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [openSection, setOpenSection] = useState<number | null>(0);
   const active = chakras[activeIndex];
+
+  function chooseChakra(index: number) {
+    setActiveIndex(index);
+    setOpenSection(0);
+  }
 
   return (
     <main className="app-shell">
@@ -311,7 +385,7 @@ export default function App() {
         <h1>Path<br />to Self</h1>
         <div className="rule" />
         <p className="intro">
-          An interactive journey through the chakras the energy centers that shape our physiology,
+          An interactive journey through the chakras, the energy centers that shape our physiology,
           psychology and spiritual evolution.
         </p>
 
@@ -329,7 +403,7 @@ export default function App() {
             <button
               key={chakra.id}
               className={index === activeIndex ? 'active' : ''}
-              onClick={() => setActiveIndex(index)}
+                onClick={() => chooseChakra(index)}
             >
               <span className="nav-id">{chakra.id}</span>
               <ChakraSigil chakra={chakra} active={index === activeIndex} />
@@ -348,7 +422,7 @@ export default function App() {
       </section>
 
       <section className="center-panel">
-        <BodyFigure activeIndex={activeIndex} onSelect={setActiveIndex} />
+        <BodyFigure activeIndex={activeIndex} onSelect={chooseChakra} />
       </section>
 
       <section className="right-panel">
@@ -386,11 +460,20 @@ export default function App() {
 
         <div className="accordion">
           {active.sections.map((section, index) => (
-            <button key={section} className="accordion-row">
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              <strong>{section}</strong>
-              <Plus size={19} strokeWidth={1.5} />
-            </button>
+            <div key={section} className={`accordion-item${openSection === index ? ' open' : ''}`}>
+              <button
+                className="accordion-row"
+                aria-expanded={openSection === index}
+                onClick={() => setOpenSection(openSection === index ? null : index)}
+              >
+                <span>{String(index + 1).padStart(2, '0')}</span>
+                <strong>{section}</strong>
+                <Plus size={19} strokeWidth={1.5} />
+              </button>
+              <div className="accordion-content">
+                <p>{sectionCopy(section, active)}</p>
+              </div>
+            </div>
           ))}
         </div>
 
