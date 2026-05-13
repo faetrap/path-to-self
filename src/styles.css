@@ -282,13 +282,13 @@ button:focus-visible {
 }
 
 .body-chakra .sigil {
-  width: 46px;
-  height: 46px;
+  width: 52px;
+  height: 52px;
 }
 
 .body-chakra.selected .sigil {
-  width: 58px;
-  height: 58px;
+  width: 66px;
+  height: 66px;
 }
 
 .sigil {
@@ -300,37 +300,27 @@ button:focus-visible {
   overflow: visible;
 }
 
-.sigil-petals {
-  fill: color-mix(in srgb, currentColor 78%, transparent);
-  stroke: currentColor;
-  stroke-width: 0.7;
-}
-
-.sigil-ring,
-.sigil-symbol {
+.icon-petals {
   fill: none;
   stroke: currentColor;
+  stroke-width: 3.7;
+  stroke-linejoin: round;
+}
+
+.inner-lotus {
+  stroke-width: 3.1;
+}
+
+.icon-shape {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.9;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.sigil-ring.outer {
-  stroke-width: 1.2;
-}
-
-.sigil-ring.middle {
-  stroke-width: 0.8;
-  opacity: 0.8;
-}
-
-.sigil-symbol {
-  stroke-width: 1.45;
-}
-
-.sigil-core {
-  fill: var(--paper);
-  stroke: currentColor;
-  stroke-width: 1.2;
+.icon-wing {
+  stroke-width: 4.2;
 }
 
 .sigil.is-active {

@@ -220,24 +220,80 @@ function sectionCopy(title: string, chakra: Chakra) {
 }
 
 function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: boolean }) {
-  const petalCount = [4, 6, 10, 12, 16, 2, 24][Number(chakra.id) - 1] ?? 12;
-  const petals = Array.from({ length: petalCount }, (_, index) => (360 / petalCount) * index);
-  const symbol = (() => {
+  const petal = 'M50 8 C59 15 62 29 50 38 C38 29 41 15 50 8Z';
+  const petals = (count: number, radiusScale = 1) =>
+    Array.from({ length: count }, (_, index) => (
+      <path
+        key={index}
+        d={petal}
+        transform={`rotate(${(360 / count) * index} 50 50) translate(0 ${radiusScale === 1 ? 0 : 3}) scale(${radiusScale}) translate(${50 * (1 - radiusScale)} ${50 * (1 - radiusScale)})`}
+      />
+    ));
+
+  const icon = (() => {
     switch (chakra.id) {
       case '01':
-        return <path d="M24 34 L13 15 H35 Z" />;
+        return (
+          <>
+            <g className="icon-petals">{petals(4, 1.08)}</g>
+            <rect className="icon-shape" x="25" y="25" width="50" height="50" />
+            <circle className="icon-shape" cx="50" cy="50" r="28" />
+            <path className="icon-shape" d="M50 70 L31 36 H69 Z" />
+          </>
+        );
       case '02':
-        return <path d="M16 19 C20 27 28 27 32 19 C31 31 17 31 16 19Z" />;
+        return (
+          <>
+            <g className="icon-petals">{petals(6, 1.06)}</g>
+            <circle className="icon-shape" cx="50" cy="50" r="29" />
+            <path className="icon-shape" d="M33 39 C40 55 60 55 67 39 C64 66 36 66 33 39Z" />
+            <circle className="icon-shape" cx="50" cy="43" r="15" />
+          </>
+        );
       case '03':
-        return <path d="M24 13 L35 33 H13 Z" />;
+        return (
+          <>
+            <g className="icon-petals">{petals(10, 1.05)}</g>
+            <circle className="icon-shape" cx="50" cy="50" r="30" />
+            <path className="icon-shape" d="M50 70 L29 34 H71 Z" />
+          </>
+        );
       case '04':
-        return <path d="M24 13 L35 33 H13 Z M24 35 L13 15 H35 Z" />;
+        return (
+          <>
+            <g className="icon-petals">{petals(12, 1.04)}</g>
+            <circle className="icon-shape" cx="50" cy="50" r="30" />
+            <path className="icon-shape" d="M50 25 L72 63 H28 Z" />
+            <path className="icon-shape" d="M50 75 L28 37 H72 Z" />
+          </>
+        );
       case '05':
-        return <circle cx="24" cy="24" r="8" />;
+        return (
+          <>
+            <g className="icon-petals">{petals(16, 1.02)}</g>
+            <circle className="icon-shape" cx="50" cy="50" r="31" />
+            <path className="icon-shape" d="M50 72 L27 32 H73 Z" />
+            <circle className="icon-shape" cx="50" cy="50" r="15" />
+          </>
+        );
       case '06':
-        return <path d="M10 24 C17 14 31 14 38 24 C31 34 17 34 10 24Z M24 18 L29 27 H19 Z" />;
+        return (
+          <>
+            <path className="icon-shape icon-wing" d="M13 52 C24 27 40 20 50 34 C38 46 28 57 13 52Z" />
+            <path className="icon-shape icon-wing" d="M87 52 C76 27 60 20 50 34 C62 46 72 57 87 52Z" />
+            <circle className="icon-shape" cx="50" cy="50" r="28" />
+            <path className="icon-shape" d="M50 70 L29 34 H71 Z" />
+            <path className="icon-shape" d="M26 32 H74" />
+          </>
+        );
       default:
-        return <path d="M24 9 V39 M9 24 H39 M14 14 L34 34 M34 14 L14 34" />;
+        return (
+          <>
+            <g className="icon-petals outer-lotus">{petals(16, 1.03)}</g>
+            <g className="icon-petals inner-lotus">{petals(8, 0.72)}</g>
+            <circle className="icon-shape" cx="50" cy="50" r="18" />
+          </>
+        );
     }
   })();
 
@@ -246,17 +302,9 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
       className={`sigil${active ? ' is-active' : ''}`}
       style={{ '--chakra': chakra.color } as React.CSSProperties}
       aria-hidden="true"
-      viewBox="0 0 48 48"
+      viewBox="0 0 100 100"
     >
-      <g className="sigil-petals">
-        {petals.map((rotation) => (
-          <ellipse key={rotation} cx="24" cy="7.7" rx="2.4" ry="7.2" transform={`rotate(${rotation} 24 24)`} />
-        ))}
-      </g>
-      <circle className="sigil-ring outer" cx="24" cy="24" r="17.5" />
-      <circle className="sigil-ring middle" cx="24" cy="24" r="11.5" />
-      <g className="sigil-symbol">{symbol}</g>
-      <circle className="sigil-core" cx="24" cy="24" r="5.2" />
+      {icon}
     </svg>
   );
 }
