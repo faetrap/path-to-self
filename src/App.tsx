@@ -12,6 +12,7 @@ type Chakra = {
   gland: string;
   mantra: string;
   top: number;
+  x: number;
   summary: string;
   sections: string[];
 };
@@ -27,7 +28,8 @@ const chakras: Chakra[] = [
     location: 'Base of Spine',
     gland: 'Adrenals',
     mantra: 'LAM',
-    top: 72,
+    top: 74,
+    x: 35,
     summary:
       'Muladhara is our foundation. It governs our sense of safety, stability, and belonging. When balanced, we feel grounded, supported by life, and present in our bodies.',
     sections: [
@@ -53,6 +55,7 @@ const chakras: Chakra[] = [
     gland: 'Gonads',
     mantra: 'VAM',
     top: 61,
+    x: 41,
     summary:
       'Svadhishthana carries feeling, pleasure, and creative flow. It is the fluid intelligence of desire, emotion, intimacy, and the ability to move with life.',
     sections: [
@@ -77,7 +80,8 @@ const chakras: Chakra[] = [
     location: 'Solar Plexus',
     gland: 'Pancreas',
     mantra: 'RAM',
-    top: 50,
+    top: 49,
+    x: 45,
     summary:
       'Manipura is the inner fire of will, confidence, and selfhood. It turns feeling into action and gives the body a clear center of direction.',
     sections: [
@@ -102,7 +106,8 @@ const chakras: Chakra[] = [
     location: 'Heart',
     gland: 'Thymus',
     mantra: 'YAM',
-    top: 39,
+    top: 38,
+    x: 49,
     summary:
       'Anahata is the bridge between body and spirit. It holds love, grief, compassion, forgiveness, and the felt truth of connection.',
     sections: [
@@ -127,7 +132,8 @@ const chakras: Chakra[] = [
     location: 'Throat',
     gland: 'Thyroid',
     mantra: 'HAM',
-    top: 29,
+    top: 28,
+    x: 53,
     summary:
       'Vishuddha is the channel of truth. It governs voice, listening, creative expression, and the courage to let the inner world become sound.',
     sections: [
@@ -153,6 +159,7 @@ const chakras: Chakra[] = [
     gland: 'Pituitary',
     mantra: 'OM',
     top: 20,
+    x: 60,
     summary:
       'Ajna is the center of perception, pattern recognition, and inner vision. It clarifies intuition and allows the mind to witness itself.',
     sections: [
@@ -178,6 +185,7 @@ const chakras: Chakra[] = [
     gland: 'Pineal',
     mantra: 'Silence',
     top: 12,
+    x: 55,
     summary:
       'Sahasrara opens into meaning, unity, and spacious awareness. It is the thousand-petaled crown where individual identity remembers its source.',
     sections: [
@@ -331,77 +339,78 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
           </filter>
         </defs>
         <g className="sacred-lines">
-          <line x1="180" y1="0" x2="180" y2="720" />
-          <line x1="70" y1="338" x2="290" y2="338" />
-          <ellipse cx="180" cy="342" rx="126" ry="304" />
-          <ellipse cx="180" cy="342" rx="92" ry="248" />
-          <ellipse cx="180" cy="342" rx="58" ry="192" />
-          <path d="M180 36 C70 168 70 480 180 690 C290 480 290 168 180 36" />
-          <path d="M180 36 C104 210 104 456 180 690 C256 456 256 210 180 36" />
+          <line x1="155" y1="70" x2="155" y2="672" />
+          <line x1="62" y1="338" x2="302" y2="338" />
+          <ellipse cx="166" cy="360" rx="118" ry="290" />
+          <ellipse cx="166" cy="360" rx="84" ry="235" />
+          <path d="M160 80 C70 188 66 460 130 670 C245 548 272 242 160 80" />
+          <path d="M156 100 C102 232 96 462 132 650 C220 520 242 250 156 100" />
         </g>
         <g className="ticks">
-          {[54, 144, 252, 338, 456, 606, 696].map((y) => (
-            <circle key={y} cx="180" cy={y} r="2.2" />
+          {[92, 146, 204, 278, 356, 438, 570, 666].map((y) => (
+            <circle key={y} cx="155" cy={y} r="2.2" />
           ))}
-          {[70, 102, 258, 290].map((x) => (
+          {[70, 106, 236, 282].map((x) => (
             <circle key={x} cx={x} cy="338" r="2.1" />
           ))}
         </g>
-        <g className="human" filter="url(#softInk)">
-          <ellipse cx="180" cy="122" rx="30" ry="38" />
-          <path d="M156 118 C160 96 170 82 180 82 C191 82 201 96 204 119" />
-          <path d="M162 106 C169 100 176 99 180 100 C184 99 191 100 198 106" />
-          <path d="M162 118 C167 115 172 115 176 118 M184 118 C188 115 193 115 198 118" />
-          <path d="M178 120 C176 128 177 132 181 133" />
-          <path d="M166 135 C174 142 187 142 196 135" />
-          <path d="M169 112 L191 112 M172 126 L188 126" />
-          <path d="M171 149 C176 153 184 153 190 149" />
-          <path d="M166 158 C158 174 141 184 119 194 C108 199 100 212 98 226 C94 263 94 302 98 340" />
-          <path d="M194 158 C202 174 219 184 241 194 C252 199 260 212 262 226 C266 263 266 302 262 340" />
-          <path d="M121 198 C144 214 160 221 180 222 C200 221 216 214 239 198" />
-          <path d="M136 218 C151 244 162 258 180 260 C198 258 209 244 224 218" />
-          <path d="M128 204 C127 270 130 335 142 396 C149 430 151 494 143 586" />
-          <path d="M232 204 C233 270 230 335 218 396 C211 430 209 494 217 586" />
-          <path d="M142 396 C154 408 166 414 180 414 C194 414 206 408 218 396" />
-          <path d="M144 216 C156 236 166 253 180 254 C194 253 204 236 216 216" />
-          <path d="M143 250 C160 270 200 270 217 250" />
-          <path d="M142 312 C164 326 196 326 218 312" />
-          <path d="M151 346 C166 353 194 353 209 346" />
-          <path d="M151 382 C165 392 195 392 209 382" />
-          <path d="M119 194 C110 256 106 330 116 405 C121 440 127 493 125 552" />
-          <path d="M241 194 C250 256 254 330 244 405 C239 440 233 493 235 552" />
-          <path d="M116 405 C119 459 121 520 114 632" />
-          <path d="M244 405 C241 459 239 520 246 632" />
-          <path d="M151 420 C157 469 156 533 148 621" />
-          <path d="M209 420 C203 469 204 533 212 621" />
-          <path d="M169 420 C166 476 164 548 159 650" />
-          <path d="M191 420 C194 476 196 548 201 650" />
-          <path d="M143 586 C137 617 131 646 122 672" />
-          <path d="M217 586 C223 617 229 646 238 672" />
-          <path d="M114 632 C107 648 94 664 73 674 C92 680 113 678 128 668" />
-          <path d="M246 632 C253 648 266 664 287 674 C268 680 247 678 232 668" />
-          <path d="M99 340 C87 368 83 408 82 443 C82 460 74 472 62 474 C55 468 55 451 64 440" />
-          <path d="M261 340 C273 368 277 408 278 443 C278 460 286 472 298 474 C305 468 305 451 296 440" />
-          <path d="M82 443 C72 458 67 477 62 498 M278 443 C288 458 293 477 298 498" />
-          <path d="M63 475 C60 484 60 493 62 502 M70 474 C68 488 68 497 70 506 M290 474 C292 488 292 497 290 506 M297 475 C300 484 300 493 298 502" />
-          <path d="M151 170 C167 181 193 181 209 170" />
-          <path d="M150 694 C166 704 194 704 210 694" />
+        <g className="human seated-human" filter="url(#softInk)">
+          <path d="M122 640 C86 617 82 548 93 491 C102 440 93 398 85 356 C74 300 80 238 104 176 C122 128 147 94 190 76 C216 87 236 103 249 127" />
+          <path d="M249 127 C252 150 250 166 245 183 C231 180 217 176 205 169" />
+          <path d="M205 169 C190 197 175 231 165 278 C151 345 149 420 158 488 C164 538 151 600 122 640" />
+          <path d="M205 169 C214 183 222 194 229 202" />
+          <path d="M229 202 C219 209 209 210 198 205" />
+          <path d="M219 157 C229 160 238 160 245 157" />
+          <path d="M220 146 C226 149 232 149 238 146" />
+          <path d="M218 122 C226 117 235 118 243 124" />
+          <path d="M235 128 C233 138 233 145 239 151" />
+          <path d="M228 166 C231 169 237 170 242 167" />
+          <path d="M179 109 C172 148 169 190 176 222" />
+          <path d="M137 207 C163 205 190 204 218 212" />
+          <path d="M150 227 C171 233 189 244 203 264" />
+          <path d="M161 260 C174 300 183 354 180 416" />
+          <path d="M139 323 C147 371 150 420 146 470" />
+          <path d="M146 470 C174 490 224 493 282 478 C306 472 332 473 348 489" />
+          <path d="M159 496 C204 507 254 511 308 507 C333 505 351 520 357 542" />
+          <path d="M180 535 C214 524 254 525 298 542 C323 552 339 572 336 593" />
+          <path d="M136 499 C174 544 232 582 314 612" />
+          <path d="M314 612 C296 626 260 629 221 620 C183 611 147 623 122 640" />
+          <path d="M336 593 C351 613 344 634 323 642 C313 639 304 633 299 623" />
+          <path d="M333 596 C320 599 309 598 300 591" />
+          <path d="M161 496 C127 517 107 517 88 499" />
+          <path d="M158 488 C147 520 145 558 152 596" />
+          <path d="M152 596 C137 613 128 627 122 640" />
+          <path d="M86 356 C103 371 119 376 136 369" />
+          <path d="M99 491 C112 504 127 507 146 501" />
+          <path d="M164 279 C148 260 132 250 113 251" />
+          <path d="M114 238 C123 225 133 220 146 222" />
+          <path d="M215 437 C249 449 285 454 323 450" />
+          <path d="M321 450 C334 454 343 465 348 489" />
+          <path d="M292 497 C318 490 340 496 357 542" />
+          <path d="M324 642 C315 653 299 653 288 643 C299 637 310 636 324 642" />
         </g>
-        <g className="root-lines">
-          {Array.from({ length: 28 }, (_, index) => {
-            const x = 180 + (index - 13.5) * 8;
-            const bend = 180 + (index - 13.5) * 4;
-            return <path key={index} d={`M180 674 C${bend} 690 ${x} 700 ${x + (index % 2 ? 24 : -24)} 714`} />;
+        <g className="spine-detail">
+          <path d="M174 103 C154 142 143 197 132 252 C120 314 116 377 129 438 C140 489 133 555 117 626" />
+          <path d="M158 118 C139 170 127 226 117 292 C108 352 108 414 119 472 C128 520 123 575 108 622" />
+          {Array.from({ length: 25 }, (_, index) => {
+            const y = 134 + index * 18.4;
+            const x = 161 - Math.sin(index / 3) * 22 - index * 1.8;
+            return <path key={index} d={`M${x.toFixed(1)} ${y.toFixed(1)} C${(x - 10).toFixed(1)} ${(y + 4).toFixed(1)} ${(x - 8).toFixed(1)} ${(y + 12).toFixed(1)} ${(x + 2).toFixed(1)} ${(y + 12).toFixed(1)}`} />;
+          })}
+        </g>
+        <g className="root-lines seated-ground">
+          {Array.from({ length: 18 }, (_, index) => {
+            const x = 126 + (index - 8.5) * 10;
+            return <path key={index} d={`M126 640 C${x} 658 ${x + (index % 2 ? 38 : -28)} 676 ${x + (index % 2 ? 58 : -46)} 696`} />;
           })}
         </g>
       </svg>
 
-      <div className="spine-line" />
       {chakras.map((chakra, index) => (
         <button
           key={chakra.id}
           className={`body-chakra${index === activeIndex ? ' selected' : ''}`}
-          style={{ top: `${chakra.top}%`, '--chakra': chakra.color } as React.CSSProperties}
+          style={{ top: `${chakra.top}%`, left: `${chakra.x}%`, '--chakra': chakra.color } as React.CSSProperties}
           onClick={() => onSelect(index)}
           aria-label={`Select ${chakra.name}`}
         >
