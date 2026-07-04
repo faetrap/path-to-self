@@ -181,6 +181,106 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
   );
 }
 
+function JournalOverlay({ chakra, onClose }: { chakra: Chakra; onClose: () => void }) {
+  const storageKey = `path-to-self-journal-${chakra.id}`;
+  const [entry, setEntry] = useState(() => localStorage.getItem(storageKey) ?? '');
+
+  useEffect(() => {
+    setEntry(localStorage.getItem(storageKey) ?? '');
+  }, [storageKey]);
+
+  function update(value: string) {
+    setEntry(value);
+    localStorage.setItem(storageKey, value);
+  }
+
+  const prompts =
+    chakra.sections.find((section) => section.title === 'Integration & Contemplation')?.list ?? [];
+
+  return (
+    <div className="about-overlay" role="dialog" aria-modal="true" aria-label="Journal" onClick={onClose}>
+      <div className="about-card" onClick={(event) => event.stopPropagation()}>
+        <button className="about-close" onClick={onClose} aria-label="Close">
+          <X size={18} strokeWidth={1.6} />
+        </button>
+        <div className="micro-row">
+          <Sparkle size={16} strokeWidth={1.4} />
+          <span>Journal · {chakra.id}</span>
+        </div>
+        <h3>{chakra.name}</h3>
+        <div className="journal-prompts">
+          {prompts.map((prompt) => (
+            <p key={prompt}>{prompt}</p>
+          ))}
+        </div>
+        <textarea
+          className="journal-entry"
+          value={entry}
+          onChange={(event) => update(event.target.value)}
+          placeholder="Write freely. No one reads this but you."
+          rows={9}
+        />
+        <div className="about-hint">Saved privately in this browser, one page per chakra.</div>
+      </div>
+    </div>
+  );
+}
+
+const library = [
+  {
+    group: 'Traditional Sources',
+    books: [
+      'The Serpent Power — Arthur Avalon (Sir John Woodroffe); the classic translation of the Sat-Cakra-Nirupana',
+      'Kundalini Tantra — Swami Satyananda Saraswati; the Bihar school’s practice manual',
+      'The Radiance Sutras — Lorin Roche; a poet’s rendering of the Vijnana Bhairava Tantra'
+    ]
+  },
+  {
+    group: 'The Psychological Bridge',
+    books: [
+      'Wheels of Life — Anodea Judith; the fullest modern map of the chakra system',
+      'Eastern Body, Western Mind — Anodea Judith; chakras read through developmental psychology',
+      'The Body Keeps the Score — Bessel van der Kolk; trauma, memory, and the body'
+    ]
+  },
+  {
+    group: 'Body & Nervous System',
+    books: [
+      'Light on Yoga — B.K.S. Iyengar; the reference for the asanas named in this site',
+      'The Polyvagal Theory — Stephen Porges; the science behind the nervous-system links',
+      'Waking the Tiger — Peter Levine; completing what the body could not finish'
+    ]
+  }
+];
+
+function LibraryOverlay({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="about-overlay" role="dialog" aria-modal="true" aria-label="Library" onClick={onClose}>
+      <div className="about-card" onClick={(event) => event.stopPropagation()}>
+        <button className="about-close" onClick={onClose} aria-label="Close">
+          <X size={18} strokeWidth={1.6} />
+        </button>
+        <div className="micro-row">
+          <Sparkle size={16} strokeWidth={1.4} />
+          <span>Library</span>
+        </div>
+        <h3>Further Reading</h3>
+        {library.map((shelf) => (
+          <div key={shelf.group} className="library-shelf">
+            <div className="library-group">{shelf.group}</div>
+            <ul>
+              {shelf.books.map((book) => (
+                <li key={book}>{book}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <div className="about-hint">A starting shelf, not a syllabus — one book taken slowly beats ten skimmed.</div>
+      </div>
+    </div>
+  );
+}
+
 function AboutOverlay({ onClose }: { onClose: () => void }) {
   return (
     <div className="about-overlay" role="dialog" aria-modal="true" aria-label="About this system" onClick={onClose}>
@@ -219,7 +319,7 @@ function AboutOverlay({ onClose }: { onClose: () => void }) {
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [openSection, setOpenSection] = useState<number | null>(0);
-  const [aboutOpen, setAboutOpen] = useState(false);
+  const [overlay, setOverlay] = useState<'about' | 'journal' | 'library' | null>(null);
   const active = chakras[activeIndex];
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
@@ -232,7 +332,7 @@ export default function App() {
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        setAboutOpen(false);
+        setOverlay(null);
         return;
       }
       if (event.target instanceof HTMLElement && event.target.closest('input, textarea')) return;
@@ -288,9 +388,9 @@ export default function App() {
         </nav>
 
         <footer>
-          <span className="footer-soon">Journal<small>Soon</small></span>
-          <span className="footer-soon">Library<small>Soon</small></span>
-          <button className="footer-link" onClick={() => setAboutOpen(true)}>
+          <button className="footer-link" onClick={() => setOverlay('journal')}>Journal</button>
+          <button className="footer-link" onClick={() => setOverlay('library')}>Library</button>
+          <button className="footer-link" onClick={() => setOverlay('about')}>
             About <Info size={16} strokeWidth={1.4} />
           </button>
         </footer>
@@ -302,12 +402,13 @@ export default function App() {
 
       <section className="right-panel">
         <header className="about-row">
-          <button className="footer-link" onClick={() => setAboutOpen(true)}>
+          <button className="footer-link" onClick={() => setOverlay('about')}>
             <span>About This System</span>
             <Info size={16} strokeWidth={1.4} />
           </button>
         </header>
 
+        <div className="panel-content" key={active.id}>
         <div className="active-kicker">Active Chakra</div>
         <div className="chakra-number" style={{ color: active.color }}>{active.id}</div>
         <h2>{active.name}</h2>
@@ -381,9 +482,12 @@ export default function App() {
             <ArrowRight size={20} strokeWidth={1.4} />
           </button>
         )}
+        </div>
       </section>
 
-      {aboutOpen && <AboutOverlay onClose={() => setAboutOpen(false)} />}
+      {overlay === 'about' && <AboutOverlay onClose={() => setOverlay(null)} />}
+      {overlay === 'journal' && <JournalOverlay chakra={active} onClose={() => setOverlay(null)} />}
+      {overlay === 'library' && <LibraryOverlay onClose={() => setOverlay(null)} />}
     </main>
   );
 }
