@@ -72,6 +72,9 @@ button:focus-visible {
 
 .right-panel {
   border-left: 1px solid var(--line);
+  max-height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .micro-row,
@@ -188,12 +191,40 @@ button:focus-visible {
 
 .left-panel footer {
   margin-top: auto;
+  padding-top: 26px;
   display: flex;
   align-items: center;
   gap: 26px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 12px;
+}
+
+.footer-soon {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.footer-soon small {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  border: 1px solid var(--line);
+  padding: 2px 5px;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0;
+}
+
+.footer-link:hover {
+  opacity: 0.65;
 }
 
 .center-panel {
@@ -352,6 +383,81 @@ button:focus-visible {
   margin-bottom: 36px;
 }
 
+.about-row .footer-link {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+}
+
+.about-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(17, 17, 15, 0.42);
+  backdrop-filter: blur(2px);
+}
+
+.about-card {
+  position: relative;
+  width: min(100%, 560px);
+  max-height: 86vh;
+  overflow-y: auto;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  box-shadow: 10px 10px 0 rgba(17, 17, 15, 0.22);
+  padding: 34px 38px 30px;
+}
+
+.about-card h3 {
+  margin: 18px 0 16px;
+  font-family: Impact, "Arial Narrow", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.about-card p {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.about-note {
+  color: var(--muted);
+  font-style: italic;
+  font-family: Georgia, serif;
+}
+
+.about-hint {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.about-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+}
+
+.about-close:hover {
+  background: rgba(17, 17, 15, 0.05);
+}
+
 .active-kicker {
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -380,11 +486,19 @@ button:focus-visible {
 }
 
 .subtitle {
-  margin: 18px 0 24px;
+  margin: 18px 0 8px;
   text-transform: uppercase;
   letter-spacing: 0.34em;
   font-size: 16px;
   line-height: 1.4;
+}
+
+.meaning {
+  margin: 0 0 22px;
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .facts {
@@ -468,18 +582,45 @@ button:focus-visible {
   grid-template-rows: 1fr;
 }
 
-.accordion-content p {
+.accordion-inner {
   min-height: 0;
   overflow: hidden;
-  margin: 0;
   padding: 0 44px 0 38px;
   color: var(--muted);
   font-size: 12px;
   line-height: 1.7;
 }
 
-.accordion-item.open .accordion-content p {
-  padding-bottom: 16px;
+.accordion-inner p {
+  margin: 0;
+}
+
+.accordion-inner ul {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.accordion-inner li {
+  position: relative;
+  padding-left: 18px;
+}
+
+.accordion-inner li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.accordion-item.open .accordion-inner {
+  padding-bottom: 18px;
 }
 
 .coming-soon {
@@ -489,8 +630,21 @@ button:focus-visible {
   gap: 6px 20px;
   width: 100%;
   margin-top: 28px;
-  padding: 0;
+  padding: 18px 0 6px;
   text-align: left;
+  transition: opacity 0.18s ease;
+}
+
+.coming-soon:hover {
+  opacity: 0.68;
+}
+
+.coming-soon:hover svg {
+  transform: translateX(4px);
+}
+
+.coming-soon svg {
+  transition: transform 0.18s ease;
 }
 
 .coming-soon span,
@@ -527,6 +681,7 @@ button:focus-visible {
   .right-panel {
     grid-column: 1 / -1;
     min-height: auto;
+    max-height: none;
     border-left: 0;
     border-top: 1px solid var(--line);
   }
@@ -542,6 +697,7 @@ button:focus-visible {
   .center-panel,
   .right-panel {
     min-height: auto;
+    max-height: none;
     border: 0;
     border-bottom: 1px solid var(--line);
   }

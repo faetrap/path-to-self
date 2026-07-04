@@ -1,231 +1,6 @@
-import { useMemo, useState } from 'react';
-import { ArrowDown, ArrowRight, Info, Plus, Sparkle } from 'lucide-react';
-
-type Chakra = {
-  id: string;
-  name: string;
-  subtitle: string;
-  keywords: string;
-  color: string;
-  element: string;
-  location: string;
-  gland: string;
-  mantra: string;
-  top: number;
-  x: number;
-  summary: string;
-  sections: string[];
-};
-
-const chakras: Chakra[] = [
-  {
-    id: '01',
-    name: 'Muladhara',
-    subtitle: 'The Root Center',
-    keywords: 'Root + Grounding + Survival',
-    color: '#9c2f2b',
-    element: 'Earth',
-    location: 'Base of Spine',
-    gland: 'Adrenals',
-    mantra: 'LAM',
-    top: 74,
-    x: 35,
-    summary:
-      'Muladhara is our foundation. It governs our sense of safety, stability, and belonging. When balanced, we feel grounded, supported by life, and present in our bodies.',
-    sections: [
-      'Psychological Themes',
-      'Developmental Stage',
-      'Shadow & Blockages',
-      'Somatic & Physiology',
-      'Nervous System Links',
-      'Practices & Meditations',
-      'Yoga Poses',
-      'Mantras & Sounds',
-      'Integration & Contemplation'
-    ]
-  },
-  {
-    id: '02',
-    name: 'Svadhishthana',
-    subtitle: 'The Sacral Center',
-    keywords: 'Sacral + Flow + Creativity',
-    color: '#c7792d',
-    element: 'Water',
-    location: 'Lower Abdomen',
-    gland: 'Gonads',
-    mantra: 'VAM',
-    top: 61,
-    x: 41,
-    summary:
-      'Svadhishthana carries feeling, pleasure, and creative flow. It is the fluid intelligence of desire, emotion, intimacy, and the ability to move with life.',
-    sections: [
-      'Psychological Themes',
-      'Creative Flow',
-      'Pleasure & Desire',
-      'Relationship Patterns',
-      'Somatic & Physiology',
-      'Practices & Meditations',
-      'Yoga Poses',
-      'Mantras & Sounds',
-      'Integration & Contemplation'
-    ]
-  },
-  {
-    id: '03',
-    name: 'Manipura',
-    subtitle: 'The Solar Plexus Center',
-    keywords: 'Solar Plexus + Power + Will',
-    color: '#c6aa27',
-    element: 'Fire',
-    location: 'Solar Plexus',
-    gland: 'Pancreas',
-    mantra: 'RAM',
-    top: 49,
-    x: 45,
-    summary:
-      'Manipura is the inner fire of will, confidence, and selfhood. It turns feeling into action and gives the body a clear center of direction.',
-    sections: [
-      'Psychological Themes',
-      'Power & Will',
-      'Boundaries',
-      'Digestive Fire',
-      'Nervous System Links',
-      'Practices & Meditations',
-      'Yoga Poses',
-      'Mantras & Sounds',
-      'Integration & Contemplation'
-    ]
-  },
-  {
-    id: '04',
-    name: 'Anahata',
-    subtitle: 'The Heart Center',
-    keywords: 'Heart + Love + Connection',
-    color: '#3c8b4a',
-    element: 'Air',
-    location: 'Heart',
-    gland: 'Thymus',
-    mantra: 'YAM',
-    top: 38,
-    x: 49,
-    summary:
-      'Anahata is the bridge between body and spirit. It holds love, grief, compassion, forgiveness, and the felt truth of connection.',
-    sections: [
-      'Psychological Themes',
-      'Love & Grief',
-      'Compassion',
-      'Somatic & Physiology',
-      'Nervous System Links',
-      'Practices & Meditations',
-      'Yoga Poses',
-      'Mantras & Sounds',
-      'Integration & Contemplation'
-    ]
-  },
-  {
-    id: '05',
-    name: 'Vishuddha',
-    subtitle: 'The Throat Center',
-    keywords: 'Throat + Expression + Truth',
-    color: '#2f82a8',
-    element: 'Ether',
-    location: 'Throat',
-    gland: 'Thyroid',
-    mantra: 'HAM',
-    top: 28,
-    x: 53,
-    summary:
-      'Vishuddha is the channel of truth. It governs voice, listening, creative expression, and the courage to let the inner world become sound.',
-    sections: [
-      'Psychological Themes',
-      'Voice & Truth',
-      'Creative Expression',
-      'Listening',
-      'Somatic & Physiology',
-      'Practices & Meditations',
-      'Yoga Poses',
-      'Mantras & Sounds',
-      'Integration & Contemplation'
-    ]
-  },
-  {
-    id: '06',
-    name: 'Ajna',
-    subtitle: 'The Third Eye Center',
-    keywords: 'Third Eye + Insight + Intuition',
-    color: '#4d3a90',
-    element: 'Light',
-    location: 'Brow',
-    gland: 'Pituitary',
-    mantra: 'OM',
-    top: 20,
-    x: 60,
-    summary:
-      'Ajna is the center of perception, pattern recognition, and inner vision. It clarifies intuition and allows the mind to witness itself.',
-    sections: [
-      'Psychological Themes',
-      'Inner Vision',
-      'Dreams & Symbols',
-      'Discernment',
-      'Nervous System Links',
-      'Practices & Meditations',
-      'Yoga Poses',
-      'Mantras & Sounds',
-      'Integration & Contemplation'
-    ]
-  },
-  {
-    id: '07',
-    name: 'Sahasrara',
-    subtitle: 'The Crown Center',
-    keywords: 'Crown + Unity + Transcendence',
-    color: '#83368f',
-    element: 'Consciousness',
-    location: 'Crown',
-    gland: 'Pineal',
-    mantra: 'Silence',
-    top: 12,
-    x: 55,
-    summary:
-      'Sahasrara opens into meaning, unity, and spacious awareness. It is the thousand-petaled crown where individual identity remembers its source.',
-    sections: [
-      'Psychological Themes',
-      'Meaning & Purpose',
-      'Awe & Wonder',
-      'Spiritual Practice',
-      'Nervous System Links',
-      'Practices & Meditations',
-      'Yoga Poses',
-      'Mantras & Sounds',
-      'Integration & Contemplation'
-    ]
-  }
-];
-
-const sectionDetails: Record<string, string> = {
-  'Psychological Themes':
-    'The beliefs, emotional patterns, and identity structures governed by this center. Use this section to trace how the chakra appears in daily behavior.',
-  'Developmental Stage':
-    'The life stage where this center is most strongly imprinted, including early needs, unmet experiences, and the capacities that mature through integration.',
-  'Shadow & Blockages':
-    'The compensations, defenses, and recurring symptoms that appear when this center is under-expressed, over-expressed, or disconnected from the body.',
-  'Somatic & Physiology':
-    'The body regions, organs, muscular patterns, and sensory cues commonly associated with this center.',
-  'Nervous System Links':
-    'How this center relates to regulation, threat response, social connection, shutdown, activation, and embodied safety.',
-  'Practices & Meditations':
-    'Grounded contemplative practices for working with this center through breath, attention, ritual, movement, and awareness.',
-  'Yoga Poses':
-    'Postures and movement patterns that help open, stabilize, or clarify the energy of this center.',
-  'Mantras & Sounds':
-    'Seed sounds, tonal practices, and vibrational cues used to tune attention toward this center.',
-  'Integration & Contemplation':
-    'Questions and reflections for turning insight into lived behavior, relationship, and embodied choice.'
-};
-
-function sectionCopy(title: string, chakra: Chakra) {
-  return sectionDetails[title] ?? `A focused lens for exploring ${chakra.name} through ${title.toLowerCase()}.`;
-}
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ArrowDown, ArrowRight, Info, Plus, Sparkle, X } from 'lucide-react';
+import { chakras, type Chakra } from './data/chakras';
 
 function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: boolean }) {
   const petal = 'M50 8 C59 15 62 29 50 38 C38 29 41 15 50 8Z';
@@ -421,15 +196,72 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
   );
 }
 
+function AboutOverlay({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="about-overlay" role="dialog" aria-modal="true" aria-label="About this system" onClick={onClose}>
+      <div className="about-card" onClick={(event) => event.stopPropagation()}>
+        <button className="about-close" onClick={onClose} aria-label="Close">
+          <X size={18} strokeWidth={1.6} />
+        </button>
+        <div className="micro-row">
+          <Sparkle size={16} strokeWidth={1.4} />
+          <span>About This System</span>
+        </div>
+        <h3>An Anatomy of Consciousness</h3>
+        <p>
+          The chakra system is a map from the yogic traditions of India, first described in tantric
+          texts over a thousand years ago. It charts seven centers along the spine, each associated
+          with an element, a stage of development, a set of psychological themes, and a region of
+          the body.
+        </p>
+        <p>
+          This site treats the chakras as a contemplative map, not a claim of physical anatomy —
+          a way of organizing attention toward the full range of human experience: safety, feeling,
+          will, love, truth, insight, and meaning. Where the material touches physiology and the
+          nervous system, it draws on contemporary somatic and contemplative research as a
+          complement to the traditional framework.
+        </p>
+        <p className="about-note">
+          Nothing here is medical or psychological advice. Practices are invitations — move at the
+          pace of your own body, and seek qualified support where support is needed.
+        </p>
+        <div className="about-hint">Navigate with the arrow keys, or select any center on the figure.</div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [openSection, setOpenSection] = useState<number | null>(0);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const active = chakras[activeIndex];
+  const activeIndexRef = useRef(activeIndex);
+  activeIndexRef.current = activeIndex;
 
   function chooseChakra(index: number) {
     setActiveIndex(index);
     setOpenSection(0);
   }
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setAboutOpen(false);
+        return;
+      }
+      if (event.target instanceof HTMLElement && event.target.closest('input, textarea')) return;
+      if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+        event.preventDefault();
+        chooseChakra(Math.min(chakras.length - 1, activeIndexRef.current + 1));
+      } else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        chooseChakra(Math.max(0, activeIndexRef.current - 1));
+      }
+    }
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   return (
     <main className="app-shell">
@@ -460,7 +292,7 @@ export default function App() {
             <button
               key={chakra.id}
               className={index === activeIndex ? 'active' : ''}
-                onClick={() => chooseChakra(index)}
+              onClick={() => chooseChakra(index)}
             >
               <span className="nav-id">{chakra.id}</span>
               <ChakraSigil chakra={chakra} active={index === activeIndex} />
@@ -471,10 +303,11 @@ export default function App() {
         </nav>
 
         <footer>
-          <a>Journal</a>
-          <a>Library</a>
-          <a>About</a>
-          <Info size={16} strokeWidth={1.4} />
+          <span className="footer-soon">Journal<small>Soon</small></span>
+          <span className="footer-soon">Library<small>Soon</small></span>
+          <button className="footer-link" onClick={() => setAboutOpen(true)}>
+            About <Info size={16} strokeWidth={1.4} />
+          </button>
         </footer>
       </section>
 
@@ -484,14 +317,17 @@ export default function App() {
 
       <section className="right-panel">
         <header className="about-row">
-          <span>About This System</span>
-          <Info size={16} strokeWidth={1.4} />
+          <button className="footer-link" onClick={() => setAboutOpen(true)}>
+            <span>About This System</span>
+            <Info size={16} strokeWidth={1.4} />
+          </button>
         </header>
 
         <div className="active-kicker">Active Chakra</div>
         <div className="chakra-number" style={{ color: active.color }}>{active.id}</div>
         <h2>{active.name}</h2>
         <p className="subtitle">{active.subtitle}</p>
+        <p className="meaning">{active.meaning}</p>
         <div className="rule" />
 
         <dl className="facts">
@@ -517,30 +353,52 @@ export default function App() {
 
         <div className="accordion">
           {active.sections.map((section, index) => (
-            <div key={section} className={`accordion-item${openSection === index ? ' open' : ''}`}>
+            <div key={section.title} className={`accordion-item${openSection === index ? ' open' : ''}`}>
               <button
                 className="accordion-row"
                 aria-expanded={openSection === index}
                 onClick={() => setOpenSection(openSection === index ? null : index)}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
-                <strong>{section}</strong>
+                <strong>{section.title}</strong>
                 <Plus size={19} strokeWidth={1.5} />
               </button>
               <div className="accordion-content">
-                <p>{sectionCopy(section, active)}</p>
+                <div className="accordion-inner">
+                  <p>{section.body}</p>
+                  {section.list && (
+                    <ul>
+                      {section.list.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
-        <button className="coming-soon">
-          <span>Coming Soon</span>
-          <strong>Asanas & Somatic Practices</strong>
-          <em>Yoga poses, breathwork, meditations</em>
-          <ArrowRight size={20} strokeWidth={1.4} />
-        </button>
+        {activeIndex < chakras.length - 1 ? (
+          <button className="coming-soon" onClick={() => chooseChakra(activeIndex + 1)}>
+            <span>Continue the path</span>
+            <strong>
+              {chakras[activeIndex + 1].id} · {chakras[activeIndex + 1].name}
+            </strong>
+            <em>{chakras[activeIndex + 1].keywords.toLowerCase()}</em>
+            <ArrowRight size={20} strokeWidth={1.4} />
+          </button>
+        ) : (
+          <button className="coming-soon" onClick={() => chooseChakra(0)}>
+            <span>The path returns</span>
+            <strong>01 · Muladhara</strong>
+            <em>begin again at the root</em>
+            <ArrowRight size={20} strokeWidth={1.4} />
+          </button>
+        )}
       </section>
+
+      {aboutOpen && <AboutOverlay onClose={() => setAboutOpen(false)} />}
     </main>
   );
 }
