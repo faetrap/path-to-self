@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, Info, Plus, Sparkle, X } from 'lucide-react';
 import { chakras, type Chakra } from './data/chakras';
+import Quiz from './Quiz';
 
 function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: boolean }) {
   const petal = 'M50 8 C59 15 62 29 50 38 C38 29 41 15 50 8Z';
@@ -254,9 +255,12 @@ export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [openSection, setOpenSection] = useState<number | null>(0);
   const [overlay, setOverlay] = useState<'about' | 'journal' | 'library' | null>(null);
+  const [view, setView] = useState<'map' | 'quiz'>('map');
   const active = chakras[activeIndex];
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
+  const viewRef = useRef(view);
+  viewRef.current = view;
 
   function chooseChakra(index: number) {
     setActiveIndex(index);
@@ -267,8 +271,10 @@ export default function App() {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setOverlay(null);
+        setView('map');
         return;
       }
+      if (viewRef.current !== 'map') return;
       if (event.target instanceof HTMLElement && event.target.closest('input, textarea')) return;
       if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
         event.preventDefault();
@@ -281,6 +287,18 @@ export default function App() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
+
+  if (view === 'quiz') {
+    return (
+      <Quiz
+        onClose={() => setView('map')}
+        onExplore={(index) => {
+          chooseChakra(index);
+          setView('map');
+        }}
+      />
+    );
+  }
 
   return (
     <main className="app-shell">
@@ -325,8 +343,8 @@ export default function App() {
         <footer>
           <button className="footer-link" onClick={() => setOverlay('journal')}>Journal</button>
           <button className="footer-link" onClick={() => setOverlay('library')}>Library</button>
-          <button className="footer-link" onClick={() => setOverlay('about')}>
-            About <Info size={16} strokeWidth={1.4} />
+          <button className="footer-link" onClick={() => setView('quiz')}>
+            Chakra Quiz <Sparkle size={15} strokeWidth={1.4} />
           </button>
         </footer>
       </section>
