@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowDown, ArrowRight, Info, Plus, Sparkle, X } from 'lucide-react';
 import { chakras, type Chakra } from './data/chakras';
 
@@ -91,81 +91,15 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
   );
 }
 
-const bodyHalf = [
-  // head (right half, crown to chin)
-  'M180 58 C202 58 209 76 208 94 C207 112 196 128 180 132',
-  // ear
-  'M207 86 C212 85 213 95 208 100',
-  // neck into trapezius and shoulder
-  'M191 127 C193 139 196 147 206 151 C220 156 232 160 240 168',
-  // outer arm: shoulder, elbow, wrist, fingertips
-  'M240 168 C248 184 250 216 248 252 C246 288 250 318 251 344 C252 362 250 376 245 386',
-  // inner arm from armpit down to fingertips
-  'M214 192 C228 214 234 236 236 258 C238 288 240 318 242 344 C243 362 244 376 245 386',
-  // finger hint
-  'M239 366 C239 374 240 380 242 384',
-  // torso side: armpit, chest, waist, hip
-  'M214 192 C222 214 223 242 219 268 C216 288 213 302 214 316 C217 334 223 344 226 352',
-  // clavicle
-  'M184 160 C198 162 212 160 224 154',
-  // outer leg: hip, thigh, knee, calf, ankle
-  'M226 352 C232 384 226 420 219 448 C213 470 214 492 217 514 C220 538 214 574 205 606 C204 610 203 612 203 614',
-  // inner leg: crotch, knee, calf, ankle
-  'M182 402 C187 424 191 448 194 470 C196 492 194 516 192 540 C190 566 190 590 190 612',
-  // foot, angled slightly outward
-  'M203 614 C210 626 221 634 232 639 C234 641 232 643 230 643 L193 643 C189 641 188 632 190 614'
-];
-
 function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: (index: number) => void }) {
-  const rings = useMemo(() => Array.from({ length: 9 }, (_, index) => index), []);
-
   return (
     <div className="figure-stage">
-      <div className="geometry geometry-top">
-        {rings.map((ring) => (
-          <span key={ring} style={{ width: `${24 + ring * 9}%`, height: `${18 + ring * 11}%` }} />
-        ))}
-      </div>
-      <div className="geometry geometry-base">
-        {Array.from({ length: 10 }, (_, ring) => (
-          <span key={ring} style={{ width: `${18 + ring * 8}%`, height: `${8 + ring * 4}%` }} />
-        ))}
-      </div>
-      <svg className="body-art" viewBox="0 0 360 720" role="img" aria-label="Standing human figure with the seven chakra centers along the spine">
-        <g className="sacred-lines">
-          <line x1="180" y1="36" x2="180" y2="704" />
-          <line x1="34" y1="360" x2="326" y2="360" />
-          <ellipse cx="180" cy="356" rx="150" ry="318" />
-          <ellipse cx="180" cy="356" rx="112" ry="272" />
-          <circle cx="180" cy="94" r="52" />
-        </g>
-        <g className="ticks">
-          {[52, 95, 150, 205, 270, 330, 395].map((y) => (
-            <circle key={y} cx="180" cy={y} r="2.2" />
-          ))}
-          {[48, 90, 270, 312].map((x) => (
-            <circle key={x} cx={x} cy="360" r="2.1" />
-          ))}
-        </g>
-        <g className="human">
-          {bodyHalf.map((d) => (
-            <path key={d} d={d} />
-          ))}
-          <g transform="translate(360 0) scale(-1 1)">
-            {bodyHalf.map((d) => (
-              <path key={d} d={d} />
-            ))}
-          </g>
-        </g>
-        <g className="root-lines">
-          {Array.from({ length: 15 }, (_, index) => {
-            const x0 = 110 + index * 10;
-            const drift = (x0 < 180 ? -22 : 22) + (index % 2 ? 12 : -12);
-            return <path key={index} d={`M${x0} 648 C${x0} 664 ${x0 + drift} 676 ${x0 + drift} 702`} />;
-          })}
-        </g>
-      </svg>
-
+      <img
+        className="figure-art"
+        src={`${import.meta.env.BASE_URL}figure.jpg`}
+        alt="Meditating figure seated in a lotus, seven chakras glowing along the spine"
+      />
+      <div className="figure-veil" aria-hidden="true" />
       {chakras.map((chakra, index) => (
         <button
           key={chakra.id}
@@ -174,7 +108,7 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
           onClick={() => onSelect(index)}
           aria-label={`Select ${chakra.name}`}
         >
-          <ChakraSigil chakra={chakra} active={index === activeIndex} />
+          <span className="orb" />
         </button>
       ))}
     </div>
@@ -377,12 +311,13 @@ export default function App() {
             <button
               key={chakra.id}
               className={index === activeIndex ? 'active' : ''}
+              style={{ '--chakra': chakra.color } as React.CSSProperties}
               onClick={() => chooseChakra(index)}
             >
               <span className="nav-id">{chakra.id}</span>
               <ChakraSigil chakra={chakra} active={index === activeIndex} />
               <strong>{chakra.name}</strong>
-              <em>{chakra.keywords}</em>
+              <em>{chakra.keywords.split(' + ').join(' · ')}</em>
             </button>
           ))}
         </nav>
@@ -412,7 +347,7 @@ export default function App() {
         <div className="active-kicker">Active Chakra</div>
         <div className="chakra-number" style={{ color: active.color }}>{active.id}</div>
         <h2>{active.name}</h2>
-        <p className="subtitle">{active.subtitle}</p>
+        <p className="subtitle" style={{ color: active.color }}>{active.subtitle}</p>
         <p className="meaning">{active.meaning}</p>
         <div className="rule" />
 
@@ -471,7 +406,7 @@ export default function App() {
             <strong>
               {chakras[activeIndex + 1].id} · {chakras[activeIndex + 1].name}
             </strong>
-            <em>{chakras[activeIndex + 1].keywords.toLowerCase()}</em>
+            <em>{chakras[activeIndex + 1].keywords.toLowerCase().split(' + ').join(' · ')}</em>
             <ArrowRight size={20} strokeWidth={1.4} />
           </button>
         ) : (
