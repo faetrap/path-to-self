@@ -139,10 +139,14 @@ export default function Quiz({ onClose, onExplore }: { onClose: () => void; onEx
           </p>
           <p className="quiz-lead">{readings[topIndex]}</p>
 
-          <div className="quiz-chart" aria-label="Scores for all seven centers">
+          <div className="quiz-chart-head">Signs of strain, by center</div>
+          <div className="quiz-chart" aria-label="Strain signals for all seven centers">
             {chakras.map((chakra, i) => (
               <div key={chakra.id} className="quiz-chart-row">
-                <span className="quiz-chart-label">
+                <span
+                  className="quiz-chart-label"
+                  style={i === topIndex ? { color: chakra.color, fontWeight: 600 } : undefined}
+                >
                   {chakra.id} {chakra.name}
                 </span>
                 <div className="quiz-chart-track">
@@ -154,6 +158,10 @@ export default function Quiz({ onClose, onExplore }: { onClose: () => void; onEx
               </div>
             ))}
           </div>
+          <p className="quiz-chart-note">
+            A longer bar means your answers showed more strain at that center — it marks where care
+            is being asked for, not which center is strongest.
+          </p>
 
           <div className="quiz-actions">
             <button className="quiz-primary" onClick={() => onExplore(topIndex)}>

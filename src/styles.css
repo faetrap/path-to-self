@@ -1,6 +1,6 @@
 :root {
-  --bg: #02111a;
-  --bg-raised: #07202a;
+  --bg: #010a12;
+  --bg-raised: #061820;
   --gold: #c9a45c;
   --gold-bright: #e6cd96;
   --cream: #ecdfc3;
@@ -73,6 +73,16 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   padding: var(--panel-pad);
+  position: relative;
+  z-index: 2;
+}
+
+.left-panel {
+  background: linear-gradient(90deg, rgba(1, 10, 18, 0.88) 62%, rgba(1, 10, 18, 0.4) 88%, transparent);
+}
+
+.right-panel {
+  background: linear-gradient(270deg, rgba(1, 10, 18, 0.88) 62%, rgba(1, 10, 18, 0.4) 88%, transparent);
 }
 
 .right-panel {
@@ -272,18 +282,14 @@ button:focus-visible {
 /* ---------- center: figure ---------- */
 
 .center-panel {
-  display: grid;
-  justify-items: center;
-  align-items: center;
-  padding: 0;
   position: relative;
+  padding: 0;
 }
 
-.figure-stage {
-  position: relative;
-  width: min(100%, calc(100vh * 0.6667));
-  aspect-ratio: 1024 / 1536;
-  container-type: inline-size;
+.figure-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
 }
 
 .figure-art {
@@ -291,17 +297,16 @@ button:focus-visible {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: cover;
 }
 
 .figure-veil {
   position: absolute;
-  inset: -2px;
+  inset: 0;
   pointer-events: none;
   background:
-    linear-gradient(90deg, var(--bg), transparent 20%, transparent 80%, var(--bg)),
-    linear-gradient(180deg, var(--bg), transparent 16%, transparent 82%, var(--bg)),
-    radial-gradient(ellipse 72% 64% at 50% 48%, transparent 58%, var(--bg) 97%);
+    linear-gradient(180deg, rgba(1, 10, 18, 0.45), transparent 16%, transparent 82%, rgba(1, 10, 18, 0.55)),
+    radial-gradient(ellipse 74% 90% at 50% 46%, transparent 58%, rgba(1, 10, 18, 0.7) 100%);
 }
 
 .body-chakra {
@@ -315,8 +320,8 @@ button:focus-visible {
 .orb {
   display: block;
   position: relative;
-  width: clamp(24px, 8cqw, 46px);
-  height: clamp(24px, 8cqw, 46px);
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--chakra) 18%, transparent) 0%, transparent 65%);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
@@ -1024,11 +1029,28 @@ button:focus-visible {
   font-weight: 500;
 }
 
+.quiz-chart-head {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--gold);
+  margin: 6px 0 12px;
+}
+
 .quiz-chart {
   display: grid;
   gap: 9px;
-  margin: 8px 0 30px;
+  margin: 0 0 12px;
   max-width: 480px;
+}
+
+.quiz-chart-note {
+  margin: 0 0 28px;
+  font-size: 11.5px;
+  line-height: 1.65;
+  color: var(--muted);
+  max-width: 460px;
 }
 
 .quiz-chart-row {
@@ -1090,6 +1112,7 @@ button:focus-visible {
     grid-column: 1 / -1;
     min-height: auto;
     max-height: none;
+    background: rgba(1, 10, 18, 0.94);
   }
 }
 
@@ -1106,13 +1129,18 @@ button:focus-visible {
     max-height: none;
   }
 
+  .left-panel,
+  .right-panel {
+    background: rgba(1, 10, 18, 0.94);
+  }
+
   .left-panel h1 {
     font-size: 64px;
   }
 
-  .figure-stage {
-    width: min(100%, 420px);
-    margin: 0 auto;
+  .figure-backdrop {
+    position: relative;
+    height: 64vh;
   }
 
   .facts div {

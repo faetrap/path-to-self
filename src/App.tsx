@@ -92,26 +92,57 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
   );
 }
 
+// Natural dimensions of public/figure.jpg and the painted orbs' halo size,
+// used to keep buttons aligned while the image covers the backdrop.
+const ART = { w: 1774, h: 887, orb: 54 };
+
 function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: (index: number) => void }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [box, setBox] = useState({ w: 0, h: 0 });
+
+  useEffect(() => {
+    const el = boxRef.current;
+    if (!el) return;
+    const measure = () => setBox({ w: el.clientWidth, h: el.clientHeight });
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const scale = Math.max(box.w / ART.w, box.h / ART.h);
+  const offsetX = (box.w - ART.w * scale) / 2;
+  const offsetY = (box.h - ART.h * scale) / 2;
+  const orbSize = Math.max(26, Math.min(64, ART.orb * scale));
+
   return (
-    <div className="figure-stage">
+    <div ref={boxRef} className="figure-backdrop">
       <img
         className="figure-art"
         src={`${import.meta.env.BASE_URL}figure.jpg`}
         alt="Meditating figure seated in a lotus, seven chakras glowing along the spine"
       />
       <div className="figure-veil" aria-hidden="true" />
-      {chakras.map((chakra, index) => (
-        <button
-          key={chakra.id}
-          className={`body-chakra${index === activeIndex ? ' selected' : ''}`}
-          style={{ top: `${chakra.top}%`, left: `${chakra.x}%`, '--chakra': chakra.color } as React.CSSProperties}
-          onClick={() => onSelect(index)}
-          aria-label={`Select ${chakra.name}`}
-        >
-          <span className="orb" />
-        </button>
-      ))}
+      {box.w > 0 &&
+        chakras.map((chakra, index) => (
+          <button
+            key={chakra.id}
+            className={`body-chakra${index === activeIndex ? ' selected' : ''}`}
+            style={
+              {
+                left: offsetX + (chakra.x / 100) * ART.w * scale,
+                top: offsetY + (chakra.top / 100) * ART.h * scale,
+                width: orbSize,
+                height: orbSize,
+                '--chakra': chakra.color
+              } as React.CSSProperties
+            }
+            onClick={() => onSelect(index)}
+            aria-label={`Select ${chakra.name}`}
+          >
+            <span className="orb" />
+          </button>
+        ))}
     </div>
   );
 }
