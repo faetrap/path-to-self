@@ -33,8 +33,8 @@ export const chakras: Chakra[] = [
     location: 'Base of Spine',
     gland: 'Adrenals',
     mantra: 'LAM',
-    top: 74,
-    x: 35,
+    top: 54.9,
+    x: 50,
     summary:
       'Muladhara is our foundation. It governs our sense of safety, stability, and belonging. When balanced, we feel grounded, supported by life, and present in our bodies.',
     sections: [
@@ -104,6 +104,28 @@ export const chakras: Chakra[] = [
           'The seed syllable is LAM. Chanted low and slow, its vibration is felt at the base of the spine and pelvic floor. Practice on a comfortable exhale: inhale fully, then sound "lahm" letting the M hum die out completely before the next breath. Low drumming, deep humming, and any sound that vibrates the lower body serve the same purpose — bringing awareness down into the base.'
       },
       {
+        title: 'Crystals & Stones',
+        body:
+          'Tradition pairs each center with stones — not as machines that do the work, but as anchors: a color for the eye, a weight for the hand, holding attention where the practice wants it. Root stones are dark, dense, and iron-rich.',
+        list: [
+          'Red Jasper — slow, steady vitality; the classic grounding stone',
+          'Hematite — iron weight in the palm; presence and containment',
+          'Black Tourmaline — the traditional stone of protection and boundaries',
+          'Smoky Quartz — settling scattered energy downward',
+          'Garnet — warmth and endurance at the foundation'
+        ]
+      },
+      {
+        title: 'Related Centers',
+        body:
+          'No chakra works alone. The root is the condition for everything above it — and the ground the highest centers must return to.',
+        list: [
+          'With Sahasrara (07) — root and crown are the poles of the whole axis: earth and sky, matter and awareness. Deep grounding is what makes transcendence safe rather than escapist',
+          'With Svadhishthana (02) — feeling can only flow where footing is secure; a shaky root freezes the water above it',
+          'With Anahata (04) — intimacy asks for ground: the heart opens to another only as far as the body trusts its base'
+        ]
+      },
+      {
         title: 'Integration & Contemplation',
         body:
           'Insight becomes root strength only through repetition — the nervous system trusts patterns, not ideas. Sit with these questions in writing or in stillness:',
@@ -127,8 +149,8 @@ export const chakras: Chakra[] = [
     location: 'Lower Abdomen',
     gland: 'Gonads',
     mantra: 'VAM',
-    top: 61,
-    x: 41,
+    top: 45.8,
+    x: 50,
     summary:
       'Svadhishthana carries feeling, pleasure, and creative flow. It is the fluid intelligence of desire, emotion, intimacy, and the ability to move with life.',
     sections: [
@@ -197,6 +219,28 @@ export const chakras: Chakra[] = [
           'The seed syllable is VAM. Chant it in the mid-low register and let the vibration settle just below the navel. Rolling, watery sounds serve this center: ocean recordings, rain, the sway of a slow 6/8 rhythm. Sounding while gently rocking the pelvis joins vibration to movement — the two languages this chakra speaks.'
       },
       {
+        title: 'Crystals & Stones',
+        body:
+          'Sacral stones carry the colors of low sun and warm water — translucent oranges and milky whites, traditionally paired with feeling, tide, and creative warmth.',
+        list: [
+          'Carnelian — the classic sacral stone; warmth, appetite, creative fire',
+          'Orange Calcite — gentle brightness for a numbed feeling life',
+          'Moonstone — tides, cycles, and the permission to feel',
+          'Sunstone — pleasure and lightness reclaimed',
+          'Amber — ancient warmth; life preserved in gold'
+        ]
+      },
+      {
+        title: 'Related Centers',
+        body:
+          'The second chakra sits between ground and fire — it receives stability from below and hands desire upward to be acted on.',
+        list: [
+          'With Muladhara (01) — safety is the riverbed, feeling is the river; ground first, then feel',
+          'With Manipura (03) — desire without will stays a daydream; the sacral supplies the wanting that the solar plexus turns into action',
+          'With Vishuddha (05) — the throat is the sacral’s higher octave: what is felt and imagined here becomes expression there'
+        ]
+      },
+      {
         title: 'Integration & Contemplation',
         body:
           'The sacral question is not "what should I want?" but "what do I actually want?" Let these sit longer than is comfortable:',
@@ -220,8 +264,8 @@ export const chakras: Chakra[] = [
     location: 'Solar Plexus',
     gland: 'Pancreas',
     mantra: 'RAM',
-    top: 49,
-    x: 45,
+    top: 37.5,
+    x: 50,
     summary:
       'Manipura is the inner fire of will, confidence, and selfhood. It turns feeling into action and gives the body a clear center of direction.',
     sections: [
@@ -290,6 +334,28 @@ export const chakras: Chakra[] = [
           'The seed syllable is RAM. Chant it with crisp attack in the middle register and feel the vibration behind the navel. Sharp, rhythmic sound suits this center — clapping, strong drum pulses, the audible "ha!" exhale of exertion. Sounding RAM while gently drawing the navel in on the exhale ties the syllable to the muscle of intention.'
       },
       {
+        title: 'Crystals & Stones',
+        body:
+          'Solar-plexus stones are the golds — bright, sun-colored minerals traditionally paired with confidence, resolve, and a clean-burning will.',
+        list: [
+          'Citrine — sunlight in mineral form; confidence without heat',
+          'Tiger’s Eye — focused will, banded like held tension released',
+          'Yellow Jasper — steady, unglamorous perseverance',
+          'Pyrite — resolve; the glint of decision',
+          'Golden Calcite — warmth for a fire that has gone out'
+        ]
+      },
+      {
+        title: 'Related Centers',
+        body:
+          'The third chakra is the hinge between the feeling body below and the relational heart above.',
+        list: [
+          'With Svadhishthana (02) — will runs on desire; fire needs the fuel of genuine wanting or it burns as empty discipline',
+          'With Anahata (04) — power without love hardens into control; love without power collapses into pleasing. Each keeps the other honest',
+          'With Muladhara (01) — grounded confidence stands, ungrounded striving runs; the root decides whether the fire is steady or anxious'
+        ]
+      },
+      {
         title: 'Integration & Contemplation',
         body:
           'The work of Manipura is turning insight into act. Answer these on paper, then let one answer become a behavior this week:',
@@ -313,8 +379,8 @@ export const chakras: Chakra[] = [
     location: 'Heart',
     gland: 'Thymus',
     mantra: 'YAM',
-    top: 38,
-    x: 49,
+    top: 28.5,
+    x: 50,
     summary:
       'Anahata is the bridge between body and spirit. It holds love, grief, compassion, forgiveness, and the felt truth of connection.',
     sections: [
@@ -384,6 +450,28 @@ export const chakras: Chakra[] = [
           'The seed syllable is YAM. Chant it warmly in the middle register and feel the vibration spread across the sternum. The heart also answers to unstruck sound — anahata means exactly that — so silence after chanting matters as much as the chant. Sustained humming, choral music, and singing with others (co-regulation through shared vibration) are all heart-center practices.'
       },
       {
+        title: 'Crystals & Stones',
+        body:
+          'Heart stones run pink and green — the traditional colors of tenderness toward the self and openness toward the world.',
+        list: [
+          'Rose Quartz — the classic heart stone; kindness turned inward first',
+          'Green Aventurine — openness, and the willingness to be lucky',
+          'Malachite — transformation through grief; the heart’s deep work',
+          'Rhodonite — forgiveness and the mending of old ruptures',
+          'Jade — steadiness in love; affection that lasts weather'
+        ]
+      },
+      {
+        title: 'Related Centers',
+        body:
+          'The heart is the system’s middle term — every axis crosses here.',
+        list: [
+          'With Manipura (03) — boundaries make compassion sustainable; the heart stays open longest where the will can say no',
+          'With Vishuddha (05) — love and grief need voice; what the heart cannot say, the throat stores',
+          'With the triads above and below — the heart translates instinct into meaning and meaning into care; when it closes, body and spirit stop speaking to each other'
+        ]
+      },
+      {
         title: 'Integration & Contemplation',
         body:
           'The heart integrates by being brought, gently, to the places it has closed. Contemplate:',
@@ -407,8 +495,8 @@ export const chakras: Chakra[] = [
     location: 'Throat',
     gland: 'Thyroid',
     mantra: 'HAM',
-    top: 28,
-    x: 53,
+    top: 20.8,
+    x: 50,
     summary:
       'Vishuddha is the channel of truth. It governs voice, listening, creative expression, and the courage to let the inner world become sound.',
     sections: [
@@ -477,6 +565,28 @@ export const chakras: Chakra[] = [
           'The seed syllable is HAM. Chant it in a clear, higher-middle register and feel the vibration in the hollow of the throat. This is the center where all mantra practice lives, so any chanting serves it — but the subtler practice is listening: after each sound, attend to the silence it leaves. Alternating sound and silence trains the throat’s two skills at once.'
       },
       {
+        title: 'Crystals & Stones',
+        body:
+          'Throat stones are the blues — sky and water colors long associated with calm, clarity, and the courage of honest speech.',
+        list: [
+          'Blue Lace Agate — soft-spoken calm; the gentlest of the blues',
+          'Sodalite — clarity of thought before the word is chosen',
+          'Aquamarine — flowing, unforced expression; the sailor’s stone',
+          'Lapis Lazuli — the old royal stone of truth-telling',
+          'Amazonite — courage to be heard without armor'
+        ]
+      },
+      {
+        title: 'Related Centers',
+        body:
+          'The throat gives outward form to everything gathered below it.',
+        list: [
+          'With Anahata (04) — true speech is the heart made audible; a closed heart makes a clever but hollow voice',
+          'With Svadhishthana (02) — creativity is conceived in the sacral and delivered at the throat; block either and the other backs up',
+          'With Ajna (06) — we can only say what we allow ourselves to see; clarity of vision precedes honesty of speech'
+        ]
+      },
+      {
         title: 'Integration & Contemplation',
         body:
           'The throat integrates through spoken and written truth, delivered in doses. Consider:',
@@ -500,8 +610,8 @@ export const chakras: Chakra[] = [
     location: 'Brow',
     gland: 'Pituitary',
     mantra: 'OM',
-    top: 20,
-    x: 60,
+    top: 13.2,
+    x: 50,
     summary:
       'Ajna is the center of perception, pattern recognition, and inner vision. It clarifies intuition and allows the mind to witness itself.',
     sections: [
@@ -570,6 +680,28 @@ export const chakras: Chakra[] = [
           'The seed syllable is OM — the sound tradition holds to contain all others. Chant it slowly in three phases, A-U-M, and let the final hum rise from chest to skull, feeling it settle behind the brow. Practiced with eyes closed, attention at the eyebrow center, OM becomes a carrier wave for the witnessing state: the sound is watched as much as it is made.'
       },
       {
+        title: 'Crystals & Stones',
+        body:
+          'Third-eye stones run indigo and violet — deep, translucent minerals traditionally kept as companions for meditation and inner sight.',
+        list: [
+          'Amethyst — the meditator’s stone; quiet for a crowded mind',
+          'Lapis Lazuli — inner vision; the night sky held in the hand',
+          'Labradorite — intuition; grey until the light turns, then fire',
+          'Fluorite — mental clarity and the ordering of thought',
+          'Iolite — the Viking compass stone; direction in fog'
+        ]
+      },
+      {
+        title: 'Related Centers',
+        body:
+          'The third eye refines what rises from below and steadies what descends from above.',
+        list: [
+          'With Vishuddha (05) — insight unexpressed turns to pressure; the throat gives seeing its consequence',
+          'With Sahasrara (07) — the sixth center sees things, the seventh is the seeing itself; perception ripening into awareness',
+          'With Muladhara (01) — vision needs ground or it drifts into fantasy; the root keeps intuition embodied and testable'
+        ]
+      },
+      {
         title: 'Integration & Contemplation',
         body:
           'The third eye integrates by checking its own lens. Sit with these, and answer more slowly than feels natural:',
@@ -593,8 +725,8 @@ export const chakras: Chakra[] = [
     location: 'Crown',
     gland: 'Pineal',
     mantra: 'Silence',
-    top: 12,
-    x: 55,
+    top: 7.2,
+    x: 50,
     summary:
       'Sahasrara opens into meaning, unity, and spacious awareness. It is the thousand-petaled crown where individual identity remembers its source.',
     sections: [
@@ -661,6 +793,28 @@ export const chakras: Chakra[] = [
         title: 'Mantras & Sounds',
         body:
           'The mantra of the crown is silence. Traditions approach it through OM — sounding the syllable and then attending to the hush that follows, the "fourth part" of the mantra, longer each round. Practice: chant OM three times, then sit in the resonance until it fades entirely, and remain. What listens after the sound has ended is the object of this center’s study.'
+      },
+      {
+        title: 'Crystals & Stones',
+        body:
+          'Crown stones are the clear and luminous ones — pale, light-carrying minerals paired with stillness, spaciousness, and unclouded awareness.',
+        list: [
+          'Clear Quartz — clarity itself; the blank light all colors live in',
+          'Selenite — luminous stillness; named for the moon',
+          'Amethyst — the bridge stone between third eye and crown',
+          'Lepidolite — lithium-bearing calm; peace for an anxious summit',
+          'Howlite — the quieting of the commentary'
+        ]
+      },
+      {
+        title: 'Related Centers',
+        body:
+          'The crown gathers the whole column — and pours it back down.',
+        list: [
+          'With Muladhara (01) — the great polarity: no crown without root; the higher the reach, the deeper the required ground',
+          'With Ajna (06) — the sixth chakra is the lens, the seventh the light; discernment opening into pure awareness',
+          'With all centers — integration means the current runs both ways: transcendence that returns as kindness, presence, and ordinary responsibility'
+        ]
       },
       {
         title: 'Integration & Contemplation',

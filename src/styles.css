@@ -229,16 +229,15 @@ button:focus-visible {
 
 .center-panel {
   display: grid;
-  justify-items: start;
+  justify-items: center;
   align-items: center;
-  padding: 18px 8px 18px 14px;
+  padding: 18px 10px;
 }
 
 .figure-stage {
   position: relative;
-  width: min(100%, 510px);
-  height: min(94vh, 820px);
-  transform: translateX(-26px);
+  width: min(100%, calc(min(94vh, 800px) / 2));
+  aspect-ratio: 1 / 2;
 }
 
 .geometry {
@@ -287,26 +286,14 @@ button:focus-visible {
 
 .human {
   fill: none;
-  stroke: rgba(17, 17, 15, 0.86);
-  stroke-width: 1.75;
+  stroke: rgba(17, 17, 15, 0.82);
+  stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.seated-human {
-  stroke-width: 2.05;
-}
-
-.spine-detail {
-  fill: none;
-  stroke: rgba(17, 17, 15, 0.78);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.seated-ground {
-  opacity: 0.44;
+.root-lines {
+  opacity: 0.5;
 }
 
 .spine-line {
@@ -328,13 +315,13 @@ button:focus-visible {
 }
 
 .body-chakra .sigil {
-  width: 52px;
-  height: 52px;
+  width: 42px;
+  height: 42px;
 }
 
 .body-chakra.selected .sigil {
-  width: 66px;
-  height: 66px;
+  width: 56px;
+  height: 56px;
 }
 
 .sigil {
@@ -716,8 +703,8 @@ button:focus-visible {
   }
 
   .figure-stage {
-    width: 100%;
-    height: 680px;
+    width: min(100%, 340px);
+    margin: 0 auto;
   }
 
   .facts {

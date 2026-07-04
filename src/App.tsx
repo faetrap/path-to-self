@@ -29,8 +29,7 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
           <>
             <g className="icon-petals">{petals(6, 1.06)}</g>
             <circle className="icon-shape" cx="50" cy="50" r="29" />
-            <path className="icon-shape" d="M33 39 C40 55 60 55 67 39 C64 66 36 66 33 39Z" />
-            <circle className="icon-shape" cx="50" cy="43" r="15" />
+            <path className="icon-shape" d="M31 48 A21 21 0 0 0 69 48 A27 27 0 0 1 31 48 Z" />
           </>
         );
       case '03':
@@ -92,6 +91,31 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
   );
 }
 
+const bodyHalf = [
+  // head (right half, crown to chin)
+  'M180 58 C202 58 209 76 208 94 C207 112 196 128 180 132',
+  // ear
+  'M207 86 C212 85 213 95 208 100',
+  // neck into trapezius and shoulder
+  'M191 127 C193 139 196 147 206 151 C220 156 232 160 240 168',
+  // outer arm: shoulder, elbow, wrist, fingertips
+  'M240 168 C248 184 250 216 248 252 C246 288 250 318 251 344 C252 362 250 376 245 386',
+  // inner arm from armpit down to fingertips
+  'M214 192 C228 214 234 236 236 258 C238 288 240 318 242 344 C243 362 244 376 245 386',
+  // finger hint
+  'M239 366 C239 374 240 380 242 384',
+  // torso side: armpit, chest, waist, hip
+  'M214 192 C222 214 223 242 219 268 C216 288 213 302 214 316 C217 334 223 344 226 352',
+  // clavicle
+  'M184 160 C198 162 212 160 224 154',
+  // outer leg: hip, thigh, knee, calf, ankle
+  'M226 352 C232 384 226 420 219 448 C213 470 214 492 217 514 C220 538 214 574 205 606 C204 610 203 612 203 614',
+  // inner leg: crotch, knee, calf, ankle
+  'M182 402 C187 424 191 448 194 470 C196 492 194 516 192 540 C190 566 190 590 190 612',
+  // foot, angled slightly outward
+  'M203 614 C210 626 221 634 232 639 C234 641 232 643 230 643 L193 643 C189 641 188 632 190 614'
+];
+
 function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: (index: number) => void }) {
   const rings = useMemo(() => Array.from({ length: 9 }, (_, index) => index), []);
 
@@ -107,76 +131,37 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
           <span key={ring} style={{ width: `${18 + ring * 8}%`, height: `${8 + ring * 4}%` }} />
         ))}
       </div>
-      <svg className="body-art" viewBox="0 0 360 720" role="img" aria-label="Human anatomy diagram with chakra centers">
-        <defs>
-          <filter id="softInk">
-            <feGaussianBlur stdDeviation="0.12" />
-          </filter>
-        </defs>
+      <svg className="body-art" viewBox="0 0 360 720" role="img" aria-label="Standing human figure with the seven chakra centers along the spine">
         <g className="sacred-lines">
-          <line x1="155" y1="70" x2="155" y2="672" />
-          <line x1="62" y1="338" x2="302" y2="338" />
-          <ellipse cx="166" cy="360" rx="118" ry="290" />
-          <ellipse cx="166" cy="360" rx="84" ry="235" />
-          <path d="M160 80 C70 188 66 460 130 670 C245 548 272 242 160 80" />
-          <path d="M156 100 C102 232 96 462 132 650 C220 520 242 250 156 100" />
+          <line x1="180" y1="36" x2="180" y2="704" />
+          <line x1="34" y1="360" x2="326" y2="360" />
+          <ellipse cx="180" cy="356" rx="150" ry="318" />
+          <ellipse cx="180" cy="356" rx="112" ry="272" />
+          <circle cx="180" cy="94" r="52" />
         </g>
         <g className="ticks">
-          {[92, 146, 204, 278, 356, 438, 570, 666].map((y) => (
-            <circle key={y} cx="155" cy={y} r="2.2" />
+          {[52, 95, 150, 205, 270, 330, 395].map((y) => (
+            <circle key={y} cx="180" cy={y} r="2.2" />
           ))}
-          {[70, 106, 236, 282].map((x) => (
-            <circle key={x} cx={x} cy="338" r="2.1" />
+          {[48, 90, 270, 312].map((x) => (
+            <circle key={x} cx={x} cy="360" r="2.1" />
           ))}
         </g>
-        <g className="human seated-human" filter="url(#softInk)">
-          <path d="M122 640 C86 617 82 548 93 491 C102 440 93 398 85 356 C74 300 80 238 104 176 C122 128 147 94 190 76 C216 87 236 103 249 127" />
-          <path d="M249 127 C252 150 250 166 245 183 C231 180 217 176 205 169" />
-          <path d="M205 169 C190 197 175 231 165 278 C151 345 149 420 158 488 C164 538 151 600 122 640" />
-          <path d="M205 169 C214 183 222 194 229 202" />
-          <path d="M229 202 C219 209 209 210 198 205" />
-          <path d="M219 157 C229 160 238 160 245 157" />
-          <path d="M220 146 C226 149 232 149 238 146" />
-          <path d="M218 122 C226 117 235 118 243 124" />
-          <path d="M235 128 C233 138 233 145 239 151" />
-          <path d="M228 166 C231 169 237 170 242 167" />
-          <path d="M179 109 C172 148 169 190 176 222" />
-          <path d="M137 207 C163 205 190 204 218 212" />
-          <path d="M150 227 C171 233 189 244 203 264" />
-          <path d="M161 260 C174 300 183 354 180 416" />
-          <path d="M139 323 C147 371 150 420 146 470" />
-          <path d="M146 470 C174 490 224 493 282 478 C306 472 332 473 348 489" />
-          <path d="M159 496 C204 507 254 511 308 507 C333 505 351 520 357 542" />
-          <path d="M180 535 C214 524 254 525 298 542 C323 552 339 572 336 593" />
-          <path d="M136 499 C174 544 232 582 314 612" />
-          <path d="M314 612 C296 626 260 629 221 620 C183 611 147 623 122 640" />
-          <path d="M336 593 C351 613 344 634 323 642 C313 639 304 633 299 623" />
-          <path d="M333 596 C320 599 309 598 300 591" />
-          <path d="M161 496 C127 517 107 517 88 499" />
-          <path d="M158 488 C147 520 145 558 152 596" />
-          <path d="M152 596 C137 613 128 627 122 640" />
-          <path d="M86 356 C103 371 119 376 136 369" />
-          <path d="M99 491 C112 504 127 507 146 501" />
-          <path d="M164 279 C148 260 132 250 113 251" />
-          <path d="M114 238 C123 225 133 220 146 222" />
-          <path d="M215 437 C249 449 285 454 323 450" />
-          <path d="M321 450 C334 454 343 465 348 489" />
-          <path d="M292 497 C318 490 340 496 357 542" />
-          <path d="M324 642 C315 653 299 653 288 643 C299 637 310 636 324 642" />
+        <g className="human">
+          {bodyHalf.map((d) => (
+            <path key={d} d={d} />
+          ))}
+          <g transform="translate(360 0) scale(-1 1)">
+            {bodyHalf.map((d) => (
+              <path key={d} d={d} />
+            ))}
+          </g>
         </g>
-        <g className="spine-detail">
-          <path d="M174 103 C154 142 143 197 132 252 C120 314 116 377 129 438 C140 489 133 555 117 626" />
-          <path d="M158 118 C139 170 127 226 117 292 C108 352 108 414 119 472 C128 520 123 575 108 622" />
-          {Array.from({ length: 25 }, (_, index) => {
-            const y = 134 + index * 18.4;
-            const x = 161 - Math.sin(index / 3) * 22 - index * 1.8;
-            return <path key={index} d={`M${x.toFixed(1)} ${y.toFixed(1)} C${(x - 10).toFixed(1)} ${(y + 4).toFixed(1)} ${(x - 8).toFixed(1)} ${(y + 12).toFixed(1)} ${(x + 2).toFixed(1)} ${(y + 12).toFixed(1)}`} />;
-          })}
-        </g>
-        <g className="root-lines seated-ground">
-          {Array.from({ length: 18 }, (_, index) => {
-            const x = 126 + (index - 8.5) * 10;
-            return <path key={index} d={`M126 640 C${x} 658 ${x + (index % 2 ? 38 : -28)} 676 ${x + (index % 2 ? 58 : -46)} 696`} />;
+        <g className="root-lines">
+          {Array.from({ length: 15 }, (_, index) => {
+            const x0 = 110 + index * 10;
+            const drift = (x0 < 180 ? -22 : 22) + (index % 2 ? 12 : -12);
+            return <path key={index} d={`M${x0} 648 C${x0} 664 ${x0 + drift} 676 ${x0 + drift} 702`} />;
           })}
         </g>
       </svg>
