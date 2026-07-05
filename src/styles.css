@@ -1383,6 +1383,13 @@ button:focus-visible {
 
 /* ---------- responsive ---------- */
 
+/* Mobile-only elements — hidden on desktop, revealed at the phone breakpoint. */
+.tap-hint,
+.quiz-cta-mobile,
+.mobile-footer {
+  display: none;
+}
+
 /* Below desktop, panels flow in the document instead of each being a
    fixed-height internally-scrolling column. */
 @media (max-width: 1120px) {
@@ -1422,7 +1429,8 @@ button:focus-visible {
   .app-shell {
     display: block;
     height: auto;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .left-panel,
@@ -1438,26 +1446,90 @@ button:focus-visible {
     background: rgba(1, 10, 18, 0.94);
   }
 
+  /* On mobile the figure IS the navigation, so drop the list, its label,
+     the desktop quiz CTA, and the desktop footer. */
+  .left-panel .chakra-list,
+  .left-panel .map-label,
+  .left-panel > .quiz-cta,
+  .left-panel > footer {
+    display: none;
+  }
+
+  .left-panel {
+    padding-bottom: 10px;
+  }
+
   .left-panel h1 {
-    font-size: 64px;
+    font-size: 58px;
+  }
+
+  /* Bigger, immersive figure: portrait cover-crop keeps the central figure
+     (and its centered orbs) large while trimming the wide side wisps. */
+  .center-panel {
+    padding: 6px 0 4px;
   }
 
   .figure-backdrop {
     position: relative;
     inset: auto;
     height: auto;
-    padding: 6vh 0;
+    padding: 0;
+    background: transparent;
+    overflow: visible;
   }
 
   .figure-frame {
-    width: min(100vw, calc(72vh * (1774 / 887)));
+    width: min(94vw, 66vh);
+    aspect-ratio: 4 / 5;
+  }
+
+  .figure-art {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .figure-veil {
+    background: linear-gradient(180deg, var(--bg), transparent 12%, transparent 88%, var(--bg));
+  }
+
+  /* Larger tap targets on touch screens. */
+  .figure-frame .body-chakra {
+    width: clamp(30px, 8cqw, 46px);
+    height: clamp(30px, 8cqw, 46px);
+  }
+
+  .tap-hint {
+    display: block;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: var(--gold);
+    margin: 0 0 4px;
+  }
+
+  .quiz-cta-mobile {
+    display: flex;
+    width: min(94vw, 460px);
+    margin: 12px auto 4px;
+  }
+
+  .mobile-footer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 22px;
+    padding: 22px 16px 30px;
+    border-top: 1px solid var(--soft-line);
+  }
+
+  .facts {
+    grid-template-columns: 1fr;
+    gap: 11px;
   }
 
   .facts div {
-    grid-template-columns: 120px 1fr;
-  }
-
-  .right-panel h2 {
-    font-size: 42px;
+    grid-template-columns: 108px 1fr;
   }
 }

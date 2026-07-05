@@ -499,6 +499,7 @@ export default function App() {
       </section>
 
       <section className="center-panel">
+        <p className="tap-hint">Tap a chakra to explore</p>
         <BodyFigure
           activeIndex={activeIndex}
           onSelect={chooseChakra}
@@ -509,6 +510,14 @@ export default function App() {
           }
           burst={burst}
         />
+        <button className="quiz-cta quiz-cta-mobile" onClick={() => setView('quiz')}>
+          <Compass size={20} strokeWidth={1.4} />
+          <span className="quiz-cta-text">
+            <strong>Take the Chakra Quiz</strong>
+            <em>Find where your energy is asking for attention</em>
+          </span>
+          <ArrowRight size={18} strokeWidth={1.5} />
+        </button>
       </section>
 
       <section className="right-panel">
@@ -606,6 +615,18 @@ export default function App() {
         </div>
         </div>
       </section>
+
+      <footer className="mobile-footer">
+        <button className="footer-link" onClick={() => setOverlay('journal')}>
+          <NotebookPen size={15} strokeWidth={1.5} /> Journal
+        </button>
+        <button className="footer-link" onClick={() => setOverlay('library')}>
+          <Library size={15} strokeWidth={1.5} /> Library
+        </button>
+        <button className="footer-link" onClick={() => setOverlay('about')}>
+          <Info size={15} strokeWidth={1.5} /> About
+        </button>
+      </footer>
 
       {overlay === 'about' && <AboutOverlay onClose={() => setOverlay(null)} />}
       {overlay === 'journal' && <JournalOverlay chakra={active} onClose={() => setOverlay(null)} />}
