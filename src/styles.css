@@ -319,6 +319,9 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  /* Solid fill so the letterbox bands above/below the frame match the
+     frame's veiled edges exactly (no seam where the image ends). */
+  background: var(--bg);
 }
 
 .figure-frame {
