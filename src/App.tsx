@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, Plus, Sparkle, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, Compass, Info, Library, NotebookPen, Plus, Sparkle, X } from 'lucide-react';
 import { chakras, type Chakra } from './data/chakras';
 import Quiz from './Quiz';
 
@@ -353,11 +353,17 @@ export default function App() {
 
         <footer>
           <button className="footer-link" onClick={() => setView('quiz')}>
-            Chakra Quiz <Sparkle size={14} strokeWidth={1.4} />
+            <Compass size={15} strokeWidth={1.5} /> Chakra Quiz
           </button>
-          <button className="footer-link" onClick={() => setOverlay('journal')}>Journal</button>
-          <button className="footer-link" onClick={() => setOverlay('library')}>Library</button>
-          <button className="footer-link" onClick={() => setOverlay('about')}>About</button>
+          <button className="footer-link" onClick={() => setOverlay('journal')}>
+            <NotebookPen size={15} strokeWidth={1.5} /> Journal
+          </button>
+          <button className="footer-link" onClick={() => setOverlay('library')}>
+            <Library size={15} strokeWidth={1.5} /> Library
+          </button>
+          <button className="footer-link" onClick={() => setOverlay('about')}>
+            <Info size={15} strokeWidth={1.5} /> About
+          </button>
         </footer>
       </section>
 
