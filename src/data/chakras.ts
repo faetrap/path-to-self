@@ -33,8 +33,8 @@ export const chakras: Chakra[] = [
     location: 'Base of Spine',
     gland: 'Adrenals',
     mantra: 'LAM',
-    top: 76.5,
-    x: 50.1,
+    top: 76.8,
+    x: 50.3,
     summary:
       'Muladhara is our foundation. It governs our sense of safety, stability, and belonging. When balanced, we feel grounded, supported by life, and present in our bodies.',
     sections: [
@@ -149,8 +149,8 @@ export const chakras: Chakra[] = [
     location: 'Lower Abdomen',
     gland: 'Gonads',
     mantra: 'VAM',
-    top: 70.5,
-    x: 49.7,
+    top: 70.8,
+    x: 50.3,
     summary:
       'Svadhishthana carries feeling, pleasure, and creative flow. It is the fluid intelligence of desire, emotion, intimacy, and the ability to move with life.',
     sections: [
@@ -264,8 +264,8 @@ export const chakras: Chakra[] = [
     location: 'Solar Plexus',
     gland: 'Pancreas',
     mantra: 'RAM',
-    top: 53.6,
-    x: 50.1,
+    top: 55.5,
+    x: 50.3,
     summary:
       'Manipura is the inner fire of will, confidence, and selfhood. It turns feeling into action and gives the body a clear center of direction.',
     sections: [
@@ -379,7 +379,7 @@ export const chakras: Chakra[] = [
     location: 'Heart',
     gland: 'Thymus',
     mantra: 'YAM',
-    top: 47.6,
+    top: 47.9,
     x: 50.3,
     summary:
       'Anahata is the bridge between body and spirit. It holds love, grief, compassion, forgiveness, and the felt truth of connection.',
@@ -495,8 +495,8 @@ export const chakras: Chakra[] = [
     location: 'Throat',
     gland: 'Thyroid',
     mantra: 'HAM',
-    top: 39.3,
-    x: 50.0,
+    top: 40.1,
+    x: 50.3,
     summary:
       'Vishuddha is the channel of truth. It governs voice, listening, creative expression, and the courage to let the inner world become sound.',
     sections: [
