@@ -92,13 +92,38 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
   );
 }
 
-function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: (index: number) => void }) {
+type OrbPos = { top: number; x: number };
+
+function BodyFigure({
+  activeIndex,
+  onSelect,
+  coords,
+  calibrate,
+  onMove
+}: {
+  activeIndex: number;
+  onSelect: (index: number) => void;
+  coords: OrbPos[];
+  calibrate: boolean;
+  onMove: (index: number, top: number, x: number) => void;
+}) {
   // The frame is locked to the artwork's aspect ratio and sized to fit the
   // viewport (letterboxed, not cropped), so orbs can be placed by percentage
   // and stay pinned to the painted orbs at any window size.
+  const frameRef = useRef<HTMLDivElement>(null);
+  const dragging = useRef<number | null>(null);
+
+  const clamp = (v: number) => Math.max(0, Math.min(100, v));
+
+  function moveTo(index: number, clientX: number, clientY: number) {
+    const r = frameRef.current?.getBoundingClientRect();
+    if (!r) return;
+    onMove(index, clamp(((clientY - r.top) / r.height) * 100), clamp(((clientX - r.left) / r.width) * 100));
+  }
+
   return (
     <div className="figure-backdrop">
-      <div className="figure-frame">
+      <div className={`figure-frame${calibrate ? ' calibrate' : ''}`} ref={frameRef}>
         <img
           className="figure-art"
           src={`${import.meta.env.BASE_URL}figure.jpg`}
@@ -111,17 +136,67 @@ function BodyFigure({ activeIndex, onSelect }: { activeIndex: number; onSelect: 
             className={`body-chakra${index === activeIndex ? ' selected' : ''}`}
             style={
               {
-                left: `${chakra.x}%`,
-                top: `${chakra.top}%`,
+                left: `${coords[index].x}%`,
+                top: `${coords[index].top}%`,
                 '--chakra': chakra.color
               } as React.CSSProperties
             }
             onClick={() => onSelect(index)}
+            onPointerDown={
+              calibrate
+                ? (event) => {
+                    event.preventDefault();
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                    dragging.current = index;
+                    onSelect(index);
+                  }
+                : undefined
+            }
+            onPointerMove={
+              calibrate
+                ? (event) => {
+                    if (dragging.current !== index) return;
+                    moveTo(index, event.clientX, event.clientY);
+                  }
+                : undefined
+            }
+            onPointerUp={calibrate ? () => (dragging.current = null) : undefined}
             aria-label={`Select ${chakra.name}`}
           >
             <span className="orb" />
+            {calibrate && <span className="orb-crosshair" />}
           </button>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function CalibratePanel({ coords, onReset }: { coords: OrbPos[]; onReset: () => void }) {
+  const text = chakras
+    .map((c, i) => `${c.id} ${c.name.padEnd(14)} top: ${coords[i].top.toFixed(1)}, x: ${coords[i].x.toFixed(1)}`)
+    .join('\n');
+  const [copied, setCopied] = useState(false);
+
+  return (
+    <div className="calibrate-panel">
+      <div className="calibrate-title">Orb Calibration</div>
+      <p className="calibrate-hint">
+        Drag each glowing dot onto its painted orb. When they all line up, copy the numbers below and
+        paste them to me.
+      </p>
+      <pre className="calibrate-coords">{text}</pre>
+      <div className="calibrate-actions">
+        <button
+          onClick={() => {
+            navigator.clipboard?.writeText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          }}
+        >
+          {copied ? 'Copied ✓' : 'Copy coordinates'}
+        </button>
+        <button onClick={onReset}>Reset</button>
       </div>
     </div>
   );
@@ -267,6 +342,9 @@ export default function App() {
   const [openSection, setOpenSection] = useState<number | null>(0);
   const [overlay, setOverlay] = useState<'about' | 'journal' | 'library' | null>(null);
   const [view, setView] = useState<'map' | 'quiz'>('map');
+  const calibrate =
+    typeof window !== 'undefined' && window.location.hash.toLowerCase().includes('calibrate');
+  const [coords, setCoords] = useState<OrbPos[]>(() => chakras.map((c) => ({ top: c.top, x: c.x })));
   const active = chakras[activeIndex];
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
@@ -368,7 +446,15 @@ export default function App() {
       </section>
 
       <section className="center-panel">
-        <BodyFigure activeIndex={activeIndex} onSelect={chooseChakra} />
+        <BodyFigure
+          activeIndex={activeIndex}
+          onSelect={chooseChakra}
+          coords={coords}
+          calibrate={calibrate}
+          onMove={(index, top, x) =>
+            setCoords((prev) => prev.map((p, i) => (i === index ? { top, x } : p)))
+          }
+        />
       </section>
 
       <section className="right-panel">
@@ -459,6 +545,12 @@ export default function App() {
       {overlay === 'about' && <AboutOverlay onClose={() => setOverlay(null)} />}
       {overlay === 'journal' && <JournalOverlay chakra={active} onClose={() => setOverlay(null)} />}
       {overlay === 'library' && <LibraryOverlay onClose={() => setOverlay(null)} />}
+      {calibrate && (
+        <CalibratePanel
+          coords={coords}
+          onReset={() => setCoords(chakras.map((c) => ({ top: c.top, x: c.x })))}
+        />
+      )}
     </main>
   );
 }
