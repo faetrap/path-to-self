@@ -290,6 +290,17 @@ button:focus-visible {
   position: fixed;
   inset: 0;
   z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.figure-frame {
+  position: relative;
+  width: min(100vw, calc(100vh * (1774 / 887)));
+  aspect-ratio: 1774 / 887;
+  container-type: inline-size;
 }
 
 .figure-art {
@@ -297,21 +308,24 @@ button:focus-visible {
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
 }
 
 .figure-veil {
   position: absolute;
-  inset: 0;
+  inset: -1px;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(1, 10, 18, 0.45), transparent 16%, transparent 82%, rgba(1, 10, 18, 0.55)),
-    radial-gradient(ellipse 74% 90% at 50% 46%, transparent 58%, rgba(1, 10, 18, 0.7) 100%);
+    linear-gradient(90deg, var(--bg), transparent 15%, transparent 85%, var(--bg)),
+    linear-gradient(180deg, var(--bg), transparent 14%, transparent 84%, var(--bg)),
+    radial-gradient(ellipse 74% 96% at 50% 48%, transparent 60%, rgba(1, 10, 18, 0.55) 100%);
 }
 
 .body-chakra {
   position: absolute;
   transform: translate(-50%, -50%);
+  width: clamp(20px, 3.3cqw, 62px);
+  height: clamp(20px, 3.3cqw, 62px);
   padding: 0;
   z-index: 5;
   border-radius: 50%;
@@ -1140,7 +1154,13 @@ button:focus-visible {
 
   .figure-backdrop {
     position: relative;
-    height: 64vh;
+    inset: auto;
+    height: auto;
+    padding: 6vh 0;
+  }
+
+  .figure-frame {
+    width: min(100vw, calc(72vh * (1774 / 887)));
   }
 
   .facts div {

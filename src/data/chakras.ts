@@ -33,8 +33,8 @@ export const chakras: Chakra[] = [
     location: 'Base of Spine',
     gland: 'Adrenals',
     mantra: 'LAM',
-    top: 76.6,
-    x: 50.2,
+    top: 76.3,
+    x: 50.0,
     summary:
       'Muladhara is our foundation. It governs our sense of safety, stability, and belonging. When balanced, we feel grounded, supported by life, and present in our bodies.',
     sections: [
@@ -149,8 +149,8 @@ export const chakras: Chakra[] = [
     location: 'Lower Abdomen',
     gland: 'Gonads',
     mantra: 'VAM',
-    top: 70.8,
-    x: 50.2,
+    top: 70.5,
+    x: 49.9,
     summary:
       'Svadhishthana carries feeling, pleasure, and creative flow. It is the fluid intelligence of desire, emotion, intimacy, and the ability to move with life.',
     sections: [
@@ -264,7 +264,7 @@ export const chakras: Chakra[] = [
     location: 'Solar Plexus',
     gland: 'Pancreas',
     mantra: 'RAM',
-    top: 56.7,
+    top: 54.8,
     x: 50.2,
     summary:
       'Manipura is the inner fire of will, confidence, and selfhood. It turns feeling into action and gives the body a clear center of direction.',
@@ -379,8 +379,8 @@ export const chakras: Chakra[] = [
     location: 'Heart',
     gland: 'Thymus',
     mantra: 'YAM',
-    top: 47.6,
-    x: 50.3,
+    top: 49.3,
+    x: 50.5,
     summary:
       'Anahata is the bridge between body and spirit. It holds love, grief, compassion, forgiveness, and the felt truth of connection.',
     sections: [
@@ -495,8 +495,8 @@ export const chakras: Chakra[] = [
     location: 'Throat',
     gland: 'Thyroid',
     mantra: 'HAM',
-    top: 38.9,
-    x: 49.6,
+    top: 39.7,
+    x: 49.9,
     summary:
       'Vishuddha is the channel of truth. It governs voice, listening, creative expression, and the courage to let the inner world become sound.',
     sections: [
@@ -610,8 +610,8 @@ export const chakras: Chakra[] = [
     location: 'Brow',
     gland: 'Pituitary',
     mantra: 'OM',
-    top: 31.6,
-    x: 49.8,
+    top: 31.0,
+    x: 50.0,
     summary:
       'Ajna is the center of perception, pattern recognition, and inner vision. It clarifies intuition and allows the mind to witness itself.',
     sections: [
@@ -725,8 +725,8 @@ export const chakras: Chakra[] = [
     location: 'Crown',
     gland: 'Pineal',
     mantra: 'Silence',
-    top: 27.1,
-    x: 49.9,
+    top: 24.2,
+    x: 50.6,
     summary:
       'Sahasrara opens into meaning, unity, and spacious awareness. It is the thousand-petaled crown where individual identity remembers its source.',
     sections: [
