@@ -57,15 +57,24 @@ button:focus-visible {
 
 .app-shell {
   display: grid;
-  grid-template-columns: minmax(300px, 23vw) minmax(400px, 1fr) minmax(400px, 29vw);
-  min-height: 100vh;
+  grid-template-columns: minmax(300px, 24vw) minmax(380px, 1fr) minmax(400px, 30vw);
+  height: 100vh;
   overflow: hidden;
 }
 
 .left-panel,
 .center-panel,
 .right-panel {
-  min-height: 100vh;
+  height: 100vh;
+}
+
+.left-panel {
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.left-panel::-webkit-scrollbar {
+  display: none;
 }
 
 .left-panel,
@@ -119,14 +128,15 @@ button:focus-visible {
 /* ---------- left panel ---------- */
 
 .left-panel h1 {
-  margin: 34px 0 20px;
+  margin: 26px 0 16px;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
-  font-size: clamp(58px, 5.6vw, 88px);
-  line-height: 1.02;
+  font-size: clamp(44px, 4.3vw, 70px);
+  line-height: 1.0;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   color: var(--cream);
+  white-space: nowrap;
 }
 
 .rule {
@@ -151,10 +161,10 @@ button:focus-visible {
 .intro {
   width: 100%;
   max-width: 380px;
-  margin: 26px 0 38px;
-  line-height: 1.85;
+  margin: 20px 0 28px;
+  line-height: 1.75;
   letter-spacing: 0.015em;
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text);
 }
 
@@ -191,13 +201,13 @@ button:focus-visible {
 .chakra-list button {
   width: 100%;
   display: grid;
-  grid-template-columns: 40px 44px 1fr;
+  grid-template-columns: 38px 40px 1fr;
   column-gap: 12px;
-  row-gap: 3px;
+  row-gap: 2px;
   align-items: center;
   align-content: center;
-  min-height: 60px;
-  padding: 8px 10px;
+  min-height: 52px;
+  padding: 7px 10px;
   border-bottom: 1px solid var(--soft-line);
   text-align: left;
   transition: background-color 0.2s ease;
@@ -248,7 +258,7 @@ button:focus-visible {
 
 .left-panel footer {
   margin-top: auto;
-  padding-top: 28px;
+  padding-top: 22px;
   display: flex;
   align-items: center;
 }
