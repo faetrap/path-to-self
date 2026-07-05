@@ -94,18 +94,31 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
 
 type OrbPos = { top: number; x: number };
 
+const FLECKS = Array.from({ length: 18 }, (_, i) => {
+  const angle = (360 / 18) * i + (i % 2 ? 14 : -10);
+  const dist = 40 + (i % 3) * 18;
+  return {
+    dx: Math.cos((angle * Math.PI) / 180) * dist,
+    dy: Math.sin((angle * Math.PI) / 180) * dist,
+    size: 3 + (i % 3),
+    delay: (i % 4) * 25
+  };
+});
+
 function BodyFigure({
   activeIndex,
   onSelect,
   coords,
   calibrate,
-  onMove
+  onMove,
+  burst
 }: {
   activeIndex: number;
   onSelect: (index: number) => void;
   coords: OrbPos[];
   calibrate: boolean;
   onMove: (index: number, top: number, x: number) => void;
+  burst: number;
 }) {
   // The frame is locked to the artwork's aspect ratio and sized to fit the
   // viewport (letterboxed, not cropped), so orbs can be placed by percentage
@@ -167,6 +180,38 @@ function BodyFigure({
             {calibrate && <span className="orb-crosshair" />}
           </button>
         ))}
+        {!calibrate && burst > 0 && (
+          <div
+            key={burst}
+            className="fleck-burst"
+            style={
+              {
+                left: `${coords[activeIndex].x}%`,
+                top: `${coords[activeIndex].top}%`,
+                '--chakra': chakras[activeIndex].color
+              } as React.CSSProperties
+            }
+            aria-hidden="true"
+          >
+            {FLECKS.map((f, i) => (
+              <span
+                key={i}
+                className="fleck"
+                style={
+                  {
+                    '--dx': `${f.dx}px`,
+                    '--dy': `${f.dy}px`,
+                    width: `${f.size}px`,
+                    height: `${f.size}px`,
+                    marginLeft: `${-f.size / 2}px`,
+                    marginTop: `${-f.size / 2}px`,
+                    animationDelay: `${f.delay}ms`
+                  } as React.CSSProperties
+                }
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -345,6 +390,7 @@ export default function App() {
   const calibrate =
     typeof window !== 'undefined' && window.location.hash.toLowerCase().includes('calibrate');
   const [coords, setCoords] = useState<OrbPos[]>(() => chakras.map((c) => ({ top: c.top, x: c.x })));
+  const [burst, setBurst] = useState(0);
   const active = chakras[activeIndex];
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
@@ -354,6 +400,7 @@ export default function App() {
   function chooseChakra(index: number) {
     setActiveIndex(index);
     setOpenSection(0);
+    setBurst((n) => n + 1);
   }
 
   useEffect(() => {
@@ -429,10 +476,16 @@ export default function App() {
           ))}
         </nav>
 
+        <button className="quiz-cta" onClick={() => setView('quiz')}>
+          <Compass size={20} strokeWidth={1.4} />
+          <span className="quiz-cta-text">
+            <strong>Take the Chakra Quiz</strong>
+            <em>Find where your energy is asking for attention</em>
+          </span>
+          <ArrowRight size={18} strokeWidth={1.5} />
+        </button>
+
         <footer>
-          <button className="footer-link" onClick={() => setView('quiz')}>
-            <Compass size={15} strokeWidth={1.5} /> Chakra Quiz
-          </button>
           <button className="footer-link" onClick={() => setOverlay('journal')}>
             <NotebookPen size={15} strokeWidth={1.5} /> Journal
           </button>
@@ -454,6 +507,7 @@ export default function App() {
           onMove={(index, top, x) =>
             setCoords((prev) => prev.map((p, i) => (i === index ? { top, x } : p)))
           }
+          burst={burst}
         />
       </section>
 
@@ -464,7 +518,18 @@ export default function App() {
           <div className="chakra-lockup">
             <span className="chakra-number" style={{ color: active.color }}>{active.id}</span>
             <div>
-              <h2>{active.name}</h2>
+              <h2
+                style={{
+                  fontSize:
+                    active.name.length > 11
+                      ? 'clamp(28px, 2.5vw, 40px)'
+                      : active.name.length > 8
+                        ? 'clamp(32px, 2.8vw, 46px)'
+                        : 'clamp(38px, 3vw, 52px)'
+                }}
+              >
+                {active.name}
+              </h2>
               <p className="subtitle" style={{ color: active.color }}>{active.subtitle}</p>
             </div>
           </div>

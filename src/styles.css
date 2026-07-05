@@ -181,8 +181,8 @@ button:focus-visible {
 .intro {
   width: 100%;
   max-width: 380px;
-  margin: 20px 0 28px;
-  line-height: 1.75;
+  margin: 18px 0 22px;
+  line-height: 1.7;
   letter-spacing: 0.015em;
   font-size: 13.5px;
   color: var(--text);
@@ -226,8 +226,8 @@ button:focus-visible {
   row-gap: 2px;
   align-items: center;
   align-content: center;
-  min-height: 52px;
-  padding: 7px 10px;
+  min-height: 48px;
+  padding: 6px 10px;
   border-bottom: 1px solid var(--soft-line);
   text-align: left;
   transition: background-color 0.2s ease;
@@ -276,9 +276,66 @@ button:focus-visible {
 
 /* ---------- footer ---------- */
 
+.quiz-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 16px;
+  text-align: left;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: linear-gradient(100deg, rgba(201, 164, 92, 0.1), rgba(201, 164, 92, 0.02));
+  color: var(--gold-bright);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.quiz-cta:hover {
+  border-color: rgba(230, 205, 150, 0.6);
+  box-shadow: 0 0 26px rgba(201, 164, 92, 0.16);
+}
+
+.quiz-cta > svg:first-child {
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+.quiz-cta > svg:last-child {
+  flex-shrink: 0;
+  color: var(--gold);
+  transition: transform 0.18s ease;
+}
+
+.quiz-cta:hover > svg:last-child {
+  transform: translateX(4px);
+}
+
+.quiz-cta-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.quiz-cta-text strong {
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cream);
+}
+
+.quiz-cta-text em {
+  font-style: normal;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
 .left-panel footer {
   margin-top: auto;
-  padding-top: 22px;
+  padding-top: 20px;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -386,31 +443,114 @@ button:focus-visible {
   border-color: color-mix(in srgb, var(--chakra) 75%, transparent);
 }
 
-.body-chakra.selected .orb {
-  box-shadow: 0 0 26px 7px color-mix(in srgb, var(--chakra) 45%, transparent);
-  animation: orb-breathe 4.2s ease-in-out infinite;
+/* Dim the unselected orbs slightly so the active one clearly stands out. */
+.body-chakra:not(.selected):not(:hover) .orb {
+  opacity: 0.7;
 }
 
+.body-chakra.selected {
+  z-index: 8;
+}
+
+.body-chakra.selected .orb {
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--gold-bright) 65%, transparent),
+    0 0 34px 11px color-mix(in srgb, var(--chakra) 60%, transparent);
+  animation: orb-breathe 3.2s ease-in-out infinite;
+}
+
+/* Bright solid core in the middle of the active orb. */
 .body-chakra.selected .orb::before {
-  inset: 1px;
-  border-color: color-mix(in srgb, var(--gold-bright) 85%, var(--chakra));
+  inset: 32%;
+  border: 0;
+  background: radial-gradient(circle, #fff 0%, color-mix(in srgb, var(--chakra) 75%, #fff) 55%, transparent 100%);
+  box-shadow: 0 0 14px 4px color-mix(in srgb, var(--chakra) 80%, transparent);
+}
+
+/* Expanding gold ring pulse around the active orb. */
+.body-chakra.selected::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--gold-bright) 70%, var(--chakra));
+  pointer-events: none;
+  animation: orb-ring 2.6s ease-out infinite;
 }
 
 @keyframes orb-breathe {
   0%,
   100% {
-    box-shadow: 0 0 22px 5px color-mix(in srgb, var(--chakra) 40%, transparent);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--gold-bright) 55%, transparent),
+      0 0 30px 9px color-mix(in srgb, var(--chakra) 55%, transparent);
     transform: scale(1);
   }
   50% {
-    box-shadow: 0 0 40px 13px color-mix(in srgb, var(--chakra) 60%, transparent);
-    transform: scale(1.07);
+    box-shadow:
+      0 0 0 2px color-mix(in srgb, var(--gold-bright) 80%, transparent),
+      0 0 46px 16px color-mix(in srgb, var(--chakra) 70%, transparent);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes orb-ring {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.3);
+    opacity: 0;
+  }
+}
+
+/* ---------- gold fleck burst on selection ---------- */
+
+.fleck-burst {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 9;
+}
+
+.fleck {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff6df 0%, var(--gold-bright) 55%, #c9a45c 100%);
+  box-shadow: 0 0 8px 2px rgba(230, 205, 150, 0.9);
+  opacity: 0;
+  animation: fleck-fly 0.85s ease-out forwards;
+}
+
+@keyframes fleck-fly {
+  0% {
+    transform: translate(0, 0) scale(0.3);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translate(calc(var(--dx) * 0.35), calc(var(--dy) * 0.35)) scale(1.15);
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy)) scale(0.6);
+    opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .body-chakra.selected .orb {
     animation: none;
+  }
+
+  .body-chakra.selected::after,
+  .fleck {
+    animation: none;
+    opacity: 0;
   }
 
   .panel-content {
