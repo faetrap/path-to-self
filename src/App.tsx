@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, Info, Plus, Sparkle, X } from 'lucide-react';
+import { ArrowDown, ArrowRight, Plus, Sparkle, X } from 'lucide-react';
 import { chakras, type Chakra } from './data/chakras';
 import Quiz from './Quiz';
 
@@ -352,11 +352,12 @@ export default function App() {
         </nav>
 
         <footer>
+          <button className="footer-link" onClick={() => setView('quiz')}>
+            Chakra Quiz <Sparkle size={14} strokeWidth={1.4} />
+          </button>
           <button className="footer-link" onClick={() => setOverlay('journal')}>Journal</button>
           <button className="footer-link" onClick={() => setOverlay('library')}>Library</button>
-          <button className="footer-link" onClick={() => setView('quiz')}>
-            Chakra Quiz <Sparkle size={15} strokeWidth={1.4} />
-          </button>
+          <button className="footer-link" onClick={() => setOverlay('about')}>About</button>
         </footer>
       </section>
 
@@ -365,40 +366,39 @@ export default function App() {
       </section>
 
       <section className="right-panel">
-        <header className="about-row">
-          <button className="footer-link" onClick={() => setOverlay('about')}>
-            <span>About This System</span>
-            <Info size={16} strokeWidth={1.4} />
-          </button>
-        </header>
+        <div className="right-inner" key={active.id}>
+        <div className="right-header">
+          <div className="active-kicker">Active Chakra</div>
+          <div className="chakra-lockup">
+            <span className="chakra-number" style={{ color: active.color }}>{active.id}</span>
+            <div>
+              <h2>{active.name}</h2>
+              <p className="subtitle" style={{ color: active.color }}>{active.subtitle}</p>
+            </div>
+          </div>
+          <p className="meaning">{active.meaning}</p>
 
-        <div className="panel-content" key={active.id}>
-        <div className="active-kicker">Active Chakra</div>
-        <div className="chakra-number" style={{ color: active.color }}>{active.id}</div>
-        <h2>{active.name}</h2>
-        <p className="subtitle" style={{ color: active.color }}>{active.subtitle}</p>
-        <p className="meaning">{active.meaning}</p>
-        <div className="rule" />
+          <dl className="facts">
+            <div>
+              <dt>Element</dt>
+              <dd>{active.element}</dd>
+            </div>
+            <div>
+              <dt>Location</dt>
+              <dd>{active.location}</dd>
+            </div>
+            <div>
+              <dt>Gland</dt>
+              <dd>{active.gland}</dd>
+            </div>
+            <div>
+              <dt>Mantra</dt>
+              <dd>{active.mantra}</dd>
+            </div>
+          </dl>
+        </div>
 
-        <dl className="facts">
-          <div>
-            <dt>Element</dt>
-            <dd>{active.element}</dd>
-          </div>
-          <div>
-            <dt>Location</dt>
-            <dd>{active.location}</dd>
-          </div>
-          <div>
-            <dt>Gland</dt>
-            <dd>{active.gland}</dd>
-          </div>
-          <div>
-            <dt>Mantra</dt>
-            <dd>{active.mantra}</dd>
-          </div>
-        </dl>
-
+        <div className="right-scroll">
         <p className="summary">{active.summary}</p>
 
         <div className="accordion">
@@ -446,6 +446,7 @@ export default function App() {
             <ArrowRight size={20} strokeWidth={1.4} />
           </button>
         )}
+        </div>
         </div>
       </section>
 

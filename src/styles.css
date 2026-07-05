@@ -95,17 +95,37 @@ button:focus-visible {
 }
 
 .right-panel {
-  max-height: 100vh;
+  overflow: hidden;
+}
+
+.right-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  animation: panel-in 0.4s ease both;
+}
+
+.right-header {
+  flex-shrink: 0;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.right-scroll {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  padding: 20px 2px 8px 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(201, 164, 92, 0.3) transparent;
 }
 
-.right-panel::-webkit-scrollbar {
+.right-scroll::-webkit-scrollbar {
   width: 6px;
 }
 
-.right-panel::-webkit-scrollbar-thumb {
+.right-scroll::-webkit-scrollbar-thumb {
   background: rgba(201, 164, 92, 0.25);
   border-radius: 3px;
 }
@@ -261,32 +281,27 @@ button:focus-visible {
   padding-top: 22px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  column-gap: 22px;
+  row-gap: 10px;
 }
 
 .footer-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 11.5px;
+  letter-spacing: 0.13em;
+  font-size: 11px;
   font-weight: 500;
   color: var(--gold);
-  padding: 0 18px;
+  padding: 0;
+  white-space: nowrap;
   transition: color 0.18s ease;
 }
 
 .footer-link:hover {
   color: var(--gold-bright);
-}
-
-.left-panel footer .footer-link {
-  border-left: 1px solid var(--soft-line);
-}
-
-.left-panel footer .footer-link:first-child {
-  border-left: 0;
-  padding-left: 0;
 }
 
 /* ---------- center: figure ---------- */
@@ -446,25 +461,6 @@ button:focus-visible {
   padding-top: 30px;
 }
 
-.about-row {
-  justify-content: flex-end;
-  margin-bottom: 34px;
-}
-
-.about-row .footer-link {
-  padding: 0;
-  border: 0;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-}
-
-.panel-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  animation: panel-in 0.4s ease both;
-}
-
 @keyframes panel-in {
   from {
     opacity: 0;
@@ -482,15 +478,21 @@ button:focus-visible {
   font-size: 11px;
   font-weight: 500;
   color: var(--gold);
-  margin-bottom: 18px;
+  margin-bottom: 14px;
+}
+
+.chakra-lockup {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
 }
 
 .chakra-number {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 500;
-  font-size: 34px;
+  font-size: 30px;
   line-height: 1;
-  margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
 .right-panel h2 {
@@ -498,22 +500,22 @@ button:focus-visible {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
-  font-size: clamp(42px, 3.4vw, 56px);
-  line-height: 1.05;
+  letter-spacing: 0.08em;
+  font-size: clamp(38px, 3vw, 52px);
+  line-height: 1.02;
   color: var(--cream);
 }
 
 .subtitle {
-  margin: 12px 0 6px;
+  margin: 8px 0 0;
   text-transform: uppercase;
-  letter-spacing: 0.3em;
-  font-size: 13px;
+  letter-spacing: 0.28em;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .meaning {
-  margin: 0 0 20px;
+  margin: 14px 0 18px;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-size: 15px;
@@ -521,17 +523,17 @@ button:focus-visible {
 }
 
 .facts {
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  margin: 22px 0;
-  padding: 4px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 24px;
+  margin: 0;
 }
 
 .facts div {
   display: grid;
-  grid-template-columns: 140px 1fr;
+  grid-template-columns: auto 1fr;
   align-items: baseline;
+  gap: 10px;
 }
 
 .facts dt {
@@ -566,11 +568,11 @@ button:focus-visible {
 }
 
 .summary {
-  width: min(100%, 540px);
+  width: min(100%, 560px);
   font-size: 14.5px;
   line-height: 1.85;
   color: #c7d5cf;
-  margin: 6px 0 26px;
+  margin: 0 0 24px;
 }
 
 /* ---------- accordion ---------- */
@@ -1126,29 +1128,52 @@ button:focus-visible {
 
 /* ---------- responsive ---------- */
 
+/* Below desktop, panels flow in the document instead of each being a
+   fixed-height internally-scrolling column. */
 @media (max-width: 1120px) {
   .app-shell {
     grid-template-columns: 320px 1fr;
-    overflow: auto;
+    height: auto;
+    overflow: visible;
+  }
+
+  .left-panel,
+  .center-panel,
+  .right-panel {
+    height: auto;
+  }
+
+  .left-panel {
+    overflow: visible;
   }
 
   .right-panel {
     grid-column: 1 / -1;
-    min-height: auto;
-    max-height: none;
+    overflow: visible;
     background: rgba(1, 10, 18, 0.94);
+  }
+
+  .right-inner {
+    display: block;
+  }
+
+  .right-scroll {
+    overflow: visible;
+    padding-bottom: var(--panel-pad);
   }
 }
 
 @media (max-width: 720px) {
   .app-shell {
     display: block;
-    overflow: auto;
+    height: auto;
+    overflow: visible;
   }
 
   .left-panel,
   .center-panel,
   .right-panel {
+    height: auto;
     min-height: auto;
     max-height: none;
   }
