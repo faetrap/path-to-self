@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, Compass, Info, Library, NotebookPen, Plus, Sparkle, X } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  Info,
+  Library,
+  NotebookPen,
+  Plus,
+  Sparkle,
+  X
+} from 'lucide-react';
 import { chakras, type Chakra } from './data/chakras';
 import Quiz from './Quiz';
 
@@ -151,9 +163,11 @@ function BodyFigure({
               {
                 left: `${coords[index].x}%`,
                 top: `${coords[index].top}%`,
-                '--chakra': chakra.color
+                '--chakra': chakra.color,
+                '--i': index
               } as React.CSSProperties
             }
+            aria-pressed={index === activeIndex}
             onClick={() => onSelect(index)}
             onPointerDown={
               calibrate
@@ -382,6 +396,21 @@ function AboutOverlay({ onClose }: { onClose: () => void }) {
   );
 }
 
+// Below this width the panels stack vertically (see the 1120px block in
+// styles.css), so selecting a chakra must scroll its content into view.
+const STACKED_QUERY = '(max-width: 1120px)';
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const onChange = () => setMatches(mql.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
+}
+
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [openSection, setOpenSection] = useState<number | null>(0);
@@ -397,11 +426,52 @@ export default function App() {
   const viewRef = useRef(view);
   viewRef.current = view;
 
+  const stacked = useMediaQuery(STACKED_QUERY);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLElement>(null);
+  const [revealTick, setRevealTick] = useState(0);
+  const [showBar, setShowBar] = useState(false);
+
   function chooseChakra(index: number) {
     setActiveIndex(index);
     setOpenSection(0);
     setBurst((n) => n + 1);
   }
+
+  // Select a chakra and, on stacked layouts, bring its content on screen so
+  // the tap visibly does something. Desktop keeps everything in view already.
+  function revealChakra(index: number) {
+    chooseChakra(index);
+    if (stacked) setRevealTick((n) => n + 1);
+  }
+
+  useEffect(() => {
+    if (!revealTick) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    headerRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }, [revealTick]);
+
+  // Sticky chakra bar: shown on stacked layouts once the chakra header has
+  // scrolled away but the reader is still inside the chakra's content.
+  useEffect(() => {
+    if (!stacked) {
+      setShowBar(false);
+      return;
+    }
+    function update() {
+      const header = headerRef.current?.getBoundingClientRect();
+      const panel = rightPanelRef.current?.getBoundingClientRect();
+      if (!header || !panel) return;
+      setShowBar(header.bottom < 0 && panel.bottom > 120);
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [stacked, activeIndex]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -466,7 +536,8 @@ export default function App() {
               key={chakra.id}
               className={index === activeIndex ? 'active' : ''}
               style={{ '--chakra': chakra.color } as React.CSSProperties}
-              onClick={() => chooseChakra(index)}
+              aria-current={index === activeIndex ? 'true' : undefined}
+              onClick={() => revealChakra(index)}
             >
               <span className="nav-id">{chakra.id}</span>
               <ChakraSigil chakra={chakra} active={index === activeIndex} />
@@ -502,7 +573,7 @@ export default function App() {
         <p className="tap-hint">Tap a chakra to explore</p>
         <BodyFigure
           activeIndex={activeIndex}
-          onSelect={chooseChakra}
+          onSelect={revealChakra}
           coords={coords}
           calibrate={calibrate}
           onMove={(index, top, x) =>
@@ -510,6 +581,21 @@ export default function App() {
           }
           burst={burst}
         />
+        <div className="chakra-chips" role="group" aria-label="Choose a chakra">
+          {chakras.map((chakra, index) => (
+            <button
+              key={chakra.id}
+              className={`chakra-chip${index === activeIndex ? ' active' : ''}`}
+              style={{ '--chakra': chakra.color } as React.CSSProperties}
+              aria-pressed={index === activeIndex}
+              aria-label={`${chakra.id} ${chakra.name}`}
+              onClick={() => revealChakra(index)}
+            >
+              <span className="chip-dot" aria-hidden="true" />
+              <span className="chip-id" aria-hidden="true">{chakra.id}</span>
+            </button>
+          ))}
+        </div>
         <button className="quiz-cta quiz-cta-mobile" onClick={() => setView('quiz')}>
           <Compass size={20} strokeWidth={1.4} />
           <span className="quiz-cta-text">
@@ -520,12 +606,12 @@ export default function App() {
         </button>
       </section>
 
-      <section className="right-panel">
+      <section className="right-panel" ref={rightPanelRef}>
         <div className="right-inner" key={active.id}>
-        <div className="right-header">
+        <div className="right-header" ref={headerRef}>
           <div className="active-kicker">Active Chakra</div>
           <div className="chakra-lockup">
-            <span className="chakra-number" style={{ color: active.color }}>{active.id}</span>
+            <span className="chakra-number ink" style={{ '--chakra': active.color } as React.CSSProperties}>{active.id}</span>
             <div>
               <h2
                 style={{
@@ -539,7 +625,7 @@ export default function App() {
               >
                 {active.name}
               </h2>
-              <p className="subtitle" style={{ color: active.color }}>{active.subtitle}</p>
+              <p className="subtitle ink" style={{ '--chakra': active.color } as React.CSSProperties}>{active.subtitle}</p>
             </div>
           </div>
           <p className="meaning">{active.meaning}</p>
@@ -596,7 +682,7 @@ export default function App() {
         </div>
 
         {activeIndex < chakras.length - 1 ? (
-          <button className="coming-soon" onClick={() => chooseChakra(activeIndex + 1)}>
+          <button className="coming-soon" onClick={() => revealChakra(activeIndex + 1)}>
             <span>Continue the path</span>
             <strong>
               {chakras[activeIndex + 1].id} · {chakras[activeIndex + 1].name}
@@ -605,7 +691,7 @@ export default function App() {
             <ArrowRight size={20} strokeWidth={1.4} />
           </button>
         ) : (
-          <button className="coming-soon" onClick={() => chooseChakra(0)}>
+          <button className="coming-soon" onClick={() => revealChakra(0)}>
             <span>The path returns</span>
             <strong>01 · Muladhara</strong>
             <em>begin again at the root</em>
@@ -615,6 +701,38 @@ export default function App() {
         </div>
         </div>
       </section>
+
+      {stacked && (
+        <div className={`chakra-bar${showBar ? ' visible' : ''}`} aria-hidden={!showBar}>
+          <button
+            className="bar-step"
+            onClick={() => revealChakra((activeIndex + chakras.length - 1) % chakras.length)}
+            aria-label={`Previous: ${chakras[(activeIndex + chakras.length - 1) % chakras.length].name}`}
+            tabIndex={showBar ? 0 : -1}
+          >
+            <ChevronLeft size={20} strokeWidth={1.6} />
+          </button>
+          <button
+            className="bar-title"
+            style={{ '--chakra': active.color } as React.CSSProperties}
+            onClick={() => setRevealTick((n) => n + 1)}
+            aria-label={`${active.name}, back to top of section`}
+            tabIndex={showBar ? 0 : -1}
+          >
+            <span className="chip-dot" aria-hidden="true" />
+            <span className="ink">{active.id}</span>
+            <strong>{active.name}</strong>
+          </button>
+          <button
+            className="bar-step"
+            onClick={() => revealChakra((activeIndex + 1) % chakras.length)}
+            aria-label={`Next: ${chakras[(activeIndex + 1) % chakras.length].name}`}
+            tabIndex={showBar ? 0 : -1}
+          >
+            <ChevronRight size={20} strokeWidth={1.6} />
+          </button>
+        </div>
+      )}
 
       <footer className="mobile-footer">
         <button className="footer-link" onClick={() => setOverlay('journal')}>

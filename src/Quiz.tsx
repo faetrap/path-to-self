@@ -128,13 +128,13 @@ export default function Quiz({ onClose, onExplore }: { onClose: () => void; onEx
       {stage === 'result' && (
         <div className="quiz-body">
           <div className="active-kicker">Your Result</div>
-          <div className="quiz-result-number" style={{ color: top.color }}>
+          <div className="quiz-result-number ink" style={{ '--chakra': top.color } as React.CSSProperties}>
             {top.id}
           </div>
           <h1 className="quiz-title" style={{ marginTop: 0 }}>
             {top.name}
           </h1>
-          <p className="quiz-result-sub" style={{ color: top.color }}>
+          <p className="quiz-result-sub ink" style={{ '--chakra': top.color } as React.CSSProperties}>
             {top.subtitle}
           </p>
           <p className="quiz-lead">{readings[topIndex]}</p>
@@ -144,8 +144,8 @@ export default function Quiz({ onClose, onExplore }: { onClose: () => void; onEx
             {chakras.map((chakra, i) => (
               <div key={chakra.id} className="quiz-chart-row">
                 <span
-                  className="quiz-chart-label"
-                  style={i === topIndex ? { color: chakra.color, fontWeight: 600 } : undefined}
+                  className={`quiz-chart-label${i === topIndex ? ' ink' : ''}`}
+                  style={i === topIndex ? ({ '--chakra': chakra.color, fontWeight: 600 } as React.CSSProperties) : undefined}
                 >
                   {chakra.id} {chakra.name}
                 </span>
