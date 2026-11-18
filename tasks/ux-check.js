@@ -129,6 +129,53 @@
     out.G9 = { pass: detail.length === 0, detail: detail.length ? detail : 'overlays, arrows, aria ok' };
   }
 
+  // G3: reading text >= 16px (mobile) / 15px (desktop), line-height >= 1.5.
+  {
+    const min = mobile ? 16 : 15;
+    const bad = [];
+    document.querySelector('.accordion-item:not(.open) .accordion-row')?.click();
+    await wait(300);
+    for (const el of document.querySelectorAll('.intro, .summary, .accordion-inner p, .accordion-inner li')) {
+      if (!visible(el)) continue;
+      const cs = getComputedStyle(el);
+      const fs = parseFloat(cs.fontSize);
+      const lh = parseFloat(cs.lineHeight) / fs;
+      if (fs < min || lh < 1.5) bad.push(`${el.className || el.tagName} ${fs}px lh ${lh.toFixed(2)}`);
+    }
+    out.G3 = { pass: bad.length === 0, detail: bad.length ? [...new Set(bad)] : `reading text >= ${min}px, lh >= 1.5` };
+  }
+
+  // G5: no visible text < 12px; ALL-CAPS only for <= 3 words; contrast >= 4.5:1.
+  {
+    const lum = ([r, g, b]) => [r, g, b].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
+    const rgba = (c) => { const x = document.createElement('canvas').getContext('2d'); x.fillStyle = c; x.fillRect(0, 0, 1, 1); const d = x.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2], d[3] / 255]; };
+    const bg = rgba(getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
+    const bad = new Set();
+    for (const el of document.querySelectorAll('body *')) {
+      const txt = [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim()).map((n) => n.textContent.trim()).join(' ');
+      if (!txt || !visible(el)) continue;
+      const cs = getComputedStyle(el);
+      if (parseFloat(cs.fontSize) < 12) bad.add(`small ${cs.fontSize}: "${txt.slice(0, 24)}"`);
+      const words = txt.split(/\s+/).filter((w) => /[a-z]/i.test(w));
+      if (cs.textTransform === 'uppercase' && words.length > 3) bad.add(`caps ${words.length} words: "${txt.slice(0, 24)}"`);
+      const c = rgba(cs.color);
+      const fg = c.slice(0, 3).map((v, i) => v * c[3] + bg[i] * (1 - c[3]));
+      const L1 = lum(fg), L2 = lum(bg);
+      const cr = (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+      if (cr < 4.5) bad.add(`contrast ${cr.toFixed(2)}: "${txt.slice(0, 24)}"`);
+    }
+    out.G5 = { pass: bad.size === 0, detail: bad.size ? [...bad] : 'sizes, caps and contrast ok' };
+  }
+
+  // G6: desktop left panel fits without scrolling or clipping.
+  if (!stacked) {
+    const lp = document.querySelector('.left-panel');
+    const over = lp.scrollHeight - lp.clientHeight;
+    out.G6 = { pass: over <= 0, detail: over <= 0 ? 'left panel fits' : `overflows by ${over}px` };
+  } else {
+    out.G6 = { pass: true, detail: 'n/a on stacked layouts (panel flows with the page)' };
+  }
+
   scrollTo(0, 0);
   return { viewport: `${vw}x${vh}`, ...out };
 })();

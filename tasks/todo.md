@@ -128,3 +128,15 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Single weight, so UI text is normalised to 400 with `font-synthesis: none` (no faux bold) and tighter 0.06em tracking
 - [x] Verified: font loads; no text overflows its panel across all 7 chakras; contrast minimum still 4.97:1; ux-check passes at 1440×900 and 375×812; no console errors
 - Note for Batch B: mono is wider, so the chakra-list keywords now wrap to 2 lines. The planned compact list removes them
+
+## Batch B results (2026-11-19), DONE (G8 needs your sign-off)
+
+- [x] Compact desktop list: number, sigil and name on one 42px line (37px on short screens); keywords and the "An Experimental Map" kicker removed
+- [x] Reading text: 15px on desktop, 16px on phones, line height 1.55–1.7 (intro, summary, sections, About, Library, quiz reading, journal box)
+- [x] Labels: 12px minimum everywhere; long all-caps runs removed (top kicker, quiz button, tap hint, about hint, quiz chart heading, chakra subtitles); section titles shown in sentence case
+- [x] Left panel fits at 1440×900 and 1366×768 (a short-screen rule tightens spacing at ≤860px tall); the quiz button's description moved to the body font so it no longer wraps to 3 lines
+- [x] Heading and body fonts are now tokens (`--font-display`, `--font-body`), so a new heading font is a one-line change
+- **Checks:** G1–G6 and G9 pass at 1366×768, 1440×900, 900×700 and 375×812. The pop-ups and quiz screens were also scanned (sizes, caps, contrast). No console errors; `tsc` and build pass
+- Exemption: large display headings (e.g. the 30px "AN ANATOMY OF CONSCIOUSNESS" in About, and "PATH TO SELF") keep caps; the caps rule applies to labels
+- [ ] G8: your sign-off on the compact list
+- [ ] Open: you said you don't like the look yet, and want a different heading font

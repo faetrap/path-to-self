@@ -106,6 +106,9 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
 
 type OrbPos = { top: number; x: number };
 
+// Section titles are stored in Title Case; show them in sentence case.
+const toSentenceCase = (title: string) => title.charAt(0) + title.slice(1).toLowerCase();
+
 const FLECKS = Array.from({ length: 18 }, (_, i) => {
   const angle = (360 / 18) * i + (i % 2 ? 14 : -10);
   const dist = 40 + (i % 3) * 18;
@@ -523,10 +526,7 @@ export default function App() {
 
         <div className="map-label">
           <Sparkle size={18} strokeWidth={1.2} />
-          <div>
-            <span>An Experimental Map</span>
-            <strong>Select a chakra to begin</strong>
-          </div>
+          <strong>Select a chakra to begin</strong>
           <ArrowDown size={16} strokeWidth={1.4} />
         </div>
 
@@ -542,7 +542,6 @@ export default function App() {
               <span className="nav-id">{chakra.id}</span>
               <ChakraSigil chakra={chakra} active={index === activeIndex} />
               <strong>{chakra.name}</strong>
-              <em>{chakra.keywords.split(' + ').join(' · ')}</em>
             </button>
           ))}
         </nav>
@@ -662,7 +661,7 @@ export default function App() {
                 onClick={() => setOpenSection(openSection === index ? null : index)}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
-                <strong>{section.title}</strong>
+                <strong>{toSentenceCase(section.title)}</strong>
                 <Plus size={19} strokeWidth={1.5} />
               </button>
               <div className="accordion-content">
