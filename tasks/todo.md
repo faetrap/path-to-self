@@ -120,3 +120,11 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - **B (type and hierarchy):** body size, label cleanup, left panel fit, compact list → G3, G5, G6, G8
 - **C (sections):** 3-tab grouping → G7
 - **Final:** full check run (G1–G9), screenshots, PR
+
+## Typeface (2026-11-19), DONE
+
+- [x] Necto Mono (Collletttivo, SIL OFL 1.1) added: `src/assets/fonts/NectoMono-Regular.woff2`, bundled by Vite with a relative URL so it works under the GitHub Pages sub-path; licence at `public/fonts/NectoMono-OFL.txt`
+- [x] Roles: Necto Mono = labels, nav, buttons, data values (`--font-ui`); Cormorant Garamond = headings and chakra numbers; Inter = reading text
+- [x] Single weight, so UI text is normalised to 400 with `font-synthesis: none` (no faux bold) and tighter 0.06em tracking
+- [x] Verified: font loads; no text overflows its panel across all 7 chakras; contrast minimum still 4.97:1; ux-check passes at 1440×900 and 375×812; no console errors
+- Note for Batch B: mono is wider, so the chakra-list keywords now wrap to 2 lines. The planned compact list removes them

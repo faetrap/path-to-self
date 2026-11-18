@@ -1,3 +1,14 @@
+/* Necto Mono by Collletttivo, SIL Open Font License 1.1 (see public/fonts/NectoMono-OFL.txt).
+   One weight only, so it is used for labels and UI; Cormorant Garamond
+   carries headings and Inter carries reading text. */
+@font-face {
+  font-family: 'Necto Mono';
+  src: url('./assets/fonts/NectoMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Light "parchment" theme. Token names are kept from the dark theme:
      --cream = strongest ink (headings), --text = body, --muted = secondary,
@@ -20,6 +31,7 @@
   --ink-mix: 50%;
   --ink-base: #140d0a;
   --panel-pad: clamp(24px, 2.4vw, 44px);
+  --font-ui: 'Necto Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   color: var(--text);
   background: var(--bg);
@@ -1689,4 +1701,48 @@ button:focus-visible {
   .facts div {
     grid-template-columns: 108px 1fr;
   }
+}
+
+/* ---------- UI typeface ---------- */
+/* Labels, navigation, buttons and data values use the mono UI face. It has a
+   single weight, so weight is normalised (no faux bold) and the wide caps
+   tracking used with Inter is tightened. Placed last so it wins over the
+   per-component font settings above. */
+.micro-row,
+.about-row,
+.map-label span,
+.map-label strong,
+.chakra-list strong,
+.chakra-list em,
+.nav-id,
+.quiz-cta-text strong,
+.quiz-cta-text em,
+.footer-link,
+.active-kicker,
+.subtitle,
+.facts dt,
+.facts dd,
+.accordion-row span,
+.accordion-row strong,
+.coming-soon span,
+.coming-soon em,
+.about-hint,
+.library-group,
+.calibrate-title,
+.calibrate-coords,
+.calibrate-actions button,
+.quiz-primary,
+.quiz-option,
+.quiz-back,
+.quiz-progress,
+.quiz-result-sub,
+.quiz-chart-head,
+.quiz-chart-label,
+.chip-id,
+.tap-hint,
+.bar-title .ink {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: 0.06em;
 }
