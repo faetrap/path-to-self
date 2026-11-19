@@ -149,3 +149,12 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Batch C: Understand (themes, stage, shadow, related) / Feel (somatics, nervous system, poses) / Practice (practices, mantras, crystals, contemplation). Proper tab semantics, ←/→ moves between tabs, arrow keys on a tab no longer switch chakra; resets to Understand on chakra change
 - [x] G7 added to ux-check.js. G1–G7 and G9 pass at 375×812, 900×700, 1366×768 and 1440×900; no console errors
 - [ ] Heading font: waiting on your pick (the token `--font-display` is ready)
+
+## Edge fix + liquid glass (2026-11-19), DONE
+
+- [x] Figure edges: the top and bottom rows were still opaque (alpha 254/238), causing a hard horizontal line. Top 12% and bottom 10% fades added; all four edges now alpha 0, crown untouched
+- [x] Phone panels transparent again (the body is flat, so no box shows), which stops the right panel's solid fill cutting off the glass shadows. Tablets keep the solid fill because the figure is fixed behind the page there
+- [x] Liquid-glass styling in plain CSS (`--glass-fill`, `--glass-blur`, `--glass-shadow`): one frosted pill holding the 7 chips, floating over the lotus on phones, with a chakra-tinted lens on the active chip; glass quiz card; glass segmented tabs
+- Decision: dashersw/liquid-glass-js was read but NOT used. Its buttons are divs (no keyboard or screen-reader support), it needs html2canvas to screenshot the whole page (slow on phones, stale after content changes), and every element creates its own WebGL context (phones cap these). The look was rebuilt in CSS with real `<button>`s
+- [x] G1–G7 and G9 pass at 375×812, 900×700, 1366×768 and 1440×900; no console errors
+- [ ] Waiting on you: replacement fonts for Cormorant Garamond (`--font-display`) and Inter (`--font-body`)

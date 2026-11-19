@@ -18,6 +18,9 @@ def smooth(e0, e1, x):
 yy, xx = np.mgrid[0:H, 0:W]
 r = np.sqrt(((xx - W / 2) / (0.27 * W)) ** 2 + ((yy - 0.49 * H) / (0.53 * H)) ** 2)
 a = 1 - smooth(0.92, 1.18, r)
+# also fade the top and bottom rows: the aura and lotus reach close to the
+# image edges, so without this the artwork stops in a hard horizontal line
+a *= smooth(0.0, 0.12 * H, yy) * smooth(0.0, 0.10 * H, (H - 1) - yy)
 rgba = np.dstack([rgb, a * 255]).astype(np.uint8)
 img = Image.fromarray(rgba, 'RGBA')
 img.save(out, 'WEBP', quality=84, method=6)
