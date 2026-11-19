@@ -181,3 +181,11 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] "Continue the path" card made smaller: padding 11px/16px, name 20px (was 26px), keywords 12px, arrow 16px; about 81px tall on desktop
 - [x] Inter reading text down another 1px: desktop 13px (summary and quiz lead 14px), phones 14px; line height unchanged at 1.6–1.7. G3 thresholds now 13 / 14px
 - [x] G1–G7 and G9 pass at all four sizes; no console errors
+
+## Yantras, paper and smoke (2026-11-19)
+- [x] Chakra list icons → traditional yantras (Wikimedia, Atarax42 / Holger Koch, CC0; `src/assets/chakras/`, cleaned by `tasks/tools/clean-chakra-svgs.py`). Muted + multiplied into the paper; active one full colour. 30px.
+- [x] Site eyebrow "An Anatomy of Consciousness" 12 → 14px desktop / 15px phones, one line.
+- [x] Library closing note (guide to supplement learning, not a replacement).
+- [x] Paper grain (fixed SVG fractal-noise overlay, multiply, 0.32) + 5 slow smoke wisps behind the figure (reduced-motion: static).
+- [x] Selection effect: 18-fleck gold burst → one soft chakra-coloured bloom expanding from the orb (1.6s).
+- Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812 (G1 mobile failed once on timing in the hidden pane, passed on two reruns). No console errors.

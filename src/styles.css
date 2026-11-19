@@ -64,6 +64,21 @@
   box-sizing: border-box;
 }
 
+/* Paper grain over the whole page: fractal noise, multiplied so it only
+   ever darkens slightly, like the tooth of a sheet of paper. It sits above
+   everything (figure included) so the figure's fade stays seamless. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.33 0 0 0 0 0.24 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: multiply;
+  opacity: 0.32;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -195,6 +210,19 @@ button:focus-visible {
   color: var(--gold);
 }
 
+/* The site's own eyebrow reads one step above the other micro labels. */
+.micro-row.site-eyebrow {
+  font-size: 14px;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .micro-row.site-eyebrow {
+    font-size: 15px;
+  }
+}
+
 /* ---------- left panel ---------- */
 
 .left-panel h1 {
@@ -285,8 +313,8 @@ button:focus-visible {
 }
 
 .chakra-list .sigil {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
 }
 
 .chakra-list strong {
@@ -383,6 +411,61 @@ button:focus-visible {
 
 .footer-link:hover {
   color: var(--gold-bright);
+}
+
+/* ---------- drifting smoke ---------- */
+
+/* A few soft wisps behind the figure, each drifting and fading on its own
+   long, offset cycle so the motion never visibly repeats. */
+.smoke {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.smoke span {
+  position: absolute;
+  width: 46vmax;
+  height: 22vmax;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(255, 252, 246, 0.85) 0%, rgba(255, 250, 242, 0.35) 38%, transparent 68%);
+  filter: blur(28px);
+  opacity: 0;
+  animation: smoke-drift 34s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.smoke span:nth-child(1) { left: 18%; top: 58%; animation-duration: 38s; animation-delay: -4s; }
+.smoke span:nth-child(2) { left: 52%; top: 18%; animation-duration: 31s; animation-delay: -17s; }
+.smoke span:nth-child(3) { left: 4%; top: 12%; animation-duration: 42s; animation-delay: -29s;
+  background: radial-gradient(ellipse at center, rgba(196, 178, 210, 0.35) 0%, rgba(214, 196, 220, 0.14) 40%, transparent 68%); }
+.smoke span:nth-child(4) { left: 60%; top: 66%; animation-duration: 36s; animation-delay: -11s;
+  background: radial-gradient(ellipse at center, rgba(160, 138, 118, 0.18) 0%, rgba(160, 138, 118, 0.07) 40%, transparent 68%); }
+.smoke span:nth-child(5) { left: 34%; top: 38%; animation-duration: 45s; animation-delay: -23s; }
+
+@keyframes smoke-drift {
+  0% {
+    transform: translate(-8%, 6%) rotate(-6deg) scale(0.8);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(12%, -14%) rotate(8deg) scale(1.25);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .smoke span {
+    animation: none;
+    opacity: 0.4;
+  }
 }
 
 /* ---------- center: figure ---------- */
@@ -541,39 +624,39 @@ button:focus-visible {
   }
 }
 
-/* ---------- gold fleck burst on selection ---------- */
+/* ---------- soft bloom on selection ---------- */
 
-.fleck-burst {
+/* One slow wash of the chakra's light spreading out from the orb, like a
+   lamp being lit — no particles. */
+.orb-bloom {
   position: absolute;
-  transform: translate(-50%, -50%);
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  z-index: 9;
-}
-
-.fleck {
-  position: absolute;
-  left: 0;
-  top: 0;
+  width: clamp(60px, 9cqw, 150px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(0.2);
   border-radius: 50%;
-  background: radial-gradient(circle, #fff6df 0%, #e6cd96 55%, #c9a45c 100%);
-  box-shadow: 0 0 8px 2px rgba(201, 164, 92, 0.75);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, #fff 55%, var(--chakra)) 0%,
+    color-mix(in srgb, var(--chakra) 38%, transparent) 30%,
+    color-mix(in srgb, var(--chakra) 12%, transparent) 55%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 4;
   opacity: 0;
-  animation: fleck-fly 0.85s ease-out forwards;
+  animation: orb-bloom 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
-@keyframes fleck-fly {
+@keyframes orb-bloom {
   0% {
-    transform: translate(0, 0) scale(0.3);
+    transform: translate(-50%, -50%) scale(0.2);
     opacity: 0;
   }
-  20% {
-    opacity: 1;
-    transform: translate(calc(var(--dx) * 0.35), calc(var(--dy) * 0.35)) scale(1.15);
+  25% {
+    opacity: 0.75;
   }
   100% {
-    transform: translate(var(--dx), var(--dy)) scale(0.6);
+    transform: translate(-50%, -50%) scale(1.6);
     opacity: 0;
   }
 }
@@ -585,7 +668,7 @@ button:focus-visible {
   }
 
   .body-chakra.selected::after,
-  .fleck {
+  .orb-bloom {
     animation: none;
     opacity: 0;
   }
@@ -597,41 +680,27 @@ button:focus-visible {
 
 /* ---------- sigils ---------- */
 
+/* The yantras are full-colour illustrations. Multiply drops their white
+   ground into the paper, and muted saturation makes them read as printed
+   ink rather than clip-art; the active one comes up to full colour. */
 .sigil {
   --chakra: var(--gold);
-  width: 24px;
-  height: 24px;
-  color: color-mix(in oklab, var(--chakra) 62%, var(--ink-base));
-  overflow: visible;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--chakra) 45%, transparent));
-  transition: filter 0.2s ease;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  filter: saturate(0.55) sepia(0.18) opacity(0.82);
+  transition: filter 0.3s ease, transform 0.3s ease;
+  user-select: none;
 }
 
-.icon-petals {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3.7;
-  stroke-linejoin: round;
-}
-
-.inner-lotus {
-  stroke-width: 3.1;
-}
-
-.icon-shape {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.icon-wing {
-  stroke-width: 4.2;
+.chakra-list button:hover .sigil {
+  filter: saturate(0.8) sepia(0.08) opacity(0.95);
 }
 
 .sigil.is-active {
-  filter: drop-shadow(0 0 9px currentColor);
+  filter: saturate(1) opacity(1) drop-shadow(0 0 6px color-mix(in srgb, var(--chakra) 45%, transparent));
+  transform: scale(1.06);
 }
 
 /* ---------- right panel ---------- */
@@ -1076,6 +1145,17 @@ button:focus-visible {
 .journal-entry:focus {
   outline: 1px solid color-mix(in srgb, var(--gold-bright) 50%, transparent);
   outline-offset: 2px;
+}
+
+.library-note {
+  margin: 26px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--muted);
 }
 
 .library-shelf {

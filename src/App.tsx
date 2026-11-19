@@ -15,92 +15,23 @@ import {
 import { chakras, type Chakra } from './data/chakras';
 import Quiz from './Quiz';
 
+// Traditional chakra yantras (petal counts, shapes and bija syllables) by
+// Atarax42 / Holger Koch on Wikimedia Commons, CC0. See assets/chakras/SOURCES.txt.
+const SIGILS = import.meta.glob('./assets/chakras/*.svg', { eager: true, query: '?url', import: 'default' }) as Record<
+  string,
+  string
+>;
+
 function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: boolean }) {
-  const petal = 'M50 8 C59 15 62 29 50 38 C38 29 41 15 50 8Z';
-  const petals = (count: number, radiusScale = 1) =>
-    Array.from({ length: count }, (_, index) => (
-      <path
-        key={index}
-        d={petal}
-        transform={`rotate(${(360 / count) * index} 50 50) translate(0 ${radiusScale === 1 ? 0 : 3}) scale(${radiusScale}) translate(${50 * (1 - radiusScale)} ${50 * (1 - radiusScale)})`}
-      />
-    ));
-
-  const icon = (() => {
-    switch (chakra.id) {
-      case '01':
-        return (
-          <>
-            <g className="icon-petals">{petals(4, 1.08)}</g>
-            <rect className="icon-shape" x="25" y="25" width="50" height="50" />
-            <circle className="icon-shape" cx="50" cy="50" r="28" />
-            <path className="icon-shape" d="M50 70 L31 36 H69 Z" />
-          </>
-        );
-      case '02':
-        return (
-          <>
-            <g className="icon-petals">{petals(6, 1.06)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="29" />
-            <path className="icon-shape" d="M31 48 A21 21 0 0 0 69 48 A27 27 0 0 1 31 48 Z" />
-          </>
-        );
-      case '03':
-        return (
-          <>
-            <g className="icon-petals">{petals(10, 1.05)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="30" />
-            <path className="icon-shape" d="M50 70 L29 34 H71 Z" />
-          </>
-        );
-      case '04':
-        return (
-          <>
-            <g className="icon-petals">{petals(12, 1.04)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="30" />
-            <path className="icon-shape" d="M50 25 L72 63 H28 Z" />
-            <path className="icon-shape" d="M50 75 L28 37 H72 Z" />
-          </>
-        );
-      case '05':
-        return (
-          <>
-            <g className="icon-petals">{petals(16, 1.02)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="31" />
-            <path className="icon-shape" d="M50 72 L27 32 H73 Z" />
-            <circle className="icon-shape" cx="50" cy="50" r="15" />
-          </>
-        );
-      case '06':
-        return (
-          <>
-            <path className="icon-shape icon-wing" d="M13 52 C24 27 40 20 50 34 C38 46 28 57 13 52Z" />
-            <path className="icon-shape icon-wing" d="M87 52 C76 27 60 20 50 34 C62 46 72 57 87 52Z" />
-            <circle className="icon-shape" cx="50" cy="50" r="28" />
-            <path className="icon-shape" d="M50 70 L29 34 H71 Z" />
-            <path className="icon-shape" d="M26 32 H74" />
-          </>
-        );
-      default:
-        return (
-          <>
-            <g className="icon-petals outer-lotus">{petals(16, 1.03)}</g>
-            <g className="icon-petals inner-lotus">{petals(8, 0.72)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="18" />
-          </>
-        );
-    }
-  })();
-
   return (
-    <svg
+    <img
       className={`sigil${active ? ' is-active' : ''}`}
       style={{ '--chakra': chakra.color } as React.CSSProperties}
+      src={SIGILS[`./assets/chakras/${chakra.id}.svg`]}
+      alt=""
       aria-hidden="true"
-      viewBox="0 0 100 100"
-    >
-      {icon}
-    </svg>
+      draggable={false}
+    />
   );
 }
 
@@ -130,17 +61,6 @@ function tabOf(title: string): TabId {
 
 // Section titles are stored in Title Case; show them in sentence case.
 const toSentenceCase = (title: string) => title.charAt(0) + title.slice(1).toLowerCase();
-
-const FLECKS = Array.from({ length: 18 }, (_, i) => {
-  const angle = (360 / 18) * i + (i % 2 ? 14 : -10);
-  const dist = 40 + (i % 3) * 18;
-  return {
-    dx: Math.cos((angle * Math.PI) / 180) * dist,
-    dy: Math.sin((angle * Math.PI) / 180) * dist,
-    size: 3 + (i % 3),
-    delay: (i % 4) * 25
-  };
-});
 
 function BodyFigure({
   activeIndex,
@@ -173,6 +93,13 @@ function BodyFigure({
 
   return (
     <div className="figure-backdrop">
+      <div className="smoke" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
       <div className={`figure-frame${calibrate ? ' calibrate' : ''}`} ref={frameRef}>
         <img
           className="figure-art"
@@ -219,9 +146,9 @@ function BodyFigure({
           </button>
         ))}
         {!calibrate && burst > 0 && (
-          <div
+          <span
             key={burst}
-            className="fleck-burst"
+            className="orb-bloom"
             style={
               {
                 left: `${coords[activeIndex].x}%`,
@@ -230,25 +157,7 @@ function BodyFigure({
               } as React.CSSProperties
             }
             aria-hidden="true"
-          >
-            {FLECKS.map((f, i) => (
-              <span
-                key={i}
-                className="fleck"
-                style={
-                  {
-                    '--dx': `${f.dx}px`,
-                    '--dy': `${f.dy}px`,
-                    width: `${f.size}px`,
-                    height: `${f.size}px`,
-                    marginLeft: `${-f.size / 2}px`,
-                    marginTop: `${-f.size / 2}px`,
-                    animationDelay: `${f.delay}ms`
-                  } as React.CSSProperties
-                }
-              />
-            ))}
-          </div>
+          />
         )}
       </div>
     </div>
@@ -379,6 +288,11 @@ function LibraryOverlay({ onClose }: { onClose: () => void }) {
             </ul>
           </div>
         ))}
+        <p className="library-note">
+          These books, like this site, are a guide to supplement your learning, not a replacement
+          for it. Read with curiosity, try what resonates, and lean on qualified teachers,
+          practitioners and clinicians where you need deeper support.
+        </p>
       </div>
     </div>
   );
@@ -535,8 +449,8 @@ export default function App() {
   return (
     <main className="app-shell">
       <section className="left-panel">
-        <header className="micro-row">
-          <Sparkle size={18} strokeWidth={1.4} />
+        <header className="micro-row site-eyebrow">
+          <Sparkle size={20} strokeWidth={1.4} />
           <span>An Anatomy of Consciousness</span>
         </header>
 
