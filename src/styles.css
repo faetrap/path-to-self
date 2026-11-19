@@ -501,11 +501,18 @@ button:focus-visible {
   width: 58vmax;
   height: 44vmax;
   border-radius: 50%;
+  /* Eased falloff (many stops) so the edge is soft even without a blur
+     filter; phones drop the filter entirely, see below. */
+  --ca: calc(var(--a) * var(--k));
   background: radial-gradient(
     ellipse at center,
-    color-mix(in srgb, var(--c) calc(var(--a) * var(--k)), transparent) 0%,
-    color-mix(in srgb, var(--c) calc(var(--a) * var(--k) * 0.45), transparent) 40%,
-    transparent 70%
+    color-mix(in srgb, var(--c) var(--ca), transparent) 0%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.82), transparent) 18%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.55), transparent) 34%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.3), transparent) 48%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.12), transparent) 60%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.03), transparent) 68%,
+    transparent 72%
   );
   filter: blur(30px);
   transform: translate(-50%, -50%);
@@ -620,12 +627,29 @@ button:focus-visible {
   }
 }
 
+/* Phones: no blur filter (the eased gradient is already soft, and blurring
+   large layers is one of the costliest things a phone browser does) and
+   four clouds instead of six. */
 @media (max-width: 720px) {
   .mist span {
     --k: 1;
     width: 70vmax;
     height: 50vmax;
+    filter: none;
   }
+
+  .mist span:nth-child(5),
+  .mist span:nth-child(6) {
+    display: none;
+  }
+}
+
+/* Nothing drifts while the tab is in the background (saves battery). */
+.page-hidden .mist span,
+.page-hidden .mote,
+.page-hidden .body-chakra .orb,
+.page-hidden .body-chakra::after {
+  animation-play-state: paused;
 }
 
 @media (prefers-reduced-motion: reduce) {

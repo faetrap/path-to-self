@@ -208,3 +208,10 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Desktop mist density 1.7× → 1.3×; phones unchanged. Breath 10s in / 10s out.
 - [x] 14 warm light motes (7 top-right, 7 bottom-left), drifting + twinkling, behind text; phones show 7, smaller. Reduced motion: static.
 - Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812; text and all tap targets hit-test on top; no console errors.
+
+## Mobile performance (2026-11-19)
+- [x] Phones: mist blur filter removed (gradient now has eased multi-stop falloff, so edges stay soft), 4 clouds instead of 6.
+- [x] Ambient animations (mist, motes, orb pulses) pause while the tab is hidden (`page-hidden` class on visibilitychange).
+- Before/after at 375×812: `tasks/mobile-perf-before-after.png` — visually near-identical (top slightly less blue-tinted with cloud 6 gone).
+- Not measured on a real device; frame rate on low-end Android still to be confirmed after deploy.
+- Checks: G1–G7, G9 pass at 375×812, 900×700, 1366×768, 1440×900; desktop keeps blur(30px); no console errors.

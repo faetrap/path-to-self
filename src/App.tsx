@@ -380,6 +380,14 @@ export default function App() {
   viewRef.current = view;
 
   const stacked = useMediaQuery(STACKED_QUERY);
+
+  // Pause the ambient animations while the tab is hidden.
+  useEffect(() => {
+    const sync = () => document.documentElement.classList.toggle('page-hidden', document.hidden);
+    sync();
+    document.addEventListener('visibilitychange', sync);
+    return () => document.removeEventListener('visibilitychange', sync);
+  }, []);
   const headerRef = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLElement>(null);
   const [revealTick, setRevealTick] = useState(0);
