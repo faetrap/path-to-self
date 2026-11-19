@@ -158,3 +158,12 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - Decision: dashersw/liquid-glass-js was read but NOT used. Its buttons are divs (no keyboard or screen-reader support), it needs html2canvas to screenshot the whole page (slow on phones, stale after content changes), and every element creates its own WebGL context (phones cap these). The look was rebuilt in CSS with real `<button>`s
 - [x] G1–G7 and G9 pass at 375×812, 900×700, 1366×768 and 1440×900; no console errors
 - [ ] Waiting on you: replacement fonts for Cormorant Garamond (`--font-display`) and Inter (`--font-body`)
+
+## Heading font: Fabello (2026-11-19), DONE locally (licence needed before deploy)
+
+- [x] Cormorant Garamond replaced by Fabello (Light 300 for the title and numbers, Regular 400 for the other headings); Inter kept and its italic loaded; Cormorant removed from the Google Fonts request; theme-color updated to the light background
+- [x] Hierarchy (desktop 1440): title 71px Fabello Light, line height 0.92 → chakra name 42–58px Regular → number 32px Light → "Continue the path" 26px → reading 15–16px Inter, line height 1.6–1.7 → section titles and list 15px mono → labels 12px mono. All headings now mixed case (Fabello reads best that way)
+- [x] Fabello only covers basic Latin (no curly quotes, no "·"), so it is used only for short headings; italic quotes and prompts moved to Inter italic; "02 · Name" separators changed to "02 – Name"
+- [x] Facts show the label above the value (fixes "Lower Abdomen" overflowing)
+- [x] G1–G7 and G9 pass at all four sizes; no overflow across 7 chakras; no console errors
+- **Licence:** this copy came from dafontfile.org. Fabello is Britt Fabello's commercial font (Creative Market). `src/assets/fonts/fabello/` is git-ignored, so the public repo and deployed site won't include it; headings fall back to Georgia until a licence is bought and the files are committed (verified the build still passes without them)

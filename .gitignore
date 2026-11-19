@@ -2,3 +2,7 @@ node_modules
 dist
 .env
 .DS_Store
+
+# Fabello is a commercial font (Britt Fabello, Creative Market licence).
+# Keep it out of this public repo until a licence is bought.
+src/assets/fonts/fabello/

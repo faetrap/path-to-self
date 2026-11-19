@@ -640,10 +640,10 @@ export default function App() {
                 style={{
                   fontSize:
                     active.name.length > 11
-                      ? 'clamp(28px, 2.5vw, 40px)'
+                      ? 'clamp(36px, 2.9vw, 48px)'
                       : active.name.length > 8
-                        ? 'clamp(32px, 2.8vw, 46px)'
-                        : 'clamp(38px, 3vw, 52px)'
+                        ? 'clamp(40px, 3.2vw, 54px)'
+                        : 'clamp(42px, 3.4vw, 58px)'
                 }}
               >
                 {active.name}
@@ -741,7 +741,7 @@ export default function App() {
           <button className="coming-soon" onClick={() => revealChakra(activeIndex + 1)}>
             <span>Continue the path</span>
             <strong>
-              {chakras[activeIndex + 1].id} · {chakras[activeIndex + 1].name}
+              {chakras[activeIndex + 1].id} – {chakras[activeIndex + 1].name}
             </strong>
             <em>{chakras[activeIndex + 1].keywords.toLowerCase().split(' + ').join(' · ')}</em>
             <ArrowRight size={20} strokeWidth={1.4} />
@@ -749,7 +749,7 @@ export default function App() {
         ) : (
           <button className="coming-soon" onClick={() => revealChakra(0)}>
             <span>The path returns</span>
-            <strong>01 · Muladhara</strong>
+            <strong>01 – Muladhara</strong>
             <em>begin again at the root</em>
             <ArrowRight size={20} strokeWidth={1.4} />
           </button>
