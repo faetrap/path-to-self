@@ -205,7 +205,12 @@ button:focus-visible {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 20px 2px 8px 0;
+  /* Content dissolves into the page at the bottom instead of being cut by
+     the panel edge; the extra bottom padding lets the last card scroll
+     fully clear of the fade. */
+  padding: 20px 2px 56px 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 72px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 72px), transparent);
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--gold) 30%, transparent) transparent;
 }
@@ -469,46 +474,58 @@ button:focus-visible {
 .mist span {
   --c: var(--mist);
   --a: 30%;
+  --k: 1.7; /* desktop: a bigger page needs denser mist to read the same */
   position: absolute;
-  width: 44vmax;
-  height: 34vmax;
+  width: 58vmax;
+  height: 44vmax;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    color-mix(in srgb, var(--c) var(--a), transparent) 0%,
-    color-mix(in srgb, var(--c) calc(var(--a) * 0.45), transparent) 40%,
+    color-mix(in srgb, var(--c) calc(var(--a) * var(--k)), transparent) 0%,
+    color-mix(in srgb, var(--c) calc(var(--a) * var(--k) * 0.45), transparent) 40%,
     transparent 70%
   );
   filter: blur(30px);
   transform: translate(-50%, -50%);
-  animation: mist-drift 40s ease-in-out infinite alternate;
+  /* Two layers of motion: one shared breath (4s in, 5s out, all clouds
+     together) and a slow individual drift underneath it. */
+  animation:
+    mist-breathe 9s ease-in-out infinite,
+    mist-drift 40s ease-in-out infinite alternate;
   will-change: transform, opacity;
 }
 
 /* Corners and edges: the areas the figure's rainbow doesn't reach. */
-.mist span:nth-child(1) { left: 8%;  top: 10%; --a: 22%; animation-duration: 46s; }
-.mist span:nth-child(2) { left: 94%; top: 92%; --a: 22%; animation-duration: 52s; animation-delay: -20s; }
-.mist span:nth-child(3) { left: 92%; top: 6%;  --c: #b7a3d6; --a: 24%; animation-duration: 38s; animation-delay: -9s; }
-.mist span:nth-child(4) { left: 6%;  top: 94%; --c: #e7a7a2; --a: 22%; animation-duration: 44s; animation-delay: -31s; }
-.mist span:nth-child(5) { left: 30%; top: 100%; --c: #e8c77e; --a: 22%; animation-duration: 50s; animation-delay: -14s; }
-.mist span:nth-child(6) { left: 70%; top: 0%;  --c: #9fc0dc; --a: 20%; animation-duration: 42s; animation-delay: -26s; }
+.mist span:nth-child(1) { left: 8%;  top: 10%; --a: 20%; animation-duration: 9s, 46s; }
+.mist span:nth-child(2) { left: 94%; top: 92%; --a: 20%; animation-duration: 9s, 52s; animation-delay: 0s, -20s; }
+.mist span:nth-child(3) { left: 92%; top: 6%;  --c: #b7a3d6; --a: 24%; animation-duration: 9s, 38s; animation-delay: 0s, -9s; }
+.mist span:nth-child(4) { left: 6%;  top: 94%; --c: #e7a7a2; --a: 22%; animation-duration: 9s, 44s; animation-delay: 0s, -31s; }
+.mist span:nth-child(5) { left: 30%; top: 100%; --c: #e8c77e; --a: 22%; animation-duration: 9s, 50s; animation-delay: 0s, -14s; }
+.mist span:nth-child(6) { left: 70%; top: 0%;  --c: #9fc0dc; --a: 20%; animation-duration: 9s, 42s; animation-delay: 0s, -26s; }
+
+@keyframes mist-breathe {
+  0%,
+  100% {
+    opacity: 0.06;
+  }
+  44.4% {
+    /* 4s of the 9s cycle: inhale */
+    opacity: 1;
+  }
+}
 
 @keyframes mist-drift {
   0% {
     transform: translate(-56%, -46%) scale(0.92) rotate(-4deg);
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
   }
   100% {
     transform: translate(-44%, -54%) scale(1.1) rotate(5deg);
-    opacity: 0.75;
   }
 }
 
 @media (max-width: 720px) {
   .mist span {
+    --k: 1;
     width: 70vmax;
     height: 50vmax;
   }
@@ -517,6 +534,7 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .mist span {
     animation: none;
+    opacity: 0.6;
   }
 }
 
@@ -1638,7 +1656,7 @@ button:focus-visible {
 }
 
 .chip-id {
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.02em;
   color: var(--text);
 }
@@ -1774,6 +1792,8 @@ button:focus-visible {
   .right-scroll {
     overflow: visible;
     padding-bottom: var(--panel-pad);
+    -webkit-mask-image: none;
+    mask-image: none;
   }
 
   .chakra-bar {

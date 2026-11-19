@@ -16,8 +16,15 @@ def smooth(e0, e1, x):
     t = np.clip((x - e0) / (e1 - e0), 0, 1)
     return t * t * (3 - 2 * t)
 yy, xx = np.mgrid[0:H, 0:W]
-r = np.sqrt(((xx - W / 2) / (0.27 * W)) ** 2 + ((yy - 0.49 * H) / (0.53 * H)) ** 2)
-a = 1 - smooth(0.92, 1.18, r)
+# Sides: the aura's colour tapers out between ~0.14W and ~0.33W from the
+# centre, so the fade has to span that whole band. A short ramp (the first
+# version faded over ~0.07W) clipped the aura into a visible vertical line.
+dx = np.abs(xx - W / 2)
+a = 1 - smooth(0.15 * W, 0.37 * W, dx)
+# Round the corners with a wide ellipse so top/bottom fades meet the sides
+# softly.
+r = np.sqrt((dx / (0.42 * W)) ** 2 + ((yy - 0.49 * H) / (0.56 * H)) ** 2)
+a *= 1 - smooth(0.85, 1.15, r)
 # also fade the top and bottom rows: the aura and lotus reach close to the
 # image edges, so without this the artwork stops in a hard horizontal line
 a *= smooth(0.0, 0.12 * H, yy) * smooth(0.0, 0.10 * H, (H - 1) - yy)

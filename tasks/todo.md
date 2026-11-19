@@ -194,3 +194,10 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Faint vertical crease at the right panel's inner edge on desktop: the panel fade went 0→40% in the first 12% then changed slope. Both side panels now use an 11-stop smoothstep fade (no slope breaks).
 - [x] Smoke wisps (too faint, and hidden behind the panels' 88% fill) → "chakra mist": 6 soft clouds in the corners/edges, fixed above the panels with multiply so they tint without covering text. Two follow the selected chakra's colour (cross-fade via @property --mist, 1.8s); four hold violet/rose/gold/blue. 38–52s drift, never fully fades.
 - Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812; no console errors.
+
+## Side edges, breathing mist, bottom fade (2026-11-19)
+- [x] Remaining vertical edges (both sides, desktop): the figure image's own side fade ran over only ~0.07W while the aura's colour tapers from ~0.14W to ~0.33W from centre. `blend-figure.py` now fades sides over 0.15W→0.37W (plus a wide corner ellipse); no line visible even at 4× contrast.
+- [x] Mist: desktop clouds bigger (58×44vmax) and 1.7× denser; phones unchanged. All clouds breathe together, 4s in / 5s out (9s), over their own slow drift. Active-colour clouds capped at --a 20% so gold text stays ≥4.5:1 at the breath peak (computed 4.51 worst case, red).
+- [x] Desktop reading column fades out over its bottom 72px instead of cutting off (mask; extra bottom padding so the last card scrolls clear).
+- [x] Mobile chip numbers 12 → 11px (G5 exempts .chip-id to 11px).
+- Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812; no console errors.

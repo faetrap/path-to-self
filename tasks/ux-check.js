@@ -155,7 +155,8 @@
       const txt = [...el.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim()).map((n) => n.textContent.trim()).join(' ');
       if (!txt || !visible(el)) continue;
       const cs = getComputedStyle(el);
-      if (parseFloat(cs.fontSize) < 12) bad.add(`small ${cs.fontSize}: "${txt.slice(0, 24)}"`);
+      // Chip numbers (two digits, under a colour dot) are 11px by request (2026-11-19).
+      if (parseFloat(cs.fontSize) < (el.classList.contains('chip-id') ? 11 : 12)) bad.add(`small ${cs.fontSize}: "${txt.slice(0, 24)}"`);
       const words = txt.split(/\s+/).filter((w) => /[a-z]/i.test(w));
       if (cs.textTransform === 'uppercase' && words.length > 3) bad.add(`caps ${words.length} words: "${txt.slice(0, 24)}"`);
       const c = rgba(cs.color);
