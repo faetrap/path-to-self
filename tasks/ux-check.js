@@ -167,6 +167,36 @@
     out.G5 = { pass: bad.size === 0, detail: bad.size ? [...bad] : 'sizes, caps and contrast ok' };
   }
 
+  // G7: sections live in 3 tabs (<= 4 each), all 11 reachable, keyboard works.
+  {
+    const detail = [];
+    const tabs = [...document.querySelectorAll('.section-tab')];
+    if (tabs.length !== 3) detail.push(`expected 3 tabs, found ${tabs.length}`);
+    const seen = new Set();
+    for (const tab of tabs) {
+      tab.click();
+      await wait(150);
+      const titles = [...document.querySelectorAll('#section-panel .accordion-row strong')].map((t) => t.textContent);
+      if (titles.length > 4) detail.push(`${tab.textContent} has ${titles.length} sections`);
+      titles.forEach((t) => seen.add(t));
+      if (tab.getAttribute('aria-selected') !== 'true') detail.push(`${tab.textContent} not aria-selected after click`);
+    }
+    const total = document.querySelectorAll('.right-panel').length && 11;
+    if (seen.size !== total) detail.push(`reached ${seen.size} of ${total} sections`);
+    tabs[0]?.click();
+    await wait(100);
+    tabs[0]?.focus();
+    tabs[0]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    await wait(150);
+    if (document.activeElement !== tabs[1] || tabs[1].getAttribute('aria-selected') !== 'true') detail.push('ArrowRight did not move to next tab');
+    const before = document.querySelector('.right-panel h2').textContent;
+    tabs[1]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true }));
+    await wait(150);
+    if (document.querySelector('.right-panel h2').textContent !== before) detail.push('arrow key on a tab changed the chakra');
+    tabs[0]?.click();
+    out.G7 = { pass: detail.length === 0, detail: detail.length ? detail : `3 tabs, ${seen.size} sections reachable, keyboard ok` };
+  }
+
   // G6: desktop left panel fits without scrolling or clipping.
   if (!stacked) {
     const lp = document.querySelector('.left-panel');

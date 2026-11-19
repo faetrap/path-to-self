@@ -106,6 +106,28 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
 
 type OrbPos = { top: number; x: number };
 
+// The 11 sections of each chakra, grouped into three tabs. Any section not
+// listed falls into the first tab so nothing can silently disappear.
+const SECTION_TABS = [
+  {
+    id: 'understand',
+    label: 'Understand',
+    titles: ['Psychological Themes', 'Developmental Stage', 'Shadow & Blockages', 'Related Centers']
+  },
+  { id: 'feel', label: 'Feel', titles: ['Somatic & Physiology', 'Nervous System Links', 'Yoga Poses'] },
+  {
+    id: 'practice',
+    label: 'Practice',
+    titles: ['Practices & Meditations', 'Mantras & Sounds', 'Crystals & Stones', 'Integration & Contemplation']
+  }
+] as const;
+
+type TabId = (typeof SECTION_TABS)[number]['id'];
+
+function tabOf(title: string): TabId {
+  return SECTION_TABS.find((tab) => (tab.titles as readonly string[]).includes(title))?.id ?? 'understand';
+}
+
 // Section titles are stored in Title Case; show them in sentence case.
 const toSentenceCase = (title: string) => title.charAt(0) + title.slice(1).toLowerCase();
 
@@ -154,10 +176,9 @@ function BodyFigure({
       <div className={`figure-frame${calibrate ? ' calibrate' : ''}`} ref={frameRef}>
         <img
           className="figure-art"
-          src={`${import.meta.env.BASE_URL}figure.jpg`}
+          src={`${import.meta.env.BASE_URL}figure.webp`}
           alt="Meditating figure seated in a lotus, seven chakras glowing along the spine"
         />
-        <div className="figure-veil" aria-hidden="true" />
         {chakras.map((chakra, index) => (
           <button
             key={chakra.id}
@@ -417,6 +438,8 @@ function useMediaQuery(query: string) {
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [openSection, setOpenSection] = useState<number | null>(0);
+  const [activeTab, setActiveTab] = useState<TabId>('understand');
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [overlay, setOverlay] = useState<'about' | 'journal' | 'library' | null>(null);
   const [view, setView] = useState<'map' | 'quiz'>('map');
   const calibrate =
@@ -437,6 +460,7 @@ export default function App() {
 
   function chooseChakra(index: number) {
     setActiveIndex(index);
+    setActiveTab('understand');
     setOpenSection(0);
     setBurst((n) => n + 1);
   }
@@ -484,7 +508,7 @@ export default function App() {
         return;
       }
       if (viewRef.current !== 'map') return;
-      if (event.target instanceof HTMLElement && event.target.closest('input, textarea')) return;
+      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, [role="tab"]')) return;
       if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
         event.preventDefault();
         chooseChakra(Math.min(chakras.length - 1, activeIndexRef.current + 1));
@@ -652,8 +676,41 @@ export default function App() {
         <div className="right-scroll">
         <p className="summary">{active.summary}</p>
 
-        <div className="accordion">
-          {active.sections.map((section, index) => (
+        <div className="section-tabs" role="tablist" aria-label="Ways into this chakra">
+          {SECTION_TABS.map((tab, i) => (
+            <button
+              key={tab.id}
+              ref={(el) => (tabRefs.current[i] = el)}
+              id={`tab-${tab.id}`}
+              role="tab"
+              className={`section-tab${activeTab === tab.id ? ' active' : ''}`}
+              style={{ '--chakra': active.color } as React.CSSProperties}
+              aria-selected={activeTab === tab.id}
+              aria-controls="section-panel"
+              tabIndex={activeTab === tab.id ? 0 : -1}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setOpenSection(0);
+              }}
+              onKeyDown={(event) => {
+                const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+                if (!step) return;
+                event.preventDefault();
+                const next = (i + step + SECTION_TABS.length) % SECTION_TABS.length;
+                setActiveTab(SECTION_TABS[next].id);
+                setOpenSection(0);
+                tabRefs.current[next]?.focus();
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="accordion" id="section-panel" role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
+          {active.sections
+            .filter((section) => tabOf(section.title) === activeTab)
+            .map((section, index) => (
             <div key={section.title} className={`accordion-item${openSection === index ? ' open' : ''}`}>
               <button
                 className="accordion-row"

@@ -48,10 +48,9 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse 70% 55% at 50% 42%, rgba(255, 251, 244, 0.7), transparent 70%),
-    radial-gradient(ellipse 90% 70% at 50% 110%, rgba(236, 205, 196, 0.3), transparent 70%),
-    var(--bg);
+  /* Flat on purpose: the figure artwork is colour-matched to --bg and fades
+     to transparent, so any gradient here would show its edges. */
+  background: var(--bg);
 }
 
 button,
@@ -398,15 +397,6 @@ button:focus-visible {
   object-fit: fill;
 }
 
-.figure-veil {
-  position: absolute;
-  inset: -1px;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, var(--bg), transparent 15%, transparent 85%, var(--bg)),
-    linear-gradient(180deg, var(--bg), transparent 14%, transparent 84%, var(--bg)),
-    radial-gradient(ellipse 74% 96% at 50% 48%, transparent 60%, color-mix(in srgb, var(--bg) 55%, transparent) 100%);
-}
 
 .body-chakra {
   position: absolute;
@@ -424,7 +414,7 @@ button:focus-visible {
 .orb {
   display: block;
   position: absolute;
-  inset: -25%;
+  inset: -8%;
   pointer-events: none;
   border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--chakra) 18%, transparent) 0%, transparent 65%);
@@ -436,8 +426,9 @@ button:focus-visible {
   position: absolute;
   inset: 4px;
   border-radius: 50%;
-  /* Deepened ring so idle orbs still read as tappable on the light artwork. */
-  border: 1.5px solid color-mix(in srgb, color-mix(in oklab, var(--chakra) 70%, var(--ink-base)) 60%, transparent);
+  /* Fine ring in the chakra's own colour: enough to read as tappable,
+     light enough to let the painted glow underneath lead. */
+  border: 1px solid color-mix(in srgb, color-mix(in oklab, var(--chakra) 75%, var(--ink-base)) 45%, transparent);
   transition: border-color 0.25s ease, inset 0.25s ease;
 }
 
@@ -476,8 +467,8 @@ button:focus-visible {
 
 .body-chakra.selected .orb {
   box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--gold-bright) 65%, transparent),
-    0 0 34px 11px color-mix(in srgb, var(--chakra) 60%, transparent);
+    0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
+    0 0 26px 8px color-mix(in srgb, var(--chakra) 50%, transparent);
   animation: orb-breathe 3.2s ease-in-out infinite;
 }
 
@@ -493,9 +484,9 @@ button:focus-visible {
 .body-chakra.selected::after {
   content: '';
   position: absolute;
-  inset: calc(-25% - 5px);
+  inset: calc(-8% - 3px);
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--gold-bright) 70%, var(--chakra));
+  border: 1px solid color-mix(in srgb, var(--chakra) 70%, transparent);
   pointer-events: none;
   animation: orb-ring 2.6s ease-out infinite;
 }
@@ -504,15 +495,15 @@ button:focus-visible {
   0%,
   100% {
     box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--gold-bright) 55%, transparent),
-      0 0 30px 9px color-mix(in srgb, var(--chakra) 55%, transparent);
+      0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
+      0 0 22px 6px color-mix(in srgb, var(--chakra) 45%, transparent);
     transform: scale(1);
   }
   50% {
     box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--gold-bright) 80%, transparent),
-      0 0 46px 16px color-mix(in srgb, var(--chakra) 70%, transparent);
-    transform: scale(1.1);
+      0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
+      0 0 34px 11px color-mix(in srgb, var(--chakra) 60%, transparent);
+    transform: scale(1.08);
   }
 }
 
@@ -522,7 +513,7 @@ button:focus-visible {
     opacity: 0.85;
   }
   100% {
-    transform: scale(2.3);
+    transform: scale(1.8);
     opacity: 0;
   }
 }
@@ -738,6 +729,47 @@ button:focus-visible {
   line-height: 1.7;
   color: var(--text);
   margin: 0 0 24px;
+}
+
+/* ---------- section tabs ---------- */
+
+.section-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 14px;
+  border: 1px solid var(--soft-line);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--fill) 35%, transparent);
+}
+
+.section-tab {
+  min-height: 44px;
+  border-radius: 9px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-tab:hover {
+  color: var(--cream);
+}
+
+.section-tab.active {
+  color: var(--cream);
+  background: color-mix(in srgb, var(--chakra) 16%, var(--bg-raised));
+  box-shadow:
+    inset 0 -2px 0 color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
+    0 1px 4px color-mix(in srgb, var(--shadow) 12%, transparent);
+}
+
+/* Keyboard focus: an inset dashed ring, so it never reads as "selected". */
+.section-tab:focus-visible {
+  outline: 1.5px dashed var(--gold);
+  outline-offset: -5px;
 }
 
 /* ---------- accordion ---------- */
@@ -1560,7 +1592,9 @@ button:focus-visible {
   .right-panel {
     grid-column: 1 / -1;
     overflow: visible;
-    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    /* Solid page colour: on tablets the figure stays fixed behind the page,
+       and the body is flat --bg, so this covers it without showing a box. */
+    background: var(--bg);
   }
 
   .right-inner {
@@ -1595,7 +1629,7 @@ button:focus-visible {
 
   .left-panel,
   .right-panel {
-    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    background: var(--bg);
   }
 
   /* On mobile the figure IS the navigation, so drop the list, its label,
@@ -1635,13 +1669,16 @@ button:focus-visible {
     aspect-ratio: 4 / 5;
   }
 
+  /* Same scale as before (artwork height = frame height, so orb positions
+     still map 1:1), but the full-width artwork overflows the portrait frame
+     and its transparent edges fade out naturally across the screen. */
   .figure-art {
-    object-fit: cover;
-    object-position: center;
-  }
-
-  .figure-veil {
-    background: linear-gradient(180deg, var(--bg), transparent 12%, transparent 88%, var(--bg));
+    left: 50%;
+    right: auto;
+    width: auto;
+    max-width: none;
+    aspect-ratio: 1774 / 887;
+    transform: translateX(-50%);
   }
 
   /* Orbs: 20px hit area (neighbours are >=22px apart), drawn at 30px.

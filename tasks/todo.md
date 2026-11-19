@@ -140,3 +140,12 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - Exemption: large display headings (e.g. the 30px "AN ANATOMY OF CONSCIOUSNESS" in About, and "PATH TO SELF") keep caps; the caps rule applies to labels
 - [ ] G8: your sign-off on the compact list
 - [ ] Open: you said you don't like the look yet, and want a different heading font
+
+## Figure blend + Batch C (2026-11-19), DONE
+
+- [x] Figure re-processed (`tasks/tools/blend-figure.py`, source PNG in ~/Downloads): the paper colour is shifted to exactly `--bg`, then the edges fade to transparent outside an ellipse around the aura. Now `public/figure.webp`, 53 KB (was a 104 KB JPG); `figure.jpg` removed. Body flat `--bg`; the old edge "veil" removed
+- [x] Mobile: the artwork keeps its scale (orbs unchanged) but overflows the portrait frame, so the aura fades across the screen instead of being cut into a box; no horizontal scroll
+- [x] Orbs: fine 1px rings in each chakra's colour, drawn ~1.16× the hit area (no overlapping rings); selected ring in the chakra colour instead of brown-gold; smaller pulse
+- [x] Batch C: Understand (themes, stage, shadow, related) / Feel (somatics, nervous system, poses) / Practice (practices, mantras, crystals, contemplation). Proper tab semantics, ←/→ moves between tabs, arrow keys on a tab no longer switch chakra; resets to Understand on chakra change
+- [x] G7 added to ux-check.js. G1–G7 and G9 pass at 375×812, 900×700, 1366×768 and 1440×900; no console errors
+- [ ] Heading font: waiting on your pick (the token `--font-display` is ready)
