@@ -201,3 +201,10 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Desktop reading column fades out over its bottom 72px instead of cutting off (mask; extra bottom padding so the last card scrolls clear).
 - [x] Mobile chip numbers 12 → 11px (G5 exempts .chip-id to 11px).
 - Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812; no console errors.
+
+## Mist behind text, slower breath, light orbs (2026-11-19)
+- [x] Mist now sits between panel parchment and panel content (panels no longer form a stacking context; fill moved to ::before z1, mist/motes z2, content z3). Text no longer tinted.
+- [x] Because the paper now darkens under untinted text, label tokens darkened to hold >=4.5:1 at the breath peak: --gold #765720 → #644a1b, --muted #6c5b4f → #5a4c42, --ink-mix 50% → 45% (computed worst case 4.57, yellow ink on rose mist).
+- [x] Desktop mist density 1.7× → 1.3×; phones unchanged. Breath 10s in / 10s out.
+- [x] 14 warm light motes (7 top-right, 7 bottom-left), drifting + twinkling, behind text; phones show 7, smaller. Reduced motion: static.
+- Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812; text and all tap targets hit-test on top; no console errors.

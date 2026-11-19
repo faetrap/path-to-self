@@ -27,11 +27,11 @@
   color-scheme: light;
   --bg: #f3e8da;
   --bg-raised: #fbf6ee;
-  --gold: #765720;
+  --gold: #644a1b; /* darker so labels stay >= 4.5:1 on mist-tinted paper */
   --gold-bright: #5e4519;
   --cream: #3b2c22;
   --text: #54443a;
-  --muted: #6c5b4f;
+  --muted: #5a4c42;
   --line: color-mix(in srgb, var(--gold) 34%, transparent);
   --soft-line: color-mix(in srgb, var(--gold) 18%, transparent);
   --shadow: #6b5440;
@@ -48,7 +48,7 @@
     0 1px 2px rgba(107, 84, 64, 0.1);
   /* Chakra colours are tuned for glowing on dark; as text on parchment they
      are deepened toward the ink colour to stay readable. */
-  --ink-mix: 50%;
+  --ink-mix: 45%;
   --ink-base: #140d0a;
   --panel-pad: clamp(24px, 2.4vw, 44px);
   --font-ui: 'Necto Mono', ui-monospace, 'SF Mono', Menlo, monospace;
@@ -143,13 +143,35 @@ button:focus-visible {
   flex-direction: column;
   padding: var(--panel-pad);
   position: relative;
-  z-index: 2;
+}
+
+/* Layering, back to front: figure (0) -> panel parchment (1) -> mist and
+   light orbs (2) -> text and controls (3). The panels deliberately don't
+   form their own stacking context, so the mist slides between their
+   parchment fill and their content: it colours the page behind the words
+   rather than tinting the words themselves. */
+.left-panel::before,
+.right-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--panel-fill, none);
+}
+
+.left-panel > *,
+.right-panel > *,
+.center-panel > :not(.figure-backdrop),
+.mobile-footer {
+  position: relative;
+  z-index: 3;
 }
 
 .left-panel {
   /* Smoothstep fade (no kinks) from solid behind the text to clear over
      the figure; a two-stop ramp left a faint crease where its slope changed. */
-  background: linear-gradient(90deg,
+  --panel-fill: linear-gradient(90deg,
     color-mix(in srgb, var(--bg) 88%, transparent) 0%,
     color-mix(in srgb, var(--bg) 88%, transparent) 50%,
     color-mix(in srgb, var(--bg) 86%, transparent) 55%,
@@ -166,7 +188,7 @@ button:focus-visible {
 }
 
 .right-panel {
-  background: linear-gradient(270deg,
+  --panel-fill: linear-gradient(270deg,
     color-mix(in srgb, var(--bg) 88%, transparent) 0%,
     color-mix(in srgb, var(--bg) 88%, transparent) 50%,
     color-mix(in srgb, var(--bg) 86%, transparent) 55%,
@@ -458,13 +480,13 @@ button:focus-visible {
   initial-value: #c9a45c;
 }
 
-/* Fixed above the panels' parchment fill (which would otherwise hide it
-   exactly where the page is emptiest) but multiplied, so it only tints:
-   text stays as dark as it was. Overlays and the sticky bar sit above. */
+/* Above the panels' parchment fill (which would otherwise hide it exactly
+   where the page is emptiest) but beneath their text; see "Layering".
+   Multiplied so it reads as colour soaked into the paper. */
 .mist {
   position: fixed;
   inset: 0;
-  z-index: 3;
+  z-index: 2;
   pointer-events: none;
   overflow: hidden;
   mix-blend-mode: multiply;
@@ -474,7 +496,7 @@ button:focus-visible {
 .mist span {
   --c: var(--mist);
   --a: 30%;
-  --k: 1.7; /* desktop: a bigger page needs denser mist to read the same */
+  --k: 1.3; /* desktop: a bigger page needs a little more density to read the same */
   position: absolute;
   width: 58vmax;
   height: 44vmax;
@@ -490,27 +512,102 @@ button:focus-visible {
   /* Two layers of motion: one shared breath (4s in, 5s out, all clouds
      together) and a slow individual drift underneath it. */
   animation:
-    mist-breathe 9s ease-in-out infinite,
+    mist-breathe 20s ease-in-out infinite,
     mist-drift 40s ease-in-out infinite alternate;
   will-change: transform, opacity;
 }
 
 /* Corners and edges: the areas the figure's rainbow doesn't reach. */
-.mist span:nth-child(1) { left: 8%;  top: 10%; --a: 20%; animation-duration: 9s, 46s; }
-.mist span:nth-child(2) { left: 94%; top: 92%; --a: 20%; animation-duration: 9s, 52s; animation-delay: 0s, -20s; }
-.mist span:nth-child(3) { left: 92%; top: 6%;  --c: #b7a3d6; --a: 24%; animation-duration: 9s, 38s; animation-delay: 0s, -9s; }
-.mist span:nth-child(4) { left: 6%;  top: 94%; --c: #e7a7a2; --a: 22%; animation-duration: 9s, 44s; animation-delay: 0s, -31s; }
-.mist span:nth-child(5) { left: 30%; top: 100%; --c: #e8c77e; --a: 22%; animation-duration: 9s, 50s; animation-delay: 0s, -14s; }
-.mist span:nth-child(6) { left: 70%; top: 0%;  --c: #9fc0dc; --a: 20%; animation-duration: 9s, 42s; animation-delay: 0s, -26s; }
+.mist span:nth-child(1) { left: 8%;  top: 10%; --a: 20%; animation-duration: 20s, 46s; }
+.mist span:nth-child(2) { left: 94%; top: 92%; --a: 20%; animation-duration: 20s, 52s; animation-delay: 0s, -20s; }
+.mist span:nth-child(3) { left: 92%; top: 6%;  --c: #b7a3d6; --a: 24%; animation-duration: 20s, 38s; animation-delay: 0s, -9s; }
+.mist span:nth-child(4) { left: 6%;  top: 94%; --c: #e7a7a2; --a: 22%; animation-duration: 20s, 44s; animation-delay: 0s, -31s; }
+.mist span:nth-child(5) { left: 30%; top: 100%; --c: #e8c77e; --a: 22%; animation-duration: 20s, 50s; animation-delay: 0s, -14s; }
+.mist span:nth-child(6) { left: 70%; top: 0%;  --c: #9fc0dc; --a: 20%; animation-duration: 20s, 42s; animation-delay: 0s, -26s; }
 
 @keyframes mist-breathe {
   0%,
   100% {
     opacity: 0.06;
   }
-  44.4% {
-    /* 4s of the 9s cycle: inhale */
+  50% {
+    /* 10s in, 10s out */
     opacity: 1;
+  }
+}
+
+/* ---------- light orbs ---------- */
+
+/* Small motes of warm light drifting in the emptiest corners (top-right,
+   bottom-left). Same layer as the mist (behind text), but not multiplied,
+   since multiply can only darken and these need to glow. */
+.motes {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mote {
+  /* Light on light paper only reads with a warm halo around a white core. */
+  --size: calc(var(--s) * 1.7);
+  position: absolute;
+  width: var(--size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #fff 0%,
+    rgba(255, 246, 222, 0.95) 18%,
+    rgba(232, 196, 120, 0.55) 42%,
+    rgba(214, 170, 90, 0.18) 60%,
+    transparent 72%
+  );
+  box-shadow: 0 0 calc(var(--size) * 0.8) calc(var(--size) * 0.15) rgba(220, 178, 100, 0.3);
+  opacity: 0;
+  animation:
+    mote-float var(--dur) ease-in-out var(--delay) infinite alternate,
+    mote-twinkle calc(var(--dur) * 0.37) ease-in-out var(--delay) infinite;
+}
+
+@keyframes mote-float {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(calc(var(--dx) * 0.6), calc(var(--dy) * 0.4));
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+
+@keyframes mote-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* Phones: fewer and smaller, so the corners stay calm over the text. */
+@media (max-width: 720px) {
+  .mote:nth-child(2n) {
+    display: none;
+  }
+
+  .mote {
+    --size: calc(var(--s) * 1.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mote {
+    animation: none;
+    opacity: 0.6;
   }
 }
 
@@ -1782,7 +1879,7 @@ button:focus-visible {
     overflow: visible;
     /* Solid page colour: on tablets the figure stays fixed behind the page,
        and the body is flat --bg, so this covers it without showing a box. */
-    background: var(--bg);
+    --panel-fill: var(--bg);
   }
 
   .right-inner {
@@ -1821,7 +1918,7 @@ button:focus-visible {
      transparent and the glass shadows fade out instead of being cut off. */
   .left-panel,
   .right-panel {
-    background: transparent;
+    --panel-fill: none;
   }
 
   /* On mobile the figure IS the navigation, so drop the list, its label,

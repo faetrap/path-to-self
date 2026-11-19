@@ -37,6 +37,27 @@ function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: bool
 
 type OrbPos = { top: number; x: number };
 
+// Light motes for the two emptiest corners. Fixed values (not random) so
+// the layout is the same on every load and in every check.
+const MOTES = [
+  // top-right
+  { x: 74, y: 6, s: 10, dx: -22, dy: 30, dur: 19, delay: -3 },
+  { x: 88, y: 14, s: 16, dx: 18, dy: -24, dur: 24, delay: -11 },
+  { x: 95, y: 4, s: 8, dx: -30, dy: 18, dur: 17, delay: -7 },
+  { x: 81, y: 24, s: 12, dx: 26, dy: 22, dur: 27, delay: -15 },
+  { x: 92, y: 30, s: 7, dx: -16, dy: -28, dur: 21, delay: -2 },
+  { x: 68, y: 18, s: 9, dx: 20, dy: -20, dur: 23, delay: -18 },
+  { x: 85, y: 8, s: 6, dx: 14, dy: 26, dur: 16, delay: -9 },
+  // bottom-left
+  { x: 6, y: 92, s: 14, dx: 24, dy: -30, dur: 22, delay: -6 },
+  { x: 18, y: 84, s: 9, dx: -18, dy: -22, dur: 18, delay: -13 },
+  { x: 4, y: 76, s: 7, dx: 28, dy: 20, dur: 25, delay: -1 },
+  { x: 26, y: 95, s: 11, dx: -24, dy: -18, dur: 20, delay: -16 },
+  { x: 13, y: 70, s: 6, dx: 16, dy: -26, dur: 17, delay: -10 },
+  { x: 30, y: 82, s: 15, dx: 20, dy: 24, dur: 28, delay: -21 },
+  { x: 9, y: 86, s: 8, dx: -14, dy: 28, dur: 19, delay: -4 }
+];
+
 // The 11 sections of each chakra, grouped into three tabs. Any section not
 // listed falls into the first tab so nothing can silently disappear.
 const SECTION_TABS = [
@@ -452,6 +473,25 @@ export default function App() {
         <span />
         <span />
         <span />
+      </div>
+      <div className="motes" aria-hidden="true">
+        {MOTES.map((m, i) => (
+          <span
+            key={i}
+            className="mote"
+            style={
+              {
+                left: `${m.x}%`,
+                top: `${m.y}%`,
+                '--s': `${m.s}px`,
+                '--dx': `${m.dx}px`,
+                '--dy': `${m.dy}px`,
+                '--dur': `${m.dur}s`,
+                '--delay': `${m.delay}s`
+              } as React.CSSProperties
+            }
+          />
+        ))}
       </div>
       <section className="left-panel">
         <header className="micro-row site-eyebrow">
