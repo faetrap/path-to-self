@@ -1,15 +1,61 @@
+/* Necto Mono by Collletttivo, SIL Open Font License 1.1 (see public/fonts/NectoMono-OFL.txt).
+   One weight only, so it is used for labels and UI; Cormorant Garamond
+   carries headings and Inter carries reading text. */
+/* Day Roman by Fredrick Nader (Apostrophic Labs, 2002), a revival of
+   Francois Guyot's 16th-century roman; freeware, see
+   public/fonts/DayRoman-README.txt. Single weight; used for headings. */
+@font-face {
+  font-family: 'Day Roman';
+  src: url('./assets/fonts/DayRoman-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Necto Mono';
+  src: url('./assets/fonts/NectoMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --bg: #010a12;
-  --bg-raised: #061820;
-  --gold: #c9a45c;
-  --gold-bright: #e6cd96;
-  --cream: #ecdfc3;
-  --text: #aec1bb;
-  --muted: #7e948f;
-  --line: rgba(201, 164, 92, 0.28);
-  --soft-line: rgba(201, 164, 92, 0.14);
+  /* Light "parchment" theme. Token names are kept from the dark theme:
+     --cream = strongest ink (headings), --text = body, --muted = secondary,
+     --gold = accent labels, --gold-bright = emphasised accent. */
+  color-scheme: light;
+  --bg: #f3e8da;
+  --bg-raised: #fbf6ee;
+  --gold: #644a1b; /* darker so labels stay >= 4.5:1 on mist-tinted paper */
+  --gold-bright: #5e4519;
+  --cream: #3b2c22;
+  --text: #54443a;
+  --muted: #5a4c42;
+  --line: color-mix(in srgb, var(--gold) 34%, transparent);
+  --soft-line: color-mix(in srgb, var(--gold) 18%, transparent);
+  --shadow: #6b5440;
+  --fill: #ffffff;
+  --scrim: rgba(92, 70, 52, 0.28);
+  /* Liquid glass: translucent fill, frosted backdrop, specular rim. */
+  --glass-fill: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.16));
+  --glass-blur: blur(14px) saturate(170%);
+  --glass-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 10px 28px rgba(107, 84, 64, 0.12),
+    0 1px 2px rgba(107, 84, 64, 0.1);
+  /* Chakra colours are tuned for glowing on dark; as text on parchment they
+     are deepened toward the ink colour to stay readable. */
+  --ink-mix: 45%;
+  --ink-base: #140d0a;
   --panel-pad: clamp(24px, 2.4vw, 44px);
-  font-family: 'Inter', 'Helvetica Neue', sans-serif;
+  --font-ui: 'Necto Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* Swap a heading font here; it drives the title, chakra names and numbers. */
+  --font-display: 'Day Roman', Georgia, serif;
+  --font-body: 'Inter', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-body);
   color: var(--text);
   background: var(--bg);
 }
@@ -18,14 +64,28 @@
   box-sizing: border-box;
 }
 
+/* Paper grain over the whole page: fractal noise, multiplied so it only
+   ever darkens slightly, like the tooth of a sheet of paper. It sits above
+   everything (figure included) so the figure's fade stays seamless. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.33 0 0 0 0 0.24 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mix-blend-mode: multiply;
+  opacity: 0.32;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse 70% 55% at 50% 42%, rgba(24, 62, 66, 0.3), transparent 70%),
-    radial-gradient(ellipse 90% 70% at 50% 110%, rgba(12, 36, 40, 0.45), transparent 70%),
-    var(--bg);
+  /* Flat on purpose: the figure artwork is colour-matched to --bg and fades
+     to transparent, so any gradient here would show its edges. */
+  background: var(--bg);
 }
 
 button,
@@ -46,12 +106,12 @@ button:focus {
 }
 
 button:focus-visible {
-  outline: 1px solid rgba(230, 205, 150, 0.7);
+  outline: 1px solid color-mix(in srgb, var(--gold-bright) 70%, transparent);
   outline-offset: 3px;
 }
 
 ::selection {
-  background: rgba(201, 164, 92, 0.35);
+  background: color-mix(in srgb, var(--gold) 35%, transparent);
   color: var(--cream);
 }
 
@@ -83,15 +143,65 @@ button:focus-visible {
   flex-direction: column;
   padding: var(--panel-pad);
   position: relative;
-  z-index: 2;
+}
+
+/* Layering, back to front: figure (0) -> panel parchment (1) -> mist and
+   light orbs (2) -> text and controls (3). The panels deliberately don't
+   form their own stacking context, so the mist slides between their
+   parchment fill and their content: it colours the page behind the words
+   rather than tinting the words themselves. */
+.left-panel::before,
+.right-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: var(--panel-fill, none);
+}
+
+.left-panel > *,
+.right-panel > *,
+.center-panel > :not(.figure-backdrop),
+.mobile-footer {
+  position: relative;
+  z-index: 3;
 }
 
 .left-panel {
-  background: linear-gradient(90deg, rgba(1, 10, 18, 0.88) 62%, rgba(1, 10, 18, 0.4) 88%, transparent);
+  /* Smoothstep fade (no kinks) from solid behind the text to clear over
+     the figure; a two-stop ramp left a faint crease where its slope changed. */
+  --panel-fill: linear-gradient(90deg,
+    color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 88%, transparent) 50%,
+    color-mix(in srgb, var(--bg) 86%, transparent) 55%,
+    color-mix(in srgb, var(--bg) 79%, transparent) 60%,
+    color-mix(in srgb, var(--bg) 69%, transparent) 65%,
+    color-mix(in srgb, var(--bg) 57%, transparent) 70%,
+    color-mix(in srgb, var(--bg) 44%, transparent) 75%,
+    color-mix(in srgb, var(--bg) 31%, transparent) 80%,
+    color-mix(in srgb, var(--bg) 19%, transparent) 85%,
+    color-mix(in srgb, var(--bg) 9%, transparent) 90%,
+    color-mix(in srgb, var(--bg) 2%, transparent) 95%,
+    color-mix(in srgb, var(--bg) 0%, transparent) 100%
+  );
 }
 
 .right-panel {
-  background: linear-gradient(270deg, rgba(1, 10, 18, 0.88) 62%, rgba(1, 10, 18, 0.4) 88%, transparent);
+  --panel-fill: linear-gradient(270deg,
+    color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 88%, transparent) 50%,
+    color-mix(in srgb, var(--bg) 86%, transparent) 55%,
+    color-mix(in srgb, var(--bg) 79%, transparent) 60%,
+    color-mix(in srgb, var(--bg) 69%, transparent) 65%,
+    color-mix(in srgb, var(--bg) 57%, transparent) 70%,
+    color-mix(in srgb, var(--bg) 44%, transparent) 75%,
+    color-mix(in srgb, var(--bg) 31%, transparent) 80%,
+    color-mix(in srgb, var(--bg) 19%, transparent) 85%,
+    color-mix(in srgb, var(--bg) 9%, transparent) 90%,
+    color-mix(in srgb, var(--bg) 2%, transparent) 95%,
+    color-mix(in srgb, var(--bg) 0%, transparent) 100%
+  );
 }
 
 .right-panel {
@@ -108,6 +218,7 @@ button:focus-visible {
 
 .right-header {
   flex-shrink: 0;
+  scroll-margin-top: 72px;
   padding-bottom: 18px;
   border-bottom: 1px solid var(--line);
 }
@@ -116,9 +227,14 @@ button:focus-visible {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 20px 2px 8px 0;
+  /* Content dissolves into the page at the bottom instead of being cut by
+     the panel edge; the extra bottom padding lets the last card scroll
+     fully clear of the fade. */
+  padding: 20px 2px 56px 0;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 72px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 72px), transparent);
   scrollbar-width: thin;
-  scrollbar-color: rgba(201, 164, 92, 0.3) transparent;
+  scrollbar-color: color-mix(in srgb, var(--gold) 30%, transparent) transparent;
 }
 
 .right-scroll::-webkit-scrollbar {
@@ -126,8 +242,13 @@ button:focus-visible {
 }
 
 .right-scroll::-webkit-scrollbar-thumb {
-  background: rgba(201, 164, 92, 0.25);
+  background: color-mix(in srgb, var(--gold) 25%, transparent);
   border-radius: 3px;
+}
+
+/* Chakra colour as readable text on parchment. Set --chakra on the element. */
+.ink {
+  color: color-mix(in oklab, var(--chakra) var(--ink-mix), var(--ink-base));
 }
 
 /* ---------- micro rows / kickers ---------- */
@@ -138,23 +259,34 @@ button:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 11px;
+  letter-spacing: 0.04em;
+  font-size: 12px;
   font-weight: 500;
   color: var(--gold);
+}
+
+/* The site's own eyebrow reads one step above the other micro labels. */
+.micro-row.site-eyebrow {
+  font-size: 14px;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .micro-row.site-eyebrow {
+    font-size: 15px;
+  }
 }
 
 /* ---------- left panel ---------- */
 
 .left-panel h1 {
-  margin: 26px 0 16px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 300;
-  font-size: clamp(44px, 4.3vw, 70px);
-  line-height: 1.0;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  margin: 18px 0 14px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(54px, 4.9vw, 80px);
+  line-height: 0.92;
+  letter-spacing: 0;
   color: var(--cream);
   white-space: nowrap;
 }
@@ -181,31 +313,20 @@ button:focus-visible {
 .intro {
   width: 100%;
   max-width: 380px;
-  margin: 18px 0 22px;
-  line-height: 1.7;
-  letter-spacing: 0.015em;
-  font-size: 13.5px;
+  margin: 14px 0 18px;
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  font-size: 13px;
   color: var(--text);
 }
 
 .map-label {
-  margin-bottom: 16px;
-}
-
-.map-label div {
-  display: grid;
-  gap: 8px;
-}
-
-.map-label span {
-  font-size: 10px;
-  color: var(--gold);
+  margin-bottom: 10px;
 }
 
 .map-label strong {
-  font-size: 12.5px;
-  letter-spacing: 0.16em;
-  color: var(--cream);
+  font-size: 13px;
+  color: var(--text);
 }
 
 .map-label > svg:last-child {
@@ -221,58 +342,43 @@ button:focus-visible {
 .chakra-list button {
   width: 100%;
   display: grid;
-  grid-template-columns: 38px 40px 1fr;
+  grid-template-columns: 26px 28px 1fr;
   column-gap: 12px;
-  row-gap: 2px;
   align-items: center;
-  align-content: center;
-  min-height: 48px;
-  padding: 6px 10px;
+  min-height: 42px;
+  padding: 4px 10px;
   border-bottom: 1px solid var(--soft-line);
   text-align: left;
   transition: background-color 0.2s ease;
 }
 
 .chakra-list button:hover {
-  background: rgba(201, 164, 92, 0.05);
+  background: color-mix(in srgb, var(--gold) 5%, transparent);
 }
 
 .chakra-list button.active {
-  background: linear-gradient(90deg, rgba(201, 164, 92, 0.12), rgba(201, 164, 92, 0.02) 75%, transparent);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 12%, transparent), color-mix(in srgb, var(--gold) 2%, transparent) 75%, transparent);
   box-shadow: inset 2px 0 0 var(--chakra, var(--gold));
 }
 
 .nav-id {
-  grid-row: 1 / 3;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  color: var(--chakra, var(--gold));
+  color: color-mix(in oklab, var(--chakra, var(--gold)) var(--ink-mix), var(--ink-base));
 }
 
 .chakra-list .sigil {
-  grid-row: 1 / 3;
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
 }
 
 .chakra-list strong {
-  grid-column: 3;
-  text-transform: uppercase;
-  letter-spacing: 0.13em;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 1.1;
+  font-size: 15px;
+  line-height: 1.2;
   color: var(--cream);
   white-space: nowrap;
 }
 
-.chakra-list em {
-  grid-column: 3;
-  font-style: normal;
-  color: var(--muted);
-  font-size: 11.5px;
-  line-height: 1.4;
-}
 
 /* ---------- footer ---------- */
 
@@ -282,18 +388,22 @@ button:focus-visible {
   gap: 14px;
   width: 100%;
   margin-top: 16px;
-  padding: 12px 16px;
+  padding: 12px 18px;
   text-align: left;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  background: linear-gradient(100deg, rgba(201, 164, 92, 0.1), rgba(201, 164, 92, 0.02));
+  border-radius: 20px;
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
   color: var(--gold-bright);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
 .quiz-cta:hover {
-  border-color: rgba(230, 205, 150, 0.6);
-  box-shadow: 0 0 26px rgba(201, 164, 92, 0.16);
+  transform: translateY(-1px);
+  box-shadow:
+    var(--glass-shadow),
+    0 14px 34px rgba(107, 84, 64, 0.16);
 }
 
 .quiz-cta > svg:first-child {
@@ -319,16 +429,13 @@ button:focus-visible {
 }
 
 .quiz-cta-text strong {
-  text-transform: uppercase;
-  letter-spacing: 0.13em;
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: 14px;
   color: var(--cream);
 }
 
 .quiz-cta-text em {
   font-style: normal;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
   color: var(--muted);
 }
@@ -339,7 +446,7 @@ button:focus-visible {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  column-gap: 22px;
+  column-gap: 16px;
   row-gap: 10px;
 }
 
@@ -349,7 +456,7 @@ button:focus-visible {
   gap: 7px;
   text-transform: uppercase;
   letter-spacing: 0.13em;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--gold);
   padding: 0;
@@ -359,6 +466,197 @@ button:focus-visible {
 
 .footer-link:hover {
   color: var(--gold-bright);
+}
+
+/* ---------- chakra mist ---------- */
+
+/* Soft colour clouds filling the plain parchment around the figure. Two of
+   them carry the selected chakra's colour (--mist, registered so it can
+   cross-fade), the rest hold a fixed rainbow palette. Each drifts and
+   breathes on its own long cycle; none ever fades out completely. */
+@property --mist {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c9a45c;
+}
+
+/* Above the panels' parchment fill (which would otherwise hide it exactly
+   where the page is emptiest) but beneath their text; see "Layering".
+   Multiplied so it reads as colour soaked into the paper. */
+.mist {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+  transition: --mist 1.8s ease;
+}
+
+.mist span {
+  --c: var(--mist);
+  --a: 30%;
+  --k: 1.3; /* desktop: a bigger page needs a little more density to read the same */
+  position: absolute;
+  width: 58vmax;
+  height: 44vmax;
+  border-radius: 50%;
+  /* Eased falloff (many stops) so the edge is soft even without a blur
+     filter; phones drop the filter entirely, see below. */
+  --ca: calc(var(--a) * var(--k));
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--c) var(--ca), transparent) 0%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.82), transparent) 18%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.55), transparent) 34%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.3), transparent) 48%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.12), transparent) 60%,
+    color-mix(in srgb, var(--c) calc(var(--ca) * 0.03), transparent) 68%,
+    transparent 72%
+  );
+  filter: blur(30px);
+  transform: translate(-50%, -50%);
+  /* Two layers of motion: one shared breath (4s in, 5s out, all clouds
+     together) and a slow individual drift underneath it. */
+  animation:
+    mist-breathe 20s ease-in-out infinite,
+    mist-drift 40s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+/* Corners and edges: the areas the figure's rainbow doesn't reach. */
+.mist span:nth-child(1) { left: 8%;  top: 10%; --a: 20%; animation-duration: 20s, 46s; }
+.mist span:nth-child(2) { left: 94%; top: 92%; --a: 20%; animation-duration: 20s, 52s; animation-delay: 0s, -20s; }
+.mist span:nth-child(3) { left: 92%; top: 6%;  --c: #b7a3d6; --a: 24%; animation-duration: 20s, 38s; animation-delay: 0s, -9s; }
+.mist span:nth-child(4) { left: 6%;  top: 94%; --c: #e7a7a2; --a: 22%; animation-duration: 20s, 44s; animation-delay: 0s, -31s; }
+.mist span:nth-child(5) { left: 30%; top: 100%; --c: #e8c77e; --a: 22%; animation-duration: 20s, 50s; animation-delay: 0s, -14s; }
+.mist span:nth-child(6) { left: 70%; top: 0%;  --c: #9fc0dc; --a: 20%; animation-duration: 20s, 42s; animation-delay: 0s, -26s; }
+
+@keyframes mist-breathe {
+  0%,
+  100% {
+    opacity: 0.06;
+  }
+  50% {
+    /* 10s in, 10s out */
+    opacity: 1;
+  }
+}
+
+/* ---------- light orbs ---------- */
+
+/* Small motes of warm light drifting in the emptiest corners (top-right,
+   bottom-left). Same layer as the mist (behind text), but not multiplied,
+   since multiply can only darken and these need to glow. */
+.motes {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mote {
+  /* Light on light paper only reads with a warm halo around a white core. */
+  --size: calc(var(--s) * 1.7);
+  position: absolute;
+  width: var(--size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    #fff 0%,
+    rgba(255, 246, 222, 0.95) 18%,
+    rgba(232, 196, 120, 0.55) 42%,
+    rgba(214, 170, 90, 0.18) 60%,
+    transparent 72%
+  );
+  box-shadow: 0 0 calc(var(--size) * 0.8) calc(var(--size) * 0.15) rgba(220, 178, 100, 0.3);
+  opacity: 0;
+  animation:
+    mote-float var(--dur) ease-in-out var(--delay) infinite alternate,
+    mote-twinkle calc(var(--dur) * 0.37) ease-in-out var(--delay) infinite;
+}
+
+@keyframes mote-float {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(calc(var(--dx) * 0.6), calc(var(--dy) * 0.4));
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+
+@keyframes mote-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+/* Phones: fewer and smaller, so the corners stay calm over the text. */
+@media (max-width: 720px) {
+  .mote:nth-child(2n) {
+    display: none;
+  }
+
+  .mote {
+    --size: calc(var(--s) * 1.3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mote {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+@keyframes mist-drift {
+  0% {
+    transform: translate(-56%, -46%) scale(0.92) rotate(-4deg);
+  }
+  100% {
+    transform: translate(-44%, -54%) scale(1.1) rotate(5deg);
+  }
+}
+
+/* Phones: no blur filter (the eased gradient is already soft, and blurring
+   large layers is one of the costliest things a phone browser does) and
+   four clouds instead of six. */
+@media (max-width: 720px) {
+  .mist span {
+    --k: 1;
+    width: 70vmax;
+    height: 50vmax;
+    filter: none;
+  }
+
+  .mist span:nth-child(5),
+  .mist span:nth-child(6) {
+    display: none;
+  }
+}
+
+/* Nothing drifts while the tab is in the background (saves battery). */
+.page-hidden .mist span,
+.page-hidden .mote,
+.page-hidden .body-chakra .orb,
+.page-hidden .body-chakra::after {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mist span {
+    animation: none;
+    opacity: 0.6;
+  }
 }
 
 /* ---------- center: figure ---------- */
@@ -396,21 +694,15 @@ button:focus-visible {
   object-fit: fill;
 }
 
-.figure-veil {
-  position: absolute;
-  inset: -1px;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, var(--bg), transparent 15%, transparent 85%, var(--bg)),
-    linear-gradient(180deg, var(--bg), transparent 14%, transparent 84%, var(--bg)),
-    radial-gradient(ellipse 74% 96% at 50% 48%, transparent 60%, rgba(1, 10, 18, 0.55) 100%);
-}
 
 .body-chakra {
   position: absolute;
   transform: translate(-50%, -50%);
-  width: clamp(20px, 3.3cqw, 62px);
-  height: clamp(20px, 3.3cqw, 62px);
+  /* Hit area is kept smaller than the gap between neighbouring centres
+     (crown and third eye are 5% of the frame height apart = 2.5cqw) so taps
+     never land on the wrong chakra. The visible orb is drawn 1.5x larger. */
+  width: clamp(14px, 2.2cqw, 41px);
+  height: clamp(14px, 2.2cqw, 41px);
   padding: 0;
   z-index: 5;
   border-radius: 50%;
@@ -418,9 +710,9 @@ button:focus-visible {
 
 .orb {
   display: block;
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: -8%;
+  pointer-events: none;
   border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--chakra) 18%, transparent) 0%, transparent 65%);
   transition: box-shadow 0.25s ease, transform 0.25s ease;
@@ -431,7 +723,9 @@ button:focus-visible {
   position: absolute;
   inset: 4px;
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--chakra) 40%, transparent);
+  /* Fine ring in the chakra's own colour: enough to read as tappable,
+     light enough to let the painted glow underneath lead. */
+  border: 1px solid color-mix(in srgb, color-mix(in oklab, var(--chakra) 75%, var(--ink-base)) 45%, transparent);
   transition: border-color 0.25s ease, inset 0.25s ease;
 }
 
@@ -443,9 +737,25 @@ button:focus-visible {
   border-color: color-mix(in srgb, var(--chakra) 75%, transparent);
 }
 
-/* Dim the unselected orbs slightly so the active one clearly stands out. */
+/* Dim the unselected orbs slightly so the active one clearly stands out.
+   They still pulse softly, staggered root → crown so a slow wave of light
+   travels up the spine. */
 .body-chakra:not(.selected):not(:hover) .orb {
   opacity: 0.7;
+  animation: orb-pulse 4.2s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.5s);
+}
+
+@keyframes orb-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 6px 1px color-mix(in srgb, var(--chakra) 12%, transparent);
+    transform: scale(0.96);
+  }
+  50% {
+    box-shadow: 0 0 18px 5px color-mix(in srgb, var(--chakra) 38%, transparent);
+    transform: scale(1.06);
+  }
 }
 
 .body-chakra.selected {
@@ -454,8 +764,8 @@ button:focus-visible {
 
 .body-chakra.selected .orb {
   box-shadow:
-    0 0 0 2px color-mix(in srgb, var(--gold-bright) 65%, transparent),
-    0 0 34px 11px color-mix(in srgb, var(--chakra) 60%, transparent);
+    0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
+    0 0 26px 8px color-mix(in srgb, var(--chakra) 50%, transparent);
   animation: orb-breathe 3.2s ease-in-out infinite;
 }
 
@@ -471,9 +781,9 @@ button:focus-visible {
 .body-chakra.selected::after {
   content: '';
   position: absolute;
-  inset: -5px;
+  inset: calc(-8% - 3px);
   border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--gold-bright) 70%, var(--chakra));
+  border: 1px solid color-mix(in srgb, var(--chakra) 70%, transparent);
   pointer-events: none;
   animation: orb-ring 2.6s ease-out infinite;
 }
@@ -482,15 +792,15 @@ button:focus-visible {
   0%,
   100% {
     box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--gold-bright) 55%, transparent),
-      0 0 30px 9px color-mix(in srgb, var(--chakra) 55%, transparent);
+      0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
+      0 0 22px 6px color-mix(in srgb, var(--chakra) 45%, transparent);
     transform: scale(1);
   }
   50% {
     box-shadow:
-      0 0 0 2px color-mix(in srgb, var(--gold-bright) 80%, transparent),
-      0 0 46px 16px color-mix(in srgb, var(--chakra) 70%, transparent);
-    transform: scale(1.1);
+      0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
+      0 0 34px 11px color-mix(in srgb, var(--chakra) 60%, transparent);
+    transform: scale(1.08);
   }
 }
 
@@ -500,55 +810,56 @@ button:focus-visible {
     opacity: 0.85;
   }
   100% {
-    transform: scale(2.3);
+    transform: scale(1.8);
     opacity: 0;
   }
 }
 
-/* ---------- gold fleck burst on selection ---------- */
+/* ---------- soft bloom on selection ---------- */
 
-.fleck-burst {
+/* One slow wash of the chakra's light spreading out from the orb, like a
+   lamp being lit — no particles. */
+.orb-bloom {
   position: absolute;
-  transform: translate(-50%, -50%);
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  z-index: 9;
-}
-
-.fleck {
-  position: absolute;
-  left: 0;
-  top: 0;
+  width: clamp(60px, 9cqw, 150px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%) scale(0.2);
   border-radius: 50%;
-  background: radial-gradient(circle, #fff6df 0%, var(--gold-bright) 55%, #c9a45c 100%);
-  box-shadow: 0 0 8px 2px rgba(230, 205, 150, 0.9);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, #fff 55%, var(--chakra)) 0%,
+    color-mix(in srgb, var(--chakra) 38%, transparent) 30%,
+    color-mix(in srgb, var(--chakra) 12%, transparent) 55%,
+    transparent 72%
+  );
+  pointer-events: none;
+  z-index: 4;
   opacity: 0;
-  animation: fleck-fly 0.85s ease-out forwards;
+  animation: orb-bloom 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 
-@keyframes fleck-fly {
+@keyframes orb-bloom {
   0% {
-    transform: translate(0, 0) scale(0.3);
+    transform: translate(-50%, -50%) scale(0.2);
     opacity: 0;
   }
-  20% {
-    opacity: 1;
-    transform: translate(calc(var(--dx) * 0.35), calc(var(--dy) * 0.35)) scale(1.15);
+  25% {
+    opacity: 0.75;
   }
   100% {
-    transform: translate(var(--dx), var(--dy)) scale(0.6);
+    transform: translate(-50%, -50%) scale(1.6);
     opacity: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .body-chakra.selected .orb {
+  .body-chakra.selected .orb,
+  .body-chakra:not(.selected):not(:hover) .orb {
     animation: none;
   }
 
   .body-chakra.selected::after,
-  .fleck {
+  .orb-bloom {
     animation: none;
     opacity: 0;
   }
@@ -560,41 +871,27 @@ button:focus-visible {
 
 /* ---------- sigils ---------- */
 
+/* The yantras are full-colour illustrations. Multiply drops their white
+   ground into the paper, and muted saturation makes them read as printed
+   ink rather than clip-art; the active one comes up to full colour. */
 .sigil {
   --chakra: var(--gold);
-  width: 24px;
-  height: 24px;
-  color: var(--chakra);
-  overflow: visible;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--chakra) 45%, transparent));
-  transition: filter 0.2s ease;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  filter: saturate(0.55) sepia(0.18) opacity(0.82);
+  transition: filter 0.3s ease, transform 0.3s ease;
+  user-select: none;
 }
 
-.icon-petals {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3.7;
-  stroke-linejoin: round;
-}
-
-.inner-lotus {
-  stroke-width: 3.1;
-}
-
-.icon-shape {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 3.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.icon-wing {
-  stroke-width: 4.2;
+.chakra-list button:hover .sigil {
+  filter: saturate(0.8) sepia(0.08) opacity(0.95);
 }
 
 .sigil.is-active {
-  filter: drop-shadow(0 0 9px currentColor);
+  filter: saturate(1) opacity(1) drop-shadow(0 0 6px color-mix(in srgb, var(--chakra) 45%, transparent));
+  transform: scale(1.06);
 }
 
 /* ---------- right panel ---------- */
@@ -618,7 +915,7 @@ button:focus-visible {
 .active-kicker {
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--gold);
   margin-bottom: 14px;
@@ -631,37 +928,35 @@ button:focus-visible {
 }
 
 .chakra-number {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 500;
-  font-size: 30px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 32px;
   line-height: 1;
   flex-shrink: 0;
 }
 
 .right-panel h2 {
   margin: 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--font-display);
   font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: clamp(38px, 3vw, 52px);
-  line-height: 1.02;
+  letter-spacing: 0.005em;
+  font-size: clamp(42px, 3.4vw, 58px);
+  line-height: 1;
   color: var(--cream);
 }
 
 .subtitle {
   margin: 8px 0 0;
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.04em;
   font-size: 12px;
   font-weight: 500;
 }
 
 .meaning {
   margin: 14px 0 18px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--font-body);
   font-style: italic;
-  font-size: 15px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -672,11 +967,17 @@ button:focus-visible {
   margin: 0;
 }
 
+/* Label above value: values like "Lower Abdomen" get the full column width
+   instead of fighting the label for space. */
 .facts div {
   display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: baseline;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3px;
+}
+
+.facts dd {
+  padding-left: 20px;
+  overflow-wrap: anywhere;
 }
 
 .facts dt {
@@ -685,7 +986,7 @@ button:focus-visible {
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.16em;
-  font-size: 10.5px;
+  font-size: 12px;
   color: var(--gold);
 }
 
@@ -706,16 +1007,62 @@ button:focus-visible {
 
 .facts dd {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--cream);
 }
 
 .summary {
   width: min(100%, 560px);
-  font-size: 14.5px;
-  line-height: 1.85;
-  color: #c7d5cf;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
   margin: 0 0 24px;
+}
+
+/* ---------- section tabs ---------- */
+
+.section-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  margin: 0 0 14px;
+  border-radius: 999px;
+  background: var(--glass-fill);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--glass-shadow);
+}
+
+.section-tab {
+  min-height: 44px;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-tab:hover {
+  color: var(--cream);
+}
+
+.section-tab.active {
+  color: var(--cream);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%),
+    color-mix(in srgb, var(--chakra) 16%, rgba(255, 255, 255, 0.6));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 3px 10px color-mix(in srgb, var(--chakra) 28%, transparent);
+}
+
+/* Keyboard focus: an inset dashed ring, so it never reads as "selected". */
+.section-tab:focus-visible {
+  outline: 1.5px dashed var(--gold);
+  outline-offset: -5px;
 }
 
 /* ---------- accordion ---------- */
@@ -739,20 +1086,17 @@ button:focus-visible {
 }
 
 .accordion-row:hover {
-  background: rgba(201, 164, 92, 0.05);
+  background: color-mix(in srgb, var(--gold) 5%, transparent);
 }
 
 .accordion-row span {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
-  color: rgba(201, 164, 92, 0.65);
+  color: var(--muted);
 }
 
 .accordion-row strong {
-  text-transform: uppercase;
-  letter-spacing: 0.13em;
-  font-weight: 600;
-  font-size: 13px;
+  font-size: 15px;
   color: var(--cream);
   transition: color 0.2s ease;
 }
@@ -785,9 +1129,9 @@ button:focus-visible {
   min-height: 0;
   overflow: hidden;
   padding: 0 40px 0 36px;
-  color: var(--muted);
+  color: var(--text);
   font-size: 13px;
-  line-height: 1.8;
+  line-height: 1.7;
 }
 
 .accordion-inner p {
@@ -828,43 +1172,43 @@ button:focus-visible {
 .coming-soon {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 24px;
-  gap: 5px 20px;
+  grid-template-columns: 1fr 18px;
+  gap: 2px 14px;
   width: 100%;
-  margin-top: 28px;
-  padding: 18px 22px;
+  margin-top: 22px;
+  padding: 11px 16px;
   text-align: left;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: rgba(201, 164, 92, 0.04);
+  background: color-mix(in srgb, var(--gold) 4%, transparent);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .coming-soon:hover {
-  border-color: rgba(230, 205, 150, 0.55);
-  box-shadow: 0 0 24px rgba(201, 164, 92, 0.12);
+  border-color: color-mix(in srgb, var(--gold-bright) 55%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--gold) 12%, transparent);
 }
 
 .coming-soon span {
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  font-size: 10px;
+  letter-spacing: 0.12em;
+  font-size: 12px;
   font-weight: 500;
   color: var(--gold);
 }
 
 .coming-soon strong {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 500;
-  font-size: 19px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0;
   color: var(--cream);
 }
 
 .coming-soon em {
   font-style: normal;
-  font-size: 11.5px;
+  font-size: 12px;
   color: var(--muted);
 }
 
@@ -889,7 +1233,7 @@ button:focus-visible {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(3, 9, 11, 0.65);
+  background: var(--scrim);
   backdrop-filter: blur(5px);
 }
 
@@ -898,20 +1242,19 @@ button:focus-visible {
   width: min(100%, 580px);
   max-height: 86vh;
   overflow-y: auto;
-  background: linear-gradient(180deg, #12282d, #0e2226);
+  background: var(--bg-raised);
   border: 1px solid var(--line);
   border-radius: 14px;
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 40px rgba(201, 164, 92, 0.06);
+  box-shadow: 0 30px 80px color-mix(in srgb, var(--shadow) 22%, transparent), 0 0 40px color-mix(in srgb, var(--gold) 6%, transparent);
   padding: 36px 40px 30px;
 }
 
 .about-card h3 {
   margin: 18px 0 16px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 30px;
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0;
+  font-size: 36px;
   line-height: 1.05;
   color: var(--cream);
 }
@@ -919,24 +1262,22 @@ button:focus-visible {
 .about-card p {
   margin: 0 0 14px;
   font-size: 13px;
-  line-height: 1.8;
+  line-height: 1.7;
   color: var(--text);
 }
 
 .about-note {
   color: var(--muted) !important;
   font-style: italic;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 15px !important;
+  font-family: var(--font-body);
+  font-size: 13px !important;
 }
 
 .about-hint {
   margin-top: 18px;
   padding-top: 14px;
   border-top: 1px solid var(--soft-line);
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--gold);
 }
@@ -969,9 +1310,9 @@ button:focus-visible {
 
 .journal-prompts p {
   margin: 0 0 8px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--font-body);
   font-style: italic;
-  font-size: 15px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -980,10 +1321,10 @@ button:focus-visible {
   resize: vertical;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.035);
+  background: color-mix(in srgb, var(--fill) 42%, transparent);
   padding: 14px;
-  font-size: 13px;
-  line-height: 1.7;
+  font-size: 16px;
+  line-height: 1.6;
   color: var(--cream);
   caret-color: var(--gold-bright);
 }
@@ -993,8 +1334,19 @@ button:focus-visible {
 }
 
 .journal-entry:focus {
-  outline: 1px solid rgba(230, 205, 150, 0.5);
+  outline: 1px solid color-mix(in srgb, var(--gold-bright) 50%, transparent);
   outline-offset: 2px;
+}
+
+.library-note {
+  margin: 26px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--muted);
 }
 
 .library-shelf {
@@ -1004,7 +1356,7 @@ button:focus-visible {
 .library-group {
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: var(--gold);
   margin-bottom: 8px;
@@ -1021,8 +1373,8 @@ button:focus-visible {
 .library-shelf li {
   position: relative;
   padding-left: 18px;
-  font-size: 12.5px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--text);
 }
 
@@ -1089,17 +1441,17 @@ button:focus-visible {
   transform: translateX(-50%);
   z-index: 60;
   width: min(92vw, 440px);
-  background: rgba(2, 12, 20, 0.94);
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 16px 18px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 60px color-mix(in srgb, var(--shadow) 24%, transparent);
 }
 
 .calibrate-title {
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gold);
   margin-bottom: 8px;
@@ -1115,11 +1467,11 @@ button:focus-visible {
 .calibrate-coords {
   margin: 0 0 12px;
   padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--fill) 48%, transparent);
   border: 1px solid var(--soft-line);
   border-radius: 8px;
   font-family: 'Courier New', monospace;
-  font-size: 11.5px;
+  font-size: 12px;
   line-height: 1.6;
   color: var(--cream);
   white-space: pre;
@@ -1138,7 +1490,7 @@ button:focus-visible {
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gold-bright);
   transition: border-color 0.18s ease, background-color 0.18s ease;
@@ -1146,7 +1498,7 @@ button:focus-visible {
 
 .calibrate-actions button:hover {
   border-color: var(--gold);
-  background: rgba(201, 164, 92, 0.08);
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
 }
 
 /* ---------- quiz microsite ---------- */
@@ -1181,7 +1533,7 @@ button:focus-visible {
 
 .quiz-title {
   margin: 14px 0 18px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(38px, 4.6vw, 60px);
   line-height: 1.08;
@@ -1190,8 +1542,8 @@ button:focus-visible {
 
 .quiz-lead {
   margin: 0 0 30px;
-  font-size: 14.5px;
-  line-height: 1.85;
+  font-size: 14px;
+  line-height: 1.7;
   color: var(--text);
   max-width: 520px;
 }
@@ -1213,8 +1565,8 @@ button:focus-visible {
 }
 
 .quiz-primary:hover {
-  border-color: rgba(230, 205, 150, 0.6);
-  box-shadow: 0 0 24px rgba(201, 164, 92, 0.15);
+  border-color: color-mix(in srgb, var(--gold-bright) 60%, transparent);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--gold) 15%, transparent);
 }
 
 .quiz-progress {
@@ -1225,7 +1577,7 @@ button:focus-visible {
 }
 
 .quiz-progress span {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   color: var(--gold);
   white-space: nowrap;
@@ -1245,7 +1597,7 @@ button:focus-visible {
 
 .quiz-question {
   margin: 0 0 34px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(26px, 3vw, 38px);
   line-height: 1.25;
@@ -1263,14 +1615,14 @@ button:focus-visible {
   border: 1px solid var(--soft-line);
   border-radius: 10px;
   text-align: left;
-  font-size: 13.5px;
+  font-size: 15px;
   color: var(--text);
   transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease;
 }
 
 .quiz-option:hover {
   border-color: var(--line);
-  background: rgba(201, 164, 92, 0.05);
+  background: color-mix(in srgb, var(--gold) 5%, transparent);
   color: var(--cream);
 }
 
@@ -1285,7 +1637,7 @@ button:focus-visible {
   gap: 8px;
   align-self: flex-start;
   margin-top: 28px;
-  font-size: 11.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--muted);
@@ -1296,24 +1648,22 @@ button:focus-visible {
 }
 
 .quiz-result-number {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-weight: 400;
   font-size: 30px;
   margin-top: 6px;
 }
 
 .quiz-result-sub {
   margin: -6px 0 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.04em;
   font-size: 12px;
   font-weight: 500;
 }
 
 .quiz-chart-head {
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  font-size: 12px;
   font-weight: 500;
   color: var(--gold);
   margin: 6px 0 12px;
@@ -1328,7 +1678,7 @@ button:focus-visible {
 
 .quiz-chart-note {
   margin: 0 0 28px;
-  font-size: 11.5px;
+  font-size: 13px;
   line-height: 1.65;
   color: var(--muted);
   max-width: 460px;
@@ -1342,7 +1692,7 @@ button:focus-visible {
 }
 
 .quiz-chart-label {
-  font-size: 10.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--muted);
@@ -1352,7 +1702,7 @@ button:focus-visible {
 .quiz-chart-track {
   height: 5px;
   border-radius: 3px;
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--fill) 60%, transparent);
 }
 
 .quiz-chart-fill {
@@ -1375,9 +1725,9 @@ button:focus-visible {
 
 .quiz-note {
   margin: 26px 0 0;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--font-body);
   font-style: italic;
-  font-size: 14.5px;
+  font-size: 13px;
   color: var(--muted);
 }
 
@@ -1386,8 +1736,147 @@ button:focus-visible {
 /* Mobile-only elements — hidden on desktop, revealed at the phone breakpoint. */
 .tap-hint,
 .quiz-cta-mobile,
-.mobile-footer {
+.mobile-footer,
+.chakra-chips,
+.chakra-bar {
   display: none;
+}
+
+/* ---------- mobile chakra chips ---------- */
+
+.chakra-chip {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 3px;
+  width: 44px;
+  height: 44px;
+  justify-self: center;
+  border-radius: 50%;
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* The active chip becomes a small glass lens tinted by its chakra. */
+.chakra-chip.active {
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 60%),
+    color-mix(in srgb, var(--chakra) 22%, rgba(255, 255, 255, 0.55));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7),
+    0 4px 14px color-mix(in srgb, var(--chakra) 35%, transparent);
+  transform: scale(1.06);
+}
+
+.chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--chakra);
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--chakra) 55%, transparent);
+}
+
+.chip-id {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+.chakra-chip.active .chip-id {
+  color: var(--cream);
+}
+
+/* ---------- sticky chakra bar (stacked layouts) ---------- */
+
+.chakra-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 56px;
+  padding: 0 6px;
+  background: color-mix(in srgb, var(--bg-raised) 94%, transparent);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 6px 20px color-mix(in srgb, var(--shadow) 12%, transparent);
+  backdrop-filter: blur(6px);
+  transform: translateY(-110%);
+  transition: transform 0.25s ease;
+}
+
+.chakra-bar.visible {
+  transform: translateY(0);
+}
+
+.bar-step {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--gold);
+}
+
+.bar-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  font-size: 15px;
+}
+
+.bar-title strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 26px;
+  color: var(--cream);
+}
+
+.bar-title .ink {
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chakra-bar {
+    transition: none;
+  }
+}
+
+/* Shorter desktop windows (e.g. 1366x768 laptops): tighten the left column
+   so the title, list, quiz and footer all fit without scrolling. */
+@media (min-width: 1121px) and (max-height: 860px) {
+  .left-panel {
+    padding-top: 24px;
+    padding-bottom: 20px;
+  }
+
+  .left-panel h1 {
+    margin: 14px 0 10px;
+    font-size: clamp(48px, 4.1vw, 62px);
+  }
+
+  .intro {
+    margin: 12px 0 12px;
+    line-height: 1.55;
+  }
+
+  .chakra-list button {
+    min-height: 37px;
+  }
+
+  .quiz-cta {
+    margin-top: 12px;
+    padding: 10px 14px;
+  }
+
+  .left-panel footer {
+    padding-top: 14px;
+  }
 }
 
 /* Below desktop, panels flow in the document instead of each being a
@@ -1412,7 +1901,9 @@ button:focus-visible {
   .right-panel {
     grid-column: 1 / -1;
     overflow: visible;
-    background: rgba(1, 10, 18, 0.94);
+    /* Solid page colour: on tablets the figure stays fixed behind the page,
+       and the body is flat --bg, so this covers it without showing a box. */
+    --panel-fill: var(--bg);
   }
 
   .right-inner {
@@ -1422,6 +1913,12 @@ button:focus-visible {
   .right-scroll {
     overflow: visible;
     padding-bottom: var(--panel-pad);
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .chakra-bar {
+    display: flex;
   }
 }
 
@@ -1441,9 +1938,11 @@ button:focus-visible {
     max-height: none;
   }
 
+  /* Phones: the figure scrolls with the page (not fixed), so panels stay
+     transparent and the glass shadows fade out instead of being cut off. */
   .left-panel,
   .right-panel {
-    background: rgba(1, 10, 18, 0.94);
+    --panel-fill: none;
   }
 
   /* On mobile the figure IS the navigation, so drop the list, its label,
@@ -1460,7 +1959,7 @@ button:focus-visible {
   }
 
   .left-panel h1 {
-    font-size: 58px;
+    font-size: 64px;
   }
 
   /* Bigger, immersive figure: portrait cover-crop keeps the central figure
@@ -1483,27 +1982,51 @@ button:focus-visible {
     aspect-ratio: 4 / 5;
   }
 
+  /* Same scale as before (artwork height = frame height, so orb positions
+     still map 1:1), but the full-width artwork overflows the portrait frame
+     and its transparent edges fade out naturally across the screen. */
   .figure-art {
-    object-fit: cover;
-    object-position: center;
+    left: 50%;
+    right: auto;
+    width: auto;
+    max-width: none;
+    aspect-ratio: 1774 / 887;
+    transform: translateX(-50%);
   }
 
-  .figure-veil {
-    background: linear-gradient(180deg, var(--bg), transparent 12%, transparent 88%, var(--bg));
-  }
-
-  /* Larger tap targets on touch screens. */
+  /* Orbs: 20px hit area (neighbours are >=22px apart), drawn at 30px.
+     The chip row below the figure is the main, full-size tap target. */
   .figure-frame .body-chakra {
-    width: clamp(30px, 8cqw, 46px);
-    height: clamp(30px, 8cqw, 46px);
+    width: 20px;
+    height: 20px;
+  }
+
+  .chakra-chips {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 2px;
+    width: min(94vw, 380px);
+    margin: -64px auto 6px;
+    padding: 4px;
+    border-radius: 999px;
+    background: var(--glass-fill);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .mobile-footer .footer-link {
+    min-height: 44px;
+    padding: 0 6px;
   }
 
   .tap-hint {
     display: block;
     text-align: center;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    font-size: 13px;
     font-weight: 500;
     color: var(--gold);
     margin: 0 0 4px;
@@ -1525,11 +2048,61 @@ button:focus-visible {
   }
 
   .facts {
-    grid-template-columns: 1fr;
-    gap: 11px;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
   }
 
-  .facts div {
-    grid-template-columns: 108px 1fr;
+  /* Reading text: 14px on phones. */
+  .intro,
+  .summary,
+  .accordion-inner,
+  .about-card p,
+  .library-shelf li,
+  .quiz-lead {
+    font-size: 14px;
   }
+
+
+}
+
+/* ---------- UI typeface ---------- */
+/* Labels, navigation, buttons and data values use the mono UI face. It has a
+   single weight, so weight is normalised (no faux bold) and the wide caps
+   tracking used with Inter is tightened. Placed last so it wins over the
+   per-component font settings above. */
+.micro-row,
+.about-row,
+.map-label span,
+.map-label strong,
+.chakra-list strong,
+.nav-id,
+.quiz-cta-text strong,
+.footer-link,
+.active-kicker,
+.subtitle,
+.facts dt,
+.facts dd,
+.accordion-row span,
+.accordion-row strong,
+.coming-soon span,
+.coming-soon em,
+.about-hint,
+.library-group,
+.calibrate-title,
+.calibrate-coords,
+.calibrate-actions button,
+.quiz-primary,
+.quiz-option,
+.quiz-back,
+.quiz-progress,
+.quiz-result-sub,
+.quiz-chart-head,
+.quiz-chart-label,
+.chip-id,
+.tap-hint,
+.bar-title .ink {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: 0.06em;
 }

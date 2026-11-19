@@ -1,109 +1,87 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDown, ArrowRight, Compass, Info, Library, NotebookPen, Plus, Sparkle, X } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
+  Info,
+  Library,
+  NotebookPen,
+  Plus,
+  Sparkle,
+  X
+} from 'lucide-react';
 import { chakras, type Chakra } from './data/chakras';
 import Quiz from './Quiz';
 
+// Traditional chakra yantras (petal counts, shapes and bija syllables) by
+// Atarax42 / Holger Koch on Wikimedia Commons, CC0. See assets/chakras/SOURCES.txt.
+const SIGILS = import.meta.glob('./assets/chakras/*.svg', { eager: true, query: '?url', import: 'default' }) as Record<
+  string,
+  string
+>;
+
 function ChakraSigil({ chakra, active = false }: { chakra: Chakra; active?: boolean }) {
-  const petal = 'M50 8 C59 15 62 29 50 38 C38 29 41 15 50 8Z';
-  const petals = (count: number, radiusScale = 1) =>
-    Array.from({ length: count }, (_, index) => (
-      <path
-        key={index}
-        d={petal}
-        transform={`rotate(${(360 / count) * index} 50 50) translate(0 ${radiusScale === 1 ? 0 : 3}) scale(${radiusScale}) translate(${50 * (1 - radiusScale)} ${50 * (1 - radiusScale)})`}
-      />
-    ));
-
-  const icon = (() => {
-    switch (chakra.id) {
-      case '01':
-        return (
-          <>
-            <g className="icon-petals">{petals(4, 1.08)}</g>
-            <rect className="icon-shape" x="25" y="25" width="50" height="50" />
-            <circle className="icon-shape" cx="50" cy="50" r="28" />
-            <path className="icon-shape" d="M50 70 L31 36 H69 Z" />
-          </>
-        );
-      case '02':
-        return (
-          <>
-            <g className="icon-petals">{petals(6, 1.06)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="29" />
-            <path className="icon-shape" d="M31 48 A21 21 0 0 0 69 48 A27 27 0 0 1 31 48 Z" />
-          </>
-        );
-      case '03':
-        return (
-          <>
-            <g className="icon-petals">{petals(10, 1.05)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="30" />
-            <path className="icon-shape" d="M50 70 L29 34 H71 Z" />
-          </>
-        );
-      case '04':
-        return (
-          <>
-            <g className="icon-petals">{petals(12, 1.04)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="30" />
-            <path className="icon-shape" d="M50 25 L72 63 H28 Z" />
-            <path className="icon-shape" d="M50 75 L28 37 H72 Z" />
-          </>
-        );
-      case '05':
-        return (
-          <>
-            <g className="icon-petals">{petals(16, 1.02)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="31" />
-            <path className="icon-shape" d="M50 72 L27 32 H73 Z" />
-            <circle className="icon-shape" cx="50" cy="50" r="15" />
-          </>
-        );
-      case '06':
-        return (
-          <>
-            <path className="icon-shape icon-wing" d="M13 52 C24 27 40 20 50 34 C38 46 28 57 13 52Z" />
-            <path className="icon-shape icon-wing" d="M87 52 C76 27 60 20 50 34 C62 46 72 57 87 52Z" />
-            <circle className="icon-shape" cx="50" cy="50" r="28" />
-            <path className="icon-shape" d="M50 70 L29 34 H71 Z" />
-            <path className="icon-shape" d="M26 32 H74" />
-          </>
-        );
-      default:
-        return (
-          <>
-            <g className="icon-petals outer-lotus">{petals(16, 1.03)}</g>
-            <g className="icon-petals inner-lotus">{petals(8, 0.72)}</g>
-            <circle className="icon-shape" cx="50" cy="50" r="18" />
-          </>
-        );
-    }
-  })();
-
   return (
-    <svg
+    <img
       className={`sigil${active ? ' is-active' : ''}`}
       style={{ '--chakra': chakra.color } as React.CSSProperties}
+      src={SIGILS[`./assets/chakras/${chakra.id}.svg`]}
+      alt=""
       aria-hidden="true"
-      viewBox="0 0 100 100"
-    >
-      {icon}
-    </svg>
+      draggable={false}
+    />
   );
 }
 
 type OrbPos = { top: number; x: number };
 
-const FLECKS = Array.from({ length: 18 }, (_, i) => {
-  const angle = (360 / 18) * i + (i % 2 ? 14 : -10);
-  const dist = 40 + (i % 3) * 18;
-  return {
-    dx: Math.cos((angle * Math.PI) / 180) * dist,
-    dy: Math.sin((angle * Math.PI) / 180) * dist,
-    size: 3 + (i % 3),
-    delay: (i % 4) * 25
-  };
-});
+// Light motes for the two emptiest corners. Fixed values (not random) so
+// the layout is the same on every load and in every check.
+const MOTES = [
+  // top-right
+  { x: 74, y: 6, s: 10, dx: -22, dy: 30, dur: 19, delay: -3 },
+  { x: 88, y: 14, s: 16, dx: 18, dy: -24, dur: 24, delay: -11 },
+  { x: 95, y: 4, s: 8, dx: -30, dy: 18, dur: 17, delay: -7 },
+  { x: 81, y: 24, s: 12, dx: 26, dy: 22, dur: 27, delay: -15 },
+  { x: 92, y: 30, s: 7, dx: -16, dy: -28, dur: 21, delay: -2 },
+  { x: 68, y: 18, s: 9, dx: 20, dy: -20, dur: 23, delay: -18 },
+  { x: 85, y: 8, s: 6, dx: 14, dy: 26, dur: 16, delay: -9 },
+  // bottom-left
+  { x: 6, y: 92, s: 14, dx: 24, dy: -30, dur: 22, delay: -6 },
+  { x: 18, y: 84, s: 9, dx: -18, dy: -22, dur: 18, delay: -13 },
+  { x: 4, y: 76, s: 7, dx: 28, dy: 20, dur: 25, delay: -1 },
+  { x: 26, y: 95, s: 11, dx: -24, dy: -18, dur: 20, delay: -16 },
+  { x: 13, y: 70, s: 6, dx: 16, dy: -26, dur: 17, delay: -10 },
+  { x: 30, y: 82, s: 15, dx: 20, dy: 24, dur: 28, delay: -21 },
+  { x: 9, y: 86, s: 8, dx: -14, dy: 28, dur: 19, delay: -4 }
+];
+
+// The 11 sections of each chakra, grouped into three tabs. Any section not
+// listed falls into the first tab so nothing can silently disappear.
+const SECTION_TABS = [
+  {
+    id: 'understand',
+    label: 'Understand',
+    titles: ['Psychological Themes', 'Developmental Stage', 'Shadow & Blockages', 'Related Centers']
+  },
+  { id: 'feel', label: 'Feel', titles: ['Somatic & Physiology', 'Nervous System Links', 'Yoga Poses'] },
+  {
+    id: 'practice',
+    label: 'Practice',
+    titles: ['Practices & Meditations', 'Mantras & Sounds', 'Crystals & Stones', 'Integration & Contemplation']
+  }
+] as const;
+
+type TabId = (typeof SECTION_TABS)[number]['id'];
+
+function tabOf(title: string): TabId {
+  return SECTION_TABS.find((tab) => (tab.titles as readonly string[]).includes(title))?.id ?? 'understand';
+}
+
+// Section titles are stored in Title Case; show them in sentence case.
+const toSentenceCase = (title: string) => title.charAt(0) + title.slice(1).toLowerCase();
 
 function BodyFigure({
   activeIndex,
@@ -139,10 +117,9 @@ function BodyFigure({
       <div className={`figure-frame${calibrate ? ' calibrate' : ''}`} ref={frameRef}>
         <img
           className="figure-art"
-          src={`${import.meta.env.BASE_URL}figure.jpg`}
+          src={`${import.meta.env.BASE_URL}figure.webp`}
           alt="Meditating figure seated in a lotus, seven chakras glowing along the spine"
         />
-        <div className="figure-veil" aria-hidden="true" />
         {chakras.map((chakra, index) => (
           <button
             key={chakra.id}
@@ -151,9 +128,11 @@ function BodyFigure({
               {
                 left: `${coords[index].x}%`,
                 top: `${coords[index].top}%`,
-                '--chakra': chakra.color
+                '--chakra': chakra.color,
+                '--i': index
               } as React.CSSProperties
             }
+            aria-pressed={index === activeIndex}
             onClick={() => onSelect(index)}
             onPointerDown={
               calibrate
@@ -181,9 +160,9 @@ function BodyFigure({
           </button>
         ))}
         {!calibrate && burst > 0 && (
-          <div
+          <span
             key={burst}
-            className="fleck-burst"
+            className="orb-bloom"
             style={
               {
                 left: `${coords[activeIndex].x}%`,
@@ -192,25 +171,7 @@ function BodyFigure({
               } as React.CSSProperties
             }
             aria-hidden="true"
-          >
-            {FLECKS.map((f, i) => (
-              <span
-                key={i}
-                className="fleck"
-                style={
-                  {
-                    '--dx': `${f.dx}px`,
-                    '--dy': `${f.dy}px`,
-                    width: `${f.size}px`,
-                    height: `${f.size}px`,
-                    marginLeft: `${-f.size / 2}px`,
-                    marginTop: `${-f.size / 2}px`,
-                    animationDelay: `${f.delay}ms`
-                  } as React.CSSProperties
-                }
-              />
-            ))}
-          </div>
+          />
         )}
       </div>
     </div>
@@ -341,7 +302,11 @@ function LibraryOverlay({ onClose }: { onClose: () => void }) {
             </ul>
           </div>
         ))}
-        <div className="about-hint">A starting shelf, not a syllabus — one book taken slowly beats ten skimmed.</div>
+        <p className="library-note">
+          These books, like this site, are a guide to supplement your learning, not a replacement
+          for it. Read with curiosity, try what resonates, and lean on qualified teachers,
+          practitioners and clinicians where you need deeper support.
+        </p>
       </div>
     </div>
   );
@@ -382,9 +347,26 @@ function AboutOverlay({ onClose }: { onClose: () => void }) {
   );
 }
 
+// Below this width the panels stack vertically (see the 1120px block in
+// styles.css), so selecting a chakra must scroll its content into view.
+const STACKED_QUERY = '(max-width: 1120px)';
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const onChange = () => setMatches(mql.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, [query]);
+  return matches;
+}
+
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [openSection, setOpenSection] = useState<number | null>(0);
+  const [activeTab, setActiveTab] = useState<TabId>('understand');
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [overlay, setOverlay] = useState<'about' | 'journal' | 'library' | null>(null);
   const [view, setView] = useState<'map' | 'quiz'>('map');
   const calibrate =
@@ -397,11 +379,61 @@ export default function App() {
   const viewRef = useRef(view);
   viewRef.current = view;
 
+  const stacked = useMediaQuery(STACKED_QUERY);
+
+  // Pause the ambient animations while the tab is hidden.
+  useEffect(() => {
+    const sync = () => document.documentElement.classList.toggle('page-hidden', document.hidden);
+    sync();
+    document.addEventListener('visibilitychange', sync);
+    return () => document.removeEventListener('visibilitychange', sync);
+  }, []);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const rightPanelRef = useRef<HTMLElement>(null);
+  const [revealTick, setRevealTick] = useState(0);
+  const [showBar, setShowBar] = useState(false);
+
   function chooseChakra(index: number) {
     setActiveIndex(index);
+    setActiveTab('understand');
     setOpenSection(0);
     setBurst((n) => n + 1);
   }
+
+  // Select a chakra and, on stacked layouts, bring its content on screen so
+  // the tap visibly does something. Desktop keeps everything in view already.
+  function revealChakra(index: number) {
+    chooseChakra(index);
+    if (stacked) setRevealTick((n) => n + 1);
+  }
+
+  useEffect(() => {
+    if (!revealTick) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    headerRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  }, [revealTick]);
+
+  // Sticky chakra bar: shown on stacked layouts once the chakra header has
+  // scrolled away but the reader is still inside the chakra's content.
+  useEffect(() => {
+    if (!stacked) {
+      setShowBar(false);
+      return;
+    }
+    function update() {
+      const header = headerRef.current?.getBoundingClientRect();
+      const panel = rightPanelRef.current?.getBoundingClientRect();
+      if (!header || !panel) return;
+      setShowBar(header.bottom < 0 && panel.bottom > 120);
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [stacked, activeIndex]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -411,7 +443,7 @@ export default function App() {
         return;
       }
       if (viewRef.current !== 'map') return;
-      if (event.target instanceof HTMLElement && event.target.closest('input, textarea')) return;
+      if (event.target instanceof HTMLElement && event.target.closest('input, textarea, [role="tab"]')) return;
       if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
         event.preventDefault();
         chooseChakra(Math.min(chakras.length - 1, activeIndexRef.current + 1));
@@ -438,9 +470,40 @@ export default function App() {
 
   return (
     <main className="app-shell">
+      <div
+        className="mist"
+        style={{ '--mist': active.color } as React.CSSProperties}
+        aria-hidden="true"
+      >
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="motes" aria-hidden="true">
+        {MOTES.map((m, i) => (
+          <span
+            key={i}
+            className="mote"
+            style={
+              {
+                left: `${m.x}%`,
+                top: `${m.y}%`,
+                '--s': `${m.s}px`,
+                '--dx': `${m.dx}px`,
+                '--dy': `${m.dy}px`,
+                '--dur': `${m.dur}s`,
+                '--delay': `${m.delay}s`
+              } as React.CSSProperties
+            }
+          />
+        ))}
+      </div>
       <section className="left-panel">
-        <header className="micro-row">
-          <Sparkle size={18} strokeWidth={1.4} />
+        <header className="micro-row site-eyebrow">
+          <Sparkle size={20} strokeWidth={1.4} />
           <span>An Anatomy of Consciousness</span>
         </header>
 
@@ -453,10 +516,7 @@ export default function App() {
 
         <div className="map-label">
           <Sparkle size={18} strokeWidth={1.2} />
-          <div>
-            <span>An Experimental Map</span>
-            <strong>Select a chakra to begin</strong>
-          </div>
+          <strong>Select a chakra to begin</strong>
           <ArrowDown size={16} strokeWidth={1.4} />
         </div>
 
@@ -466,12 +526,12 @@ export default function App() {
               key={chakra.id}
               className={index === activeIndex ? 'active' : ''}
               style={{ '--chakra': chakra.color } as React.CSSProperties}
-              onClick={() => chooseChakra(index)}
+              aria-current={index === activeIndex ? 'true' : undefined}
+              onClick={() => revealChakra(index)}
             >
               <span className="nav-id">{chakra.id}</span>
               <ChakraSigil chakra={chakra} active={index === activeIndex} />
               <strong>{chakra.name}</strong>
-              <em>{chakra.keywords.split(' + ').join(' · ')}</em>
             </button>
           ))}
         </nav>
@@ -502,7 +562,7 @@ export default function App() {
         <p className="tap-hint">Tap a chakra to explore</p>
         <BodyFigure
           activeIndex={activeIndex}
-          onSelect={chooseChakra}
+          onSelect={revealChakra}
           coords={coords}
           calibrate={calibrate}
           onMove={(index, top, x) =>
@@ -510,6 +570,21 @@ export default function App() {
           }
           burst={burst}
         />
+        <div className="chakra-chips" role="group" aria-label="Choose a chakra">
+          {chakras.map((chakra, index) => (
+            <button
+              key={chakra.id}
+              className={`chakra-chip${index === activeIndex ? ' active' : ''}`}
+              style={{ '--chakra': chakra.color } as React.CSSProperties}
+              aria-pressed={index === activeIndex}
+              aria-label={`${chakra.id} ${chakra.name}`}
+              onClick={() => revealChakra(index)}
+            >
+              <span className="chip-dot" aria-hidden="true" />
+              <span className="chip-id" aria-hidden="true">{chakra.id}</span>
+            </button>
+          ))}
+        </div>
         <button className="quiz-cta quiz-cta-mobile" onClick={() => setView('quiz')}>
           <Compass size={20} strokeWidth={1.4} />
           <span className="quiz-cta-text">
@@ -520,26 +595,26 @@ export default function App() {
         </button>
       </section>
 
-      <section className="right-panel">
+      <section className="right-panel" ref={rightPanelRef}>
         <div className="right-inner" key={active.id}>
-        <div className="right-header">
+        <div className="right-header" ref={headerRef}>
           <div className="active-kicker">Active Chakra</div>
           <div className="chakra-lockup">
-            <span className="chakra-number" style={{ color: active.color }}>{active.id}</span>
+            <span className="chakra-number ink" style={{ '--chakra': active.color } as React.CSSProperties}>{active.id}</span>
             <div>
               <h2
                 style={{
                   fontSize:
                     active.name.length > 11
-                      ? 'clamp(28px, 2.5vw, 40px)'
+                      ? 'clamp(36px, 2.9vw, 48px)'
                       : active.name.length > 8
-                        ? 'clamp(32px, 2.8vw, 46px)'
-                        : 'clamp(38px, 3vw, 52px)'
+                        ? 'clamp(40px, 3.2vw, 54px)'
+                        : 'clamp(42px, 3.4vw, 58px)'
                 }}
               >
                 {active.name}
               </h2>
-              <p className="subtitle" style={{ color: active.color }}>{active.subtitle}</p>
+              <p className="subtitle ink" style={{ '--chakra': active.color } as React.CSSProperties}>{active.subtitle}</p>
             </div>
           </div>
           <p className="meaning">{active.meaning}</p>
@@ -567,8 +642,41 @@ export default function App() {
         <div className="right-scroll">
         <p className="summary">{active.summary}</p>
 
-        <div className="accordion">
-          {active.sections.map((section, index) => (
+        <div className="section-tabs" role="tablist" aria-label="Ways into this chakra">
+          {SECTION_TABS.map((tab, i) => (
+            <button
+              key={tab.id}
+              ref={(el) => (tabRefs.current[i] = el)}
+              id={`tab-${tab.id}`}
+              role="tab"
+              className={`section-tab${activeTab === tab.id ? ' active' : ''}`}
+              style={{ '--chakra': active.color } as React.CSSProperties}
+              aria-selected={activeTab === tab.id}
+              aria-controls="section-panel"
+              tabIndex={activeTab === tab.id ? 0 : -1}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setOpenSection(0);
+              }}
+              onKeyDown={(event) => {
+                const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+                if (!step) return;
+                event.preventDefault();
+                const next = (i + step + SECTION_TABS.length) % SECTION_TABS.length;
+                setActiveTab(SECTION_TABS[next].id);
+                setOpenSection(0);
+                tabRefs.current[next]?.focus();
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="accordion" id="section-panel" role="tabpanel" aria-labelledby={`tab-${activeTab}`}>
+          {active.sections
+            .filter((section) => tabOf(section.title) === activeTab)
+            .map((section, index) => (
             <div key={section.title} className={`accordion-item${openSection === index ? ' open' : ''}`}>
               <button
                 className="accordion-row"
@@ -576,7 +684,7 @@ export default function App() {
                 onClick={() => setOpenSection(openSection === index ? null : index)}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
-                <strong>{section.title}</strong>
+                <strong>{toSentenceCase(section.title)}</strong>
                 <Plus size={19} strokeWidth={1.5} />
               </button>
               <div className="accordion-content">
@@ -596,25 +704,57 @@ export default function App() {
         </div>
 
         {activeIndex < chakras.length - 1 ? (
-          <button className="coming-soon" onClick={() => chooseChakra(activeIndex + 1)}>
+          <button className="coming-soon" onClick={() => revealChakra(activeIndex + 1)}>
             <span>Continue the path</span>
             <strong>
-              {chakras[activeIndex + 1].id} · {chakras[activeIndex + 1].name}
+              {chakras[activeIndex + 1].id} – {chakras[activeIndex + 1].name}
             </strong>
             <em>{chakras[activeIndex + 1].keywords.toLowerCase().split(' + ').join(' · ')}</em>
-            <ArrowRight size={20} strokeWidth={1.4} />
+            <ArrowRight size={16} strokeWidth={1.5} />
           </button>
         ) : (
-          <button className="coming-soon" onClick={() => chooseChakra(0)}>
+          <button className="coming-soon" onClick={() => revealChakra(0)}>
             <span>The path returns</span>
-            <strong>01 · Muladhara</strong>
+            <strong>01 – Muladhara</strong>
             <em>begin again at the root</em>
-            <ArrowRight size={20} strokeWidth={1.4} />
+            <ArrowRight size={16} strokeWidth={1.5} />
           </button>
         )}
         </div>
         </div>
       </section>
+
+      {stacked && (
+        <div className={`chakra-bar${showBar ? ' visible' : ''}`} aria-hidden={!showBar}>
+          <button
+            className="bar-step"
+            onClick={() => revealChakra((activeIndex + chakras.length - 1) % chakras.length)}
+            aria-label={`Previous: ${chakras[(activeIndex + chakras.length - 1) % chakras.length].name}`}
+            tabIndex={showBar ? 0 : -1}
+          >
+            <ChevronLeft size={20} strokeWidth={1.6} />
+          </button>
+          <button
+            className="bar-title"
+            style={{ '--chakra': active.color } as React.CSSProperties}
+            onClick={() => setRevealTick((n) => n + 1)}
+            aria-label={`${active.name}, back to top of section`}
+            tabIndex={showBar ? 0 : -1}
+          >
+            <span className="chip-dot" aria-hidden="true" />
+            <span className="ink">{active.id}</span>
+            <strong>{active.name}</strong>
+          </button>
+          <button
+            className="bar-step"
+            onClick={() => revealChakra((activeIndex + 1) % chakras.length)}
+            aria-label={`Next: ${chakras[(activeIndex + 1) % chakras.length].name}`}
+            tabIndex={showBar ? 0 : -1}
+          >
+            <ChevronRight size={20} strokeWidth={1.6} />
+          </button>
+        </div>
+      )}
 
       <footer className="mobile-footer">
         <button className="footer-link" onClick={() => setOverlay('journal')}>
