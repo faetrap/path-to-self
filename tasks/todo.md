@@ -174,3 +174,10 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Single weight, so all headings are 400 (no faux light or bold); mixed case kept; oldstyle figures for the chakra numbers. The designer notes it is tuned for 10–30pt; at the 71px title no oddities were visible on screen
 - [x] Inter reading text 1px smaller at your request: desktop 14px (summary 15px), phones 15px; line height unchanged (1.6–1.7). The journal box stays 16px so iOS doesn't zoom in on focus. G3 thresholds updated to 14 / 15px
 - [x] G1–G7 and G9 pass at 375×812, 900×700, 1366×768 and 1440×900; no header overflow across 7 chakras; no console errors
+
+## Small fixes (2026-11-19), DONE
+
+- [x] Library footnote ("A starting shelf, not a syllabus…") removed
+- [x] "Continue the path" card made smaller: padding 11px/16px, name 20px (was 26px), keywords 12px, arrow 16px; about 81px tall on desktop
+- [x] Inter reading text down another 1px: desktop 13px (summary and quiz lead 14px), phones 14px; line height unchanged at 1.6–1.7. G3 thresholds now 13 / 14px
+- [x] G1–G7 and G9 pass at all four sizes; no console errors

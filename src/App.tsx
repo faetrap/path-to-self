@@ -379,7 +379,6 @@ function LibraryOverlay({ onClose }: { onClose: () => void }) {
             </ul>
           </div>
         ))}
-        <div className="about-hint">A starting shelf, not a syllabus — one book taken slowly beats ten skimmed.</div>
       </div>
     </div>
   );
@@ -744,14 +743,14 @@ export default function App() {
               {chakras[activeIndex + 1].id} – {chakras[activeIndex + 1].name}
             </strong>
             <em>{chakras[activeIndex + 1].keywords.toLowerCase().split(' + ').join(' · ')}</em>
-            <ArrowRight size={20} strokeWidth={1.4} />
+            <ArrowRight size={16} strokeWidth={1.5} />
           </button>
         ) : (
           <button className="coming-soon" onClick={() => revealChakra(0)}>
             <span>The path returns</span>
             <strong>01 – Muladhara</strong>
             <em>begin again at the root</em>
-            <ArrowRight size={20} strokeWidth={1.4} />
+            <ArrowRight size={16} strokeWidth={1.5} />
           </button>
         )}
         </div>

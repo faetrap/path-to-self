@@ -131,7 +131,7 @@
 
   // G3: reading text >= 16px (mobile) / 15px (desktop), line-height >= 1.5.
   {
-    const min = mobile ? 15 : 14; // lowered 1px at your request (2026-11-19)
+    const min = mobile ? 14 : 13; // lowered 2px in total at your request (2026-11-19)
     const bad = [];
     document.querySelector('.accordion-item:not(.open) .accordion-row')?.click();
     await wait(300);
