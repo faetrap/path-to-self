@@ -147,11 +147,39 @@ button:focus-visible {
 }
 
 .left-panel {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--bg) 88%, transparent) 62%, color-mix(in srgb, var(--bg) 40%, transparent) 88%, transparent);
+  /* Smoothstep fade (no kinks) from solid behind the text to clear over
+     the figure; a two-stop ramp left a faint crease where its slope changed. */
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 88%, transparent) 50%,
+    color-mix(in srgb, var(--bg) 86%, transparent) 55%,
+    color-mix(in srgb, var(--bg) 79%, transparent) 60%,
+    color-mix(in srgb, var(--bg) 69%, transparent) 65%,
+    color-mix(in srgb, var(--bg) 57%, transparent) 70%,
+    color-mix(in srgb, var(--bg) 44%, transparent) 75%,
+    color-mix(in srgb, var(--bg) 31%, transparent) 80%,
+    color-mix(in srgb, var(--bg) 19%, transparent) 85%,
+    color-mix(in srgb, var(--bg) 9%, transparent) 90%,
+    color-mix(in srgb, var(--bg) 2%, transparent) 95%,
+    color-mix(in srgb, var(--bg) 0%, transparent) 100%
+  );
 }
 
 .right-panel {
-  background: linear-gradient(270deg, color-mix(in srgb, var(--bg) 88%, transparent) 62%, color-mix(in srgb, var(--bg) 40%, transparent) 88%, transparent);
+  background: linear-gradient(270deg,
+    color-mix(in srgb, var(--bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 88%, transparent) 50%,
+    color-mix(in srgb, var(--bg) 86%, transparent) 55%,
+    color-mix(in srgb, var(--bg) 79%, transparent) 60%,
+    color-mix(in srgb, var(--bg) 69%, transparent) 65%,
+    color-mix(in srgb, var(--bg) 57%, transparent) 70%,
+    color-mix(in srgb, var(--bg) 44%, transparent) 75%,
+    color-mix(in srgb, var(--bg) 31%, transparent) 80%,
+    color-mix(in srgb, var(--bg) 19%, transparent) 85%,
+    color-mix(in srgb, var(--bg) 9%, transparent) 90%,
+    color-mix(in srgb, var(--bg) 2%, transparent) 95%,
+    color-mix(in srgb, var(--bg) 0%, transparent) 100%
+  );
 }
 
 .right-panel {
@@ -413,58 +441,82 @@ button:focus-visible {
   color: var(--gold-bright);
 }
 
-/* ---------- drifting smoke ---------- */
+/* ---------- chakra mist ---------- */
 
-/* A few soft wisps behind the figure, each drifting and fading on its own
-   long, offset cycle so the motion never visibly repeats. */
-.smoke {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
+/* Soft colour clouds filling the plain parchment around the figure. Two of
+   them carry the selected chakra's colour (--mist, registered so it can
+   cross-fade), the rest hold a fixed rainbow palette. Each drifts and
+   breathes on its own long cycle; none ever fades out completely. */
+@property --mist {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c9a45c;
 }
 
-.smoke span {
+/* Fixed above the panels' parchment fill (which would otherwise hide it
+   exactly where the page is emptiest) but multiplied, so it only tints:
+   text stays as dark as it was. Overlays and the sticky bar sit above. */
+.mist {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+  transition: --mist 1.8s ease;
+}
+
+.mist span {
+  --c: var(--mist);
+  --a: 30%;
   position: absolute;
-  width: 46vmax;
-  height: 22vmax;
+  width: 44vmax;
+  height: 34vmax;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(255, 252, 246, 0.85) 0%, rgba(255, 250, 242, 0.35) 38%, transparent 68%);
-  filter: blur(28px);
-  opacity: 0;
-  animation: smoke-drift 34s ease-in-out infinite;
+  background: radial-gradient(
+    ellipse at center,
+    color-mix(in srgb, var(--c) var(--a), transparent) 0%,
+    color-mix(in srgb, var(--c) calc(var(--a) * 0.45), transparent) 40%,
+    transparent 70%
+  );
+  filter: blur(30px);
+  transform: translate(-50%, -50%);
+  animation: mist-drift 40s ease-in-out infinite alternate;
   will-change: transform, opacity;
 }
 
-.smoke span:nth-child(1) { left: 18%; top: 58%; animation-duration: 38s; animation-delay: -4s; }
-.smoke span:nth-child(2) { left: 52%; top: 18%; animation-duration: 31s; animation-delay: -17s; }
-.smoke span:nth-child(3) { left: 4%; top: 12%; animation-duration: 42s; animation-delay: -29s;
-  background: radial-gradient(ellipse at center, rgba(196, 178, 210, 0.35) 0%, rgba(214, 196, 220, 0.14) 40%, transparent 68%); }
-.smoke span:nth-child(4) { left: 60%; top: 66%; animation-duration: 36s; animation-delay: -11s;
-  background: radial-gradient(ellipse at center, rgba(160, 138, 118, 0.18) 0%, rgba(160, 138, 118, 0.07) 40%, transparent 68%); }
-.smoke span:nth-child(5) { left: 34%; top: 38%; animation-duration: 45s; animation-delay: -23s; }
+/* Corners and edges: the areas the figure's rainbow doesn't reach. */
+.mist span:nth-child(1) { left: 8%;  top: 10%; --a: 22%; animation-duration: 46s; }
+.mist span:nth-child(2) { left: 94%; top: 92%; --a: 22%; animation-duration: 52s; animation-delay: -20s; }
+.mist span:nth-child(3) { left: 92%; top: 6%;  --c: #b7a3d6; --a: 24%; animation-duration: 38s; animation-delay: -9s; }
+.mist span:nth-child(4) { left: 6%;  top: 94%; --c: #e7a7a2; --a: 22%; animation-duration: 44s; animation-delay: -31s; }
+.mist span:nth-child(5) { left: 30%; top: 100%; --c: #e8c77e; --a: 22%; animation-duration: 50s; animation-delay: -14s; }
+.mist span:nth-child(6) { left: 70%; top: 0%;  --c: #9fc0dc; --a: 20%; animation-duration: 42s; animation-delay: -26s; }
 
-@keyframes smoke-drift {
+@keyframes mist-drift {
   0% {
-    transform: translate(-8%, 6%) rotate(-6deg) scale(0.8);
-    opacity: 0;
-  }
-  30% {
-    opacity: 0.9;
-  }
-  60% {
+    transform: translate(-56%, -46%) scale(0.92) rotate(-4deg);
     opacity: 0.6;
   }
+  50% {
+    opacity: 1;
+  }
   100% {
-    transform: translate(12%, -14%) rotate(8deg) scale(1.25);
-    opacity: 0;
+    transform: translate(-44%, -54%) scale(1.1) rotate(5deg);
+    opacity: 0.75;
+  }
+}
+
+@media (max-width: 720px) {
+  .mist span {
+    width: 70vmax;
+    height: 50vmax;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .smoke span {
+  .mist span {
     animation: none;
-    opacity: 0.4;
   }
 }
 

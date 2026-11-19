@@ -93,13 +93,6 @@ function BodyFigure({
 
   return (
     <div className="figure-backdrop">
-      <div className="smoke" aria-hidden="true">
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-      </div>
       <div className={`figure-frame${calibrate ? ' calibrate' : ''}`} ref={frameRef}>
         <img
           className="figure-art"
@@ -448,6 +441,18 @@ export default function App() {
 
   return (
     <main className="app-shell">
+      <div
+        className="mist"
+        style={{ '--mist': active.color } as React.CSSProperties}
+        aria-hidden="true"
+      >
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+        <span />
+      </div>
       <section className="left-panel">
         <header className="micro-row site-eyebrow">
           <Sparkle size={20} strokeWidth={1.4} />

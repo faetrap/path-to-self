@@ -189,3 +189,8 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Paper grain (fixed SVG fractal-noise overlay, multiply, 0.32) + 5 slow smoke wisps behind the figure (reduced-motion: static).
 - [x] Selection effect: 18-fleck gold burst → one soft chakra-coloured bloom expanding from the orb (1.6s).
 - Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812 (G1 mobile failed once on timing in the hidden pane, passed on two reruns). No console errors.
+
+## Edge + chakra mist (2026-11-19)
+- [x] Faint vertical crease at the right panel's inner edge on desktop: the panel fade went 0→40% in the first 12% then changed slope. Both side panels now use an 11-stop smoothstep fade (no slope breaks).
+- [x] Smoke wisps (too faint, and hidden behind the panels' 88% fill) → "chakra mist": 6 soft clouds in the corners/edges, fixed above the panels with multiply so they tint without covering text. Two follow the selected chakra's colour (cross-fade via @property --mist, 1.8s); four hold violet/rose/gold/blue. 38–52s drift, never fully fades.
+- Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812; no console errors.
