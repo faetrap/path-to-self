@@ -1,20 +1,14 @@
 /* Necto Mono by Collletttivo, SIL Open Font License 1.1 (see public/fonts/NectoMono-OFL.txt).
    One weight only, so it is used for labels and UI; Cormorant Garamond
    carries headings and Inter carries reading text. */
-/* Fabello by Britt Fabello (commercial, Creative Market licence). The files
-   are git-ignored until a licence is bought; without them the headings fall
-   back to Georgia. Light = title, Regular = all other headings. */
+/* Day Roman by Fredrick Nader (Apostrophic Labs, 2002), a revival of
+   Francois Guyot's 16th-century roman; freeware, see
+   public/fonts/DayRoman-README.txt. Single weight; used for headings. */
 @font-face {
-  font-family: 'Fabello';
-  src: url('./assets/fonts/fabello/Fabello-Light.woff2') format('woff2');
-  font-weight: 300;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Fabello';
-  src: url('./assets/fonts/fabello/Fabello.woff2') format('woff2');
+  font-family: 'Day Roman';
+  src: url('./assets/fonts/DayRoman-Regular.woff2') format('woff2');
   font-weight: 400;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -59,7 +53,7 @@
   --panel-pad: clamp(24px, 2.4vw, 44px);
   --font-ui: 'Necto Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   /* Swap a heading font here; it drives the title, chakra names and numbers. */
-  --font-display: 'Fabello', Georgia, serif;
+  --font-display: 'Day Roman', Georgia, serif;
   --font-body: 'Inter', 'Helvetica Neue', sans-serif;
   font-family: var(--font-body);
   color: var(--text);
@@ -206,7 +200,7 @@ button:focus-visible {
 .left-panel h1 {
   margin: 18px 0 14px;
   font-family: var(--font-display);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(54px, 4.9vw, 80px);
   line-height: 0.92;
   letter-spacing: 0;
@@ -239,7 +233,7 @@ button:focus-visible {
   margin: 14px 0 18px;
   line-height: 1.6;
   letter-spacing: 0.005em;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--text);
 }
 
@@ -675,7 +669,7 @@ button:focus-visible {
 
 .chakra-number {
   font-family: var(--font-display);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 32px;
   line-height: 1;
   flex-shrink: 0;
@@ -702,7 +696,7 @@ button:focus-visible {
   margin: 14px 0 18px;
   font-family: var(--font-body);
   font-style: italic;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -759,7 +753,7 @@ button:focus-visible {
 
 .summary {
   width: min(100%, 560px);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--text);
   margin: 0 0 24px;
@@ -876,7 +870,7 @@ button:focus-visible {
   overflow: hidden;
   padding: 0 40px 0 36px;
   color: var(--text);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.7;
 }
 
@@ -1006,7 +1000,7 @@ button:focus-visible {
 
 .about-card p {
   margin: 0 0 14px;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.7;
   color: var(--text);
 }
@@ -1015,7 +1009,7 @@ button:focus-visible {
   color: var(--muted) !important;
   font-style: italic;
   font-family: var(--font-body);
-  font-size: 15px !important;
+  font-size: 14px !important;
 }
 
 .about-hint {
@@ -1057,7 +1051,7 @@ button:focus-visible {
   margin: 0 0 8px;
   font-family: var(--font-body);
   font-style: italic;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -1107,7 +1101,7 @@ button:focus-visible {
 .library-shelf li {
   position: relative;
   padding-left: 18px;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text);
 }
@@ -1276,7 +1270,7 @@ button:focus-visible {
 
 .quiz-lead {
   margin: 0 0 30px;
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.7;
   color: var(--text);
   max-width: 520px;
@@ -1383,7 +1377,7 @@ button:focus-visible {
 
 .quiz-result-number {
   font-family: var(--font-display);
-  font-weight: 300;
+  font-weight: 400;
   font-size: 30px;
   margin-top: 6px;
 }
@@ -1461,7 +1455,7 @@ button:focus-visible {
   margin: 26px 0 0;
   font-family: var(--font-body);
   font-style: italic;
-  font-size: 14.5px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -1784,14 +1778,14 @@ button:focus-visible {
     gap: 12px 16px;
   }
 
-  /* Reading text: 16px on phones. */
+  /* Reading text: 15px on phones. */
   .intro,
   .summary,
   .accordion-inner,
   .about-card p,
   .library-shelf li,
   .quiz-lead {
-    font-size: 16px;
+    font-size: 15px;
   }
 
 

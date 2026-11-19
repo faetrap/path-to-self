@@ -167,3 +167,10 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Facts show the label above the value (fixes "Lower Abdomen" overflowing)
 - [x] G1–G7 and G9 pass at all four sizes; no overflow across 7 chakras; no console errors
 - **Licence:** this copy came from dafontfile.org. Fabello is Britt Fabello's commercial font (Creative Market). `src/assets/fonts/fabello/` is git-ignored, so the public repo and deployed site won't include it; headings fall back to Georgia until a licence is bought and the files are committed (verified the build still passes without them)
+
+## Heading font: Day Roman + smaller Inter (2026-11-19), DONE
+
+- [x] Fabello replaced by Day Roman (Fredrick Nader / Apostrophic Labs, 2002; freeware, and the readme invites commercial use with a charity donation; embedding flag allows web use). Committed at `src/assets/fonts/DayRoman-Regular.woff2` (27 KB), readme at `public/fonts/DayRoman-README.txt`. Fabello removed (local copy deleted, gitignore entry dropped)
+- [x] Single weight, so all headings are 400 (no faux light or bold); mixed case kept; oldstyle figures for the chakra numbers. The designer notes it is tuned for 10–30pt; at the 71px title no oddities were visible on screen
+- [x] Inter reading text 1px smaller at your request: desktop 14px (summary 15px), phones 15px; line height unchanged (1.6–1.7). The journal box stays 16px so iOS doesn't zoom in on focus. G3 thresholds updated to 14 / 15px
+- [x] G1–G7 and G9 pass at 375×812, 900×700, 1366×768 and 1440×900; no header overflow across 7 chakras; no console errors
