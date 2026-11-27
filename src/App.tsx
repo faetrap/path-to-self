@@ -410,6 +410,50 @@ export default function App() {
     return () => document.removeEventListener('visibilitychange', sync);
   }, []);
 
+  // Cursor light: a small glow that drifts after the mouse, only while it's
+  // over the figure (mouse/trackpad only, and not with reduced motion).
+  const cursorLightRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = cursorLightRef.current;
+    if (!el) return;
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, placed = false;
+    function step() {
+      cx += (tx - cx) * 0.14;
+      cy += (ty - cy) * 0.14;
+      el!.style.transform = `translate(${cx}px, ${cy}px)`;
+      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.4 ? requestAnimationFrame(step) : 0;
+    }
+    function onMove(event: PointerEvent) {
+      const overFigure =
+        event.pointerType === 'mouse' &&
+        !!(event.target as HTMLElement | null)?.closest?.('.figure-backdrop') &&
+        !document.querySelector('[role=dialog]');
+      el!.classList.toggle('on', overFigure);
+      if (!overFigure) return;
+      tx = event.clientX;
+      ty = event.clientY;
+      if (!placed) {
+        cx = tx; // first appearance: start under the pointer, not from a corner
+        cy = ty;
+        placed = true;
+      }
+      if (!raf) raf = requestAnimationFrame(step);
+    }
+    function onLeave() {
+      el!.classList.remove('on');
+      placed = false;
+    }
+    window.addEventListener('pointermove', onMove, { passive: true });
+    document.documentElement.addEventListener('pointerleave', onLeave);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      document.documentElement.removeEventListener('pointerleave', onLeave);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
   // Spotlight cards: a soft light under the pointer (mouse/trackpad only).
   useEffect(() => {
     if (!window.matchMedia('(hover: hover)').matches) return;
@@ -850,6 +894,12 @@ export default function App() {
           {soundOn ? <Volume2 size={15} strokeWidth={1.5} /> : <VolumeX size={15} strokeWidth={1.5} />} Sound
         </button>
       </footer>
+
+      {/* Phones and tablets: the title, huge, dissolving into the bottom of the page. */}
+      <div className="wordmark" aria-hidden="true">
+        <span>Path to Self</span>
+      </div>
+      <span className="cursor-light" ref={cursorLightRef} aria-hidden="true" />
 
       {overlay === 'about' && <AboutOverlay onClose={() => setOverlay(null)} />}
       {overlay === 'journal' && <JournalOverlay chakra={active} onClose={() => setOverlay(null)} />}

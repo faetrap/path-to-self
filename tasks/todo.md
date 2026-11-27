@@ -225,3 +225,5 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812 (G9 now skips the sound toggle). Audio itself not heard in testing.
 - [x] Follow-up: orb tooltip shows the English name + remaining themes ("06 Third Eye · insight · intuition") so the Sanskrit name isn't repeated a third time; spotlight warmed to gold (the white glow was invisible on the glass card).
 - [x] Journey: quiz card now comes first, then "Or explore a chakra" + list (desktop/tablet); on phones the quiz card sits above "Or tap a chakra to explore" and the figure. All checks pass at 4 sizes.
+- [x] Added E as well: cursor light that eases after the mouse, only over the figure (mouse only, off with reduced motion, hidden over panels and dialogs); sits with the mist behind text.
+- [x] Added G: "Path to Self" wordmark at 17vw, top ~2/3 visible, fading out, at the page bottom on phones/tablets (hidden on desktop, where the page doesn't scroll). All checks pass at 4 sizes.
