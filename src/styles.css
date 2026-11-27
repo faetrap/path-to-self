@@ -649,6 +649,10 @@ button:focus-visible {
 .page-hidden .mist span,
 .page-hidden .mote,
 .page-hidden .body-chakra .orb,
+.page-hidden .orb::after,
+.figure-offscreen .body-chakra .orb,
+.figure-offscreen .orb::after,
+.figure-offscreen .body-chakra::after,
 .page-hidden .body-chakra::after {
   animation-play-state: paused;
 }
@@ -741,21 +745,48 @@ button:focus-visible {
 /* Dim the unselected orbs slightly so the active one clearly stands out.
    They still pulse softly, staggered root → crown so a slow wave of light
    travels up the spine. */
+/* Performance: the glow pulses are drawn once and cross-faded with opacity
+   (plus a transform), instead of animating box-shadow, which repaints every
+   frame. The low glow sits on .orb, the peak glow on .orb::after. */
+.orb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
 .body-chakra:not(.selected):not(:hover) .orb {
   opacity: 0.7;
+  box-shadow: 0 0 6px 1px color-mix(in srgb, var(--chakra) 12%, transparent);
   animation: orb-pulse 4.2s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -0.5s);
+}
+
+.body-chakra:not(.selected):not(:hover) .orb::after {
+  box-shadow: 0 0 18px 5px color-mix(in srgb, var(--chakra) 38%, transparent);
+  animation: orb-glow 4.2s ease-in-out infinite;
   animation-delay: calc(var(--i, 0) * -0.5s);
 }
 
 @keyframes orb-pulse {
   0%,
   100% {
-    box-shadow: 0 0 6px 1px color-mix(in srgb, var(--chakra) 12%, transparent);
     transform: scale(0.96);
   }
   50% {
-    box-shadow: 0 0 18px 5px color-mix(in srgb, var(--chakra) 38%, transparent);
     transform: scale(1.06);
+  }
+}
+
+@keyframes orb-glow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
@@ -766,8 +797,13 @@ button:focus-visible {
 .body-chakra.selected .orb {
   box-shadow:
     0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
-    0 0 26px 8px color-mix(in srgb, var(--chakra) 50%, transparent);
+    0 0 22px 6px color-mix(in srgb, var(--chakra) 45%, transparent);
   animation: orb-breathe 3.2s ease-in-out infinite;
+}
+
+.body-chakra.selected .orb::after {
+  box-shadow: 0 0 34px 11px color-mix(in srgb, var(--chakra) 60%, transparent);
+  animation: orb-glow 3.2s ease-in-out infinite;
 }
 
 /* Bright solid core in the middle of the active orb. */
@@ -792,15 +828,9 @@ button:focus-visible {
 @keyframes orb-breathe {
   0%,
   100% {
-    box-shadow:
-      0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
-      0 0 22px 6px color-mix(in srgb, var(--chakra) 45%, transparent);
     transform: scale(1);
   }
   50% {
-    box-shadow:
-      0 0 0 1.5px color-mix(in oklab, var(--chakra) 70%, var(--ink-base)),
-      0 0 34px 11px color-mix(in srgb, var(--chakra) 60%, transparent);
     transform: scale(1.08);
   }
 }
@@ -855,7 +885,8 @@ button:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .body-chakra.selected .orb,
-  .body-chakra:not(.selected):not(:hover) .orb {
+  .body-chakra:not(.selected):not(:hover) .orb,
+  .orb::after {
     animation: none;
   }
 
@@ -2363,4 +2394,62 @@ button:focus-visible {
     -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.06) 55%, transparent 80%);
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.06) 55%, transparent 80%);
   }
+}
+
+
+/* ---------- aura glint ---------- */
+
+/* Shares .figure-art's box (so it lines up on every layout) and is masked to
+   the light streaks extracted from the artwork (tasks/tools/glint-mask.py).
+   Only the inner band moves, by transform, so it stays on the compositor. */
+.figure-glint {
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: url('./assets/figure-glints.webp');
+  mask-image: url('./assets/figure-glints.webp');
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+}
+
+.figure-glint span {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(255, 250, 238, 0) 30%,
+    rgba(255, 250, 238, 0.95) 46%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 250, 238, 0.95) 54%,
+    rgba(255, 250, 238, 0) 70%,
+    transparent 100%
+  );
+  transform: translateY(100%);
+  animation: glint-rise 14s cubic-bezier(0.45, 0, 0.35, 1) infinite;
+  will-change: transform;
+}
+
+@keyframes glint-rise {
+  0% {
+    transform: translateY(100%);
+  }
+  /* rise over ~8s, then rest out of view before the next breath of light */
+  58%,
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure-glint {
+    display: none;
+  }
+}
+
+.page-hidden .figure-glint span,
+.figure-offscreen .figure-glint span {
+  animation-play-state: paused;
 }

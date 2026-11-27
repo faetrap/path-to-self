@@ -124,6 +124,11 @@ function BodyFigure({
           src={`${import.meta.env.BASE_URL}figure.webp`}
           alt="Meditating figure seated in a lotus, seven chakras glowing along the spine"
         />
+        {/* Light travelling up through the painting's own streaks: a soft
+            band rises root to crown, masked to the bright lines in the art. */}
+        <div className="figure-art figure-glint" aria-hidden="true">
+          <span />
+        </div>
         {chakras.map((chakra, index) => (
           <button
             key={chakra.id}
@@ -452,6 +457,18 @@ export default function App() {
       document.documentElement.removeEventListener('pointerleave', onLeave);
       cancelAnimationFrame(raf);
     };
+  }, []);
+
+  // Pause the figure's own animations (orb pulses, glint) while it's scrolled
+  // out of view on phones and tablets: nothing visible changes.
+  useEffect(() => {
+    const frame = document.querySelector('.figure-frame');
+    if (!frame || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([entry]) =>
+      document.documentElement.classList.toggle('figure-offscreen', !entry.isIntersecting)
+    );
+    io.observe(frame);
+    return () => io.disconnect();
   }, []);
 
   // Spotlight cards: a soft light under the pointer (mouse/trackpad only).
