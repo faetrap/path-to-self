@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import {
   ArrowDown,
   ArrowRight,
@@ -10,10 +11,13 @@ import {
   NotebookPen,
   Plus,
   Sparkle,
+  Volume2,
+  VolumeX,
   X
 } from 'lucide-react';
 import { chakras, type Chakra } from './data/chakras';
 import Quiz from './Quiz';
+import { CHAKRA_HZ, loadSoundPref, playBowl, saveSoundPref } from './sound';
 
 // Traditional chakra yantras (petal counts, shapes and bija syllables) by
 // Atarax42 / Holger Koch on Wikimedia Commons, CC0. See assets/chakras/SOURCES.txt.
@@ -120,6 +124,11 @@ function BodyFigure({
           src={`${import.meta.env.BASE_URL}figure.webp`}
           alt="Meditating figure seated in a lotus, seven chakras glowing along the spine"
         />
+        {/* Light travelling up through the painting's own streaks: a soft
+            band rises root to crown, masked to the bright lines in the art. */}
+        <div className="figure-art figure-glint" aria-hidden="true">
+          <span />
+        </div>
         {chakras.map((chakra, index) => (
           <button
             key={chakra.id}
@@ -133,6 +142,8 @@ function BodyFigure({
               } as React.CSSProperties
             }
             aria-pressed={index === activeIndex}
+            aria-describedby={calibrate ? undefined : `orb-tip-${chakra.id}`}
+            data-side={index % 2 === 0 ? 'right' : 'left'}
             onClick={() => onSelect(index)}
             onPointerDown={
               calibrate
@@ -157,6 +168,21 @@ function BodyFigure({
           >
             <span className="orb" />
             {calibrate && <span className="orb-crosshair" />}
+            {!calibrate && (
+              // Anatomy-plate label: a dotted leader line out to the name,
+              // alternating sides so neighbours never collide.
+              <span className="orb-tip" role="tooltip" id={`orb-tip-${chakra.id}`}>
+                <span className="orb-tip-line" />
+                <span className="orb-tip-text">
+                  {/* English name + themes: the Sanskrit name is already in the
+                      list and the heading, so it isn't repeated here. */}
+                  <span>
+                    <span className="orb-tip-id">{chakra.id}</span> {chakra.keywords.split('+')[0].trim()}
+                  </span>
+                  <em>{chakra.keywords.split('+').slice(1).map((k) => k.trim().toLowerCase()).join(' · ')}</em>
+                </span>
+              </span>
+            )}
           </button>
         ))}
         {!calibrate && burst > 0 && (
@@ -388,12 +414,115 @@ export default function App() {
     document.addEventListener('visibilitychange', sync);
     return () => document.removeEventListener('visibilitychange', sync);
   }, []);
+
+  // Cursor light: a small glow that drifts after the mouse, only while it's
+  // over the figure (mouse/trackpad only, and not with reduced motion).
+  const cursorLightRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const el = cursorLightRef.current;
+    if (!el) return;
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, placed = false;
+    function step() {
+      cx += (tx - cx) * 0.14;
+      cy += (ty - cy) * 0.14;
+      el!.style.transform = `translate(${cx}px, ${cy}px)`;
+      raf = Math.abs(tx - cx) + Math.abs(ty - cy) > 0.4 ? requestAnimationFrame(step) : 0;
+    }
+    function onMove(event: PointerEvent) {
+      const overFigure =
+        event.pointerType === 'mouse' &&
+        !!(event.target as HTMLElement | null)?.closest?.('.figure-backdrop') &&
+        !document.querySelector('[role=dialog]');
+      el!.classList.toggle('on', overFigure);
+      if (!overFigure) return;
+      tx = event.clientX;
+      ty = event.clientY;
+      if (!placed) {
+        cx = tx; // first appearance: start under the pointer, not from a corner
+        cy = ty;
+        placed = true;
+      }
+      if (!raf) raf = requestAnimationFrame(step);
+    }
+    function onLeave() {
+      el!.classList.remove('on');
+      placed = false;
+    }
+    window.addEventListener('pointermove', onMove, { passive: true });
+    document.documentElement.addEventListener('pointerleave', onLeave);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      document.documentElement.removeEventListener('pointerleave', onLeave);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // Pause the figure's own animations (orb pulses, glint) while it's scrolled
+  // out of view on phones and tablets: nothing visible changes.
+  useEffect(() => {
+    const frame = document.querySelector('.figure-frame');
+    if (!frame || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver(([entry]) =>
+      document.documentElement.classList.toggle('figure-offscreen', !entry.isIntersecting)
+    );
+    io.observe(frame);
+    return () => io.disconnect();
+  }, []);
+
+  // Spotlight cards: a soft light under the pointer (mouse/trackpad only).
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover)').matches) return;
+    function onMove(event: PointerEvent) {
+      const card = (event.target as HTMLElement | null)?.closest?.<HTMLElement>('.spotlight');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${event.clientX - r.left}px`);
+      card.style.setProperty('--my', `${event.clientY - r.top}px`);
+    }
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => window.removeEventListener('pointermove', onMove);
+  }, []);
   const headerRef = useRef<HTMLDivElement>(null);
   const rightPanelRef = useRef<HTMLElement>(null);
   const [revealTick, setRevealTick] = useState(0);
   const [showBar, setShowBar] = useState(false);
 
+  const [soundOn, setSoundOn] = useState(loadSoundPref);
+  const soundRef = useRef(soundOn);
+  soundRef.current = soundOn;
+
+  function toggleSound() {
+    const next = !soundOn;
+    setSoundOn(next);
+    saveSoundPref(next);
+    if (next) playBowl(CHAKRA_HZ[activeIndexRef.current]); // a preview, and unlocks audio
+  }
+
+  // Map <-> quiz: a short cross-fade (View Transitions API) instead of a
+  // hard cut. Falls back to an instant switch where unsupported or when the
+  // visitor prefers reduced motion.
+  function switchView(next: 'map' | 'quiz') {
+    if (viewRef.current === next) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    type VT = { ready: Promise<void>; finished: Promise<void>; updateCallbackDone: Promise<void> };
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => VT };
+    if (!doc.startViewTransition || reduce || document.hidden) {
+      setView(next);
+      return;
+    }
+    const transition = doc.startViewTransition(() => flushSync(() => setView(next)));
+    // A transition interrupted by another (quick double switch) rejects
+    // these promises; the view still switches, so just swallow it.
+    const ignore = () => {};
+    transition.ready.catch(ignore);
+    transition.finished.catch(ignore);
+    transition.updateCallbackDone.catch(ignore);
+  }
+
   function chooseChakra(index: number) {
+    if (soundRef.current && index !== activeIndexRef.current) playBowl(CHAKRA_HZ[index]);
     setActiveIndex(index);
     setActiveTab('understand');
     setOpenSection(0);
@@ -439,7 +568,7 @@ export default function App() {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         setOverlay(null);
-        setView('map');
+        switchView('map');
         return;
       }
       if (viewRef.current !== 'map') return;
@@ -459,10 +588,10 @@ export default function App() {
   if (view === 'quiz') {
     return (
       <Quiz
-        onClose={() => setView('map')}
+        onClose={() => switchView('map')}
         onExplore={(index) => {
           chooseChakra(index);
-          setView('map');
+          switchView('map');
         }}
       />
     );
@@ -514,9 +643,19 @@ export default function App() {
           psychology and spiritual evolution.
         </p>
 
+        {/* Journey: start with the quiz, or go straight to a chakra. */}
+        <button className="quiz-cta spotlight" onClick={() => switchView('quiz')}>
+          <Compass size={20} strokeWidth={1.4} />
+          <span className="quiz-cta-text">
+            <strong>Take the Chakra Quiz</strong>
+            <em>Find where your energy is asking for attention</em>
+          </span>
+          <ArrowRight size={18} strokeWidth={1.5} />
+        </button>
+
         <div className="map-label">
           <Sparkle size={18} strokeWidth={1.2} />
-          <strong>Select a chakra to begin</strong>
+          <strong>Or explore a chakra</strong>
           <ArrowDown size={16} strokeWidth={1.4} />
         </div>
 
@@ -536,15 +675,6 @@ export default function App() {
           ))}
         </nav>
 
-        <button className="quiz-cta" onClick={() => setView('quiz')}>
-          <Compass size={20} strokeWidth={1.4} />
-          <span className="quiz-cta-text">
-            <strong>Take the Chakra Quiz</strong>
-            <em>Find where your energy is asking for attention</em>
-          </span>
-          <ArrowRight size={18} strokeWidth={1.5} />
-        </button>
-
         <footer>
           <button className="footer-link" onClick={() => setOverlay('journal')}>
             <NotebookPen size={15} strokeWidth={1.5} /> Journal
@@ -555,11 +685,22 @@ export default function App() {
           <button className="footer-link" onClick={() => setOverlay('about')}>
             <Info size={15} strokeWidth={1.5} /> About
           </button>
+          <button className="footer-link sound-toggle" onClick={toggleSound} aria-pressed={soundOn}>
+            {soundOn ? <Volume2 size={15} strokeWidth={1.5} /> : <VolumeX size={15} strokeWidth={1.5} />} Sound
+          </button>
         </footer>
       </section>
 
       <section className="center-panel">
-        <p className="tap-hint">Tap a chakra to explore</p>
+        <button className="quiz-cta quiz-cta-mobile spotlight" onClick={() => switchView('quiz')}>
+          <Compass size={20} strokeWidth={1.4} />
+          <span className="quiz-cta-text">
+            <strong>Take the Chakra Quiz</strong>
+            <em>Find where your energy is asking for attention</em>
+          </span>
+          <ArrowRight size={18} strokeWidth={1.5} />
+        </button>
+        <p className="tap-hint">Or tap a chakra to explore</p>
         <BodyFigure
           activeIndex={activeIndex}
           onSelect={revealChakra}
@@ -585,14 +726,6 @@ export default function App() {
             </button>
           ))}
         </div>
-        <button className="quiz-cta quiz-cta-mobile" onClick={() => setView('quiz')}>
-          <Compass size={20} strokeWidth={1.4} />
-          <span className="quiz-cta-text">
-            <strong>Take the Chakra Quiz</strong>
-            <em>Find where your energy is asking for attention</em>
-          </span>
-          <ArrowRight size={18} strokeWidth={1.5} />
-        </button>
       </section>
 
       <section className="right-panel" ref={rightPanelRef}>
@@ -640,7 +773,15 @@ export default function App() {
         </div>
 
         <div className="right-scroll">
-        <p className="summary">{active.summary}</p>
+        {/* Arrives word by word on each new chakra; read as one sentence. */}
+        <p className="summary" key={active.id}>
+          <span className="sr-only">{active.summary}</span>
+          {active.summary.split(' ').map((word, i) => (
+            <span key={i} className="summary-word" aria-hidden="true" style={{ animationDelay: `${120 + i * 32}ms` }}>
+              {word}{' '}
+            </span>
+          ))}
+        </p>
 
         <div className="section-tabs" role="tablist" aria-label="Ways into this chakra">
           {SECTION_TABS.map((tab, i) => (
@@ -704,7 +845,7 @@ export default function App() {
         </div>
 
         {activeIndex < chakras.length - 1 ? (
-          <button className="coming-soon" onClick={() => revealChakra(activeIndex + 1)}>
+          <button className="coming-soon spotlight" onClick={() => revealChakra(activeIndex + 1)}>
             <span>Continue the path</span>
             <strong>
               {chakras[activeIndex + 1].id} – {chakras[activeIndex + 1].name}
@@ -713,7 +854,7 @@ export default function App() {
             <ArrowRight size={16} strokeWidth={1.5} />
           </button>
         ) : (
-          <button className="coming-soon" onClick={() => revealChakra(0)}>
+          <button className="coming-soon spotlight" onClick={() => revealChakra(0)}>
             <span>The path returns</span>
             <strong>01 – Muladhara</strong>
             <em>begin again at the root</em>
@@ -766,7 +907,16 @@ export default function App() {
         <button className="footer-link" onClick={() => setOverlay('about')}>
           <Info size={15} strokeWidth={1.5} /> About
         </button>
+        <button className="footer-link sound-toggle" onClick={toggleSound} aria-pressed={soundOn}>
+          {soundOn ? <Volume2 size={15} strokeWidth={1.5} /> : <VolumeX size={15} strokeWidth={1.5} />} Sound
+        </button>
       </footer>
+
+      {/* Phones and tablets: the title, huge, dissolving into the bottom of the page. */}
+      <div className="wordmark" aria-hidden="true">
+        <span>Path to Self</span>
+      </div>
+      <span className="cursor-light" ref={cursorLightRef} aria-hidden="true" />
 
       {overlay === 'about' && <AboutOverlay onClose={() => setOverlay(null)} />}
       {overlay === 'journal' && <JournalOverlay chakra={active} onClose={() => setOverlay(null)} />}

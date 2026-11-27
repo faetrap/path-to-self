@@ -112,7 +112,7 @@
   // G9 (partial, in-page): overlays open/close, arrow keys, aria state.
   {
     const detail = [];
-    const links = [...document.querySelectorAll(mobile ? '.mobile-footer .footer-link' : '.left-panel footer .footer-link')];
+    const links = [...document.querySelectorAll(mobile ? '.mobile-footer .footer-link:not(.sound-toggle)' : '.left-panel footer .footer-link:not(.sound-toggle)')];
     for (const l of links) {
       l.click();
       await wait(200);

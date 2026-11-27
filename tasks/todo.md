@@ -215,3 +215,18 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - Before/after at 375×812: `tasks/mobile-perf-before-after.png` — visually near-identical (top slightly less blue-tinted with cloud 6 gone).
 - Not measured on a real device; frame rate on low-end Android still to be confirmed after deploy.
 - Checks: G1–G7, G9 pass at 375×812, 900×700, 1366×768, 1440×900; desktop keeps blur(30px); no console errors.
+
+## Polish 2: picks from "20 Effects…" (2026-11-27)
+- [x] Orb tooltips, "anatomy plate" style: dotted leader line + mono label (id, name, keywords), alternating sides; mouse/keyboard only (hidden on touch, where chips name each chakra).
+- [x] Summary arrives word by word (32ms/word, blur-in); full sentence kept as one sr-only span for screen readers.
+- [x] Spotlight (D, the subtler of D/E) on the quiz card and Continue card; hover devices only.
+- [x] Chakra tones: synthesised singing bowl on the solfeggio set used by sound-healing apps (396/417/528/639/741/852/963 Hz, root→crown). Off by default; "Sound" toggle in both footers, remembered per browser. No healing claim made.
+- [x] Map ↔ quiz page transition via View Transitions API (fade/blur), instant fallback; rejected promises from interrupted transitions swallowed.
+- Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812 (G9 now skips the sound toggle). Audio itself not heard in testing.
+- [x] Follow-up: orb tooltip shows the English name + remaining themes ("06 Third Eye · insight · intuition") so the Sanskrit name isn't repeated a third time; spotlight warmed to gold (the white glow was invisible on the glass card).
+- [x] Journey: quiz card now comes first, then "Or explore a chakra" + list (desktop/tablet); on phones the quiz card sits above "Or tap a chakra to explore" and the figure. All checks pass at 4 sizes.
+- [x] Added E as well: cursor light that eases after the mouse, only over the figure (mouse only, off with reduced motion, hidden over panels and dialogs); sits with the mist behind text.
+- [x] Added G: "Path to Self" wordmark at 17vw, top ~2/3 visible, fading out, at the page bottom on phones/tablets (hidden on desktop, where the page doesn't scroll). All checks pass at 4 sizes.
+- [x] Aura glint: light streaks extracted from the artwork (`tasks/tools/glint-mask.py` → `src/assets/figure-glints.webp`, 68 KB) mask a soft band that rises root → crown every 14s (~8s rise, then rest). Transform-only animation; pauses when the tab is hidden, the figure is off screen, or reduced motion is on.
+- [x] Perf cuts that don't change the look: orb pulses now cross-fade a pre-drawn glow (opacity + transform) instead of animating box-shadow (which repainted 7 orbs every frame); figure animations pause while scrolled off screen on phones/tablets. Not measured on a device.
+- [x] Glint strengthened after review ("can't see much"): mask gain up, soft halo around each streak, warmer gold band. Comparison: `tasks/glint-before-after.png`.
