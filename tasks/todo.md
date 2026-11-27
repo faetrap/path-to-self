@@ -223,3 +223,5 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - [x] Chakra tones: synthesised singing bowl on the solfeggio set used by sound-healing apps (396/417/528/639/741/852/963 Hz, root→crown). Off by default; "Sound" toggle in both footers, remembered per browser. No healing claim made.
 - [x] Map ↔ quiz page transition via View Transitions API (fade/blur), instant fallback; rejected promises from interrupted transitions swallowed.
 - Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812 (G9 now skips the sound toggle). Audio itself not heard in testing.
+- [x] Follow-up: orb tooltip shows the English name + remaining themes ("06 Third Eye · insight · intuition") so the Sanskrit name isn't repeated a third time; spotlight warmed to gold (the white glow was invisible on the glass card).
+- [x] Journey: quiz card now comes first, then "Or explore a chakra" + list (desktop/tablet); on phones the quiz card sits above "Or tap a chakra to explore" and the figure. All checks pass at 4 sizes.

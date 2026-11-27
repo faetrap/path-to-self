@@ -321,6 +321,7 @@ button:focus-visible {
 }
 
 .map-label {
+  margin-top: 22px;
   margin-bottom: 10px;
 }
 
@@ -1874,6 +1875,10 @@ button:focus-visible {
     padding: 10px 14px;
   }
 
+  .map-label {
+    margin-top: 14px;
+  }
+
   .left-panel footer {
     padding-top: 14px;
   }
@@ -2035,7 +2040,7 @@ button:focus-visible {
   .quiz-cta-mobile {
     display: flex;
     width: min(94vw, 460px);
-    margin: 12px auto 4px;
+    margin: 4px auto 22px;
   }
 
   .mobile-footer {
@@ -2250,10 +2255,10 @@ button:focus-visible {
     opacity: 0;
     transition: opacity 0.35s ease;
     background: radial-gradient(
-      180px circle at var(--mx, 50%) var(--my, 50%),
-      rgba(255, 249, 236, 0.75),
-      rgba(232, 196, 120, 0.14) 45%,
-      transparent 70%
+      170px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(236, 196, 118, 0.34),
+      rgba(236, 196, 118, 0.12) 45%,
+      transparent 72%
     );
   }
 

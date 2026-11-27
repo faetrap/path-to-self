@@ -169,10 +169,12 @@ function BodyFigure({
               <span className="orb-tip" role="tooltip" id={`orb-tip-${chakra.id}`}>
                 <span className="orb-tip-line" />
                 <span className="orb-tip-text">
+                  {/* English name + themes: the Sanskrit name is already in the
+                      list and the heading, so it isn't repeated here. */}
                   <span>
-                    <span className="orb-tip-id">{chakra.id}</span> {chakra.name}
+                    <span className="orb-tip-id">{chakra.id}</span> {chakra.keywords.split('+')[0].trim()}
                   </span>
-                  <em>{chakra.keywords.split('+').map((k) => k.trim().toLowerCase()).join(' · ')}</em>
+                  <em>{chakra.keywords.split('+').slice(1).map((k) => k.trim().toLowerCase()).join(' · ')}</em>
                 </span>
               </span>
             )}
@@ -580,9 +582,19 @@ export default function App() {
           psychology and spiritual evolution.
         </p>
 
+        {/* Journey: start with the quiz, or go straight to a chakra. */}
+        <button className="quiz-cta spotlight" onClick={() => switchView('quiz')}>
+          <Compass size={20} strokeWidth={1.4} />
+          <span className="quiz-cta-text">
+            <strong>Take the Chakra Quiz</strong>
+            <em>Find where your energy is asking for attention</em>
+          </span>
+          <ArrowRight size={18} strokeWidth={1.5} />
+        </button>
+
         <div className="map-label">
           <Sparkle size={18} strokeWidth={1.2} />
-          <strong>Select a chakra to begin</strong>
+          <strong>Or explore a chakra</strong>
           <ArrowDown size={16} strokeWidth={1.4} />
         </div>
 
@@ -602,15 +614,6 @@ export default function App() {
           ))}
         </nav>
 
-        <button className="quiz-cta spotlight" onClick={() => switchView('quiz')}>
-          <Compass size={20} strokeWidth={1.4} />
-          <span className="quiz-cta-text">
-            <strong>Take the Chakra Quiz</strong>
-            <em>Find where your energy is asking for attention</em>
-          </span>
-          <ArrowRight size={18} strokeWidth={1.5} />
-        </button>
-
         <footer>
           <button className="footer-link" onClick={() => setOverlay('journal')}>
             <NotebookPen size={15} strokeWidth={1.5} /> Journal
@@ -628,7 +631,15 @@ export default function App() {
       </section>
 
       <section className="center-panel">
-        <p className="tap-hint">Tap a chakra to explore</p>
+        <button className="quiz-cta quiz-cta-mobile spotlight" onClick={() => switchView('quiz')}>
+          <Compass size={20} strokeWidth={1.4} />
+          <span className="quiz-cta-text">
+            <strong>Take the Chakra Quiz</strong>
+            <em>Find where your energy is asking for attention</em>
+          </span>
+          <ArrowRight size={18} strokeWidth={1.5} />
+        </button>
+        <p className="tap-hint">Or tap a chakra to explore</p>
         <BodyFigure
           activeIndex={activeIndex}
           onSelect={revealChakra}
@@ -654,14 +665,6 @@ export default function App() {
             </button>
           ))}
         </div>
-        <button className="quiz-cta quiz-cta-mobile" onClick={() => switchView('quiz')}>
-          <Compass size={20} strokeWidth={1.4} />
-          <span className="quiz-cta-text">
-            <strong>Take the Chakra Quiz</strong>
-            <em>Find where your energy is asking for attention</em>
-          </span>
-          <ArrowRight size={18} strokeWidth={1.5} />
-        </button>
       </section>
 
       <section className="right-panel" ref={rightPanelRef}>
