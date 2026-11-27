@@ -2420,11 +2420,11 @@ button:focus-visible {
   background: linear-gradient(
     to top,
     transparent 0%,
-    rgba(255, 250, 238, 0) 30%,
-    rgba(255, 250, 238, 0.95) 46%,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(255, 250, 238, 0.95) 54%,
-    rgba(255, 250, 238, 0) 70%,
+    rgba(255, 222, 160, 0) 24%,
+    rgba(255, 222, 160, 0.95) 42%,
+    rgba(255, 248, 228, 1) 50%,
+    rgba(255, 222, 160, 0.95) 58%,
+    rgba(255, 222, 160, 0) 76%,
     transparent 100%
   );
   transform: translateY(100%);
