@@ -215,3 +215,11 @@ Done = every goal passes in one clean run, plus your sign-off on G8 → then com
 - Before/after at 375×812: `tasks/mobile-perf-before-after.png` — visually near-identical (top slightly less blue-tinted with cloud 6 gone).
 - Not measured on a real device; frame rate on low-end Android still to be confirmed after deploy.
 - Checks: G1–G7, G9 pass at 375×812, 900×700, 1366×768, 1440×900; desktop keeps blur(30px); no console errors.
+
+## Polish 2: picks from "20 Effects…" (2026-11-27)
+- [x] Orb tooltips, "anatomy plate" style: dotted leader line + mono label (id, name, keywords), alternating sides; mouse/keyboard only (hidden on touch, where chips name each chakra).
+- [x] Summary arrives word by word (32ms/word, blur-in); full sentence kept as one sr-only span for screen readers.
+- [x] Spotlight (D, the subtler of D/E) on the quiz card and Continue card; hover devices only.
+- [x] Chakra tones: synthesised singing bowl on the solfeggio set used by sound-healing apps (396/417/528/639/741/852/963 Hz, root→crown). Off by default; "Sound" toggle in both footers, remembered per browser. No healing claim made.
+- [x] Map ↔ quiz page transition via View Transitions API (fade/blur), instant fallback; rejected promises from interrupted transitions swallowed.
+- Checks: G1–G7, G9 pass at 1440×900, 1366×768, 900×700, 375×812 (G9 now skips the sound toggle). Audio itself not heard in testing.
